@@ -1,0 +1,31 @@
+﻿src/components/BlueprintEditor.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,25): error TS6133: 'MapIcon' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,42): error TS6133: 'Filter' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,50): error TS6133: 'Activity' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,60): error TS6133: 'MousePointer2' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,75): error TS6133: 'Move' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,108): error TS6133: 'Check' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,115): error TS6133: 'X' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,118): error TS6133: 'Eye' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,123): error TS6133: 'EyeOff' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,131): error TS6133: 'Edit2' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,154): error TS6133: 'Network' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,187): error TS6133: 'Share' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,194): error TS6133: 'Save' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(2,200): error TS6133: 'GitBranch' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(3,1): error TS6192: All imports in import declaration are unused.
+src/components/BlueprintEditor.tsx(4,1): error TS6192: All imports in import declaration are unused.
+src/components/BlueprintEditor.tsx(5,1): error TS6133: 'SecurityMiddleware' is declared but its value is never read.
+src/components/BlueprintEditor.tsx(365,124): error TS2554: Expected 1 arguments, but got 2.
+src/components/BlueprintEditor.tsx(366,133): error TS2554: Expected 1 arguments, but got 2.
+src/components/BlueprintEditor.tsx(367,133): error TS2554: Expected 1 arguments, but got 2.
+src/components/BlueprintEditor.tsx(461,84): error TS2554: Expected 1 arguments, but got 3.
+src/components/BlueprintEditor.tsx(549,91): error TS2322: Type '{ id: string; name: string; type: string; status: string; }[]' is not assignable to type 'NetworkInterface[]'.
+  Type '{ id: string; name: string; type: string; status: string; }' is not assignable to type 'NetworkInterface'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"COPPER" | "FIBER" | "VIRTUAL"'.
+src/components/BlueprintEditor.tsx(573,95): error TS2532: Object is possibly 'undefined'.
+src/components/BlueprintEditor.tsx(597,90): error TS2532: Object is possibly 'undefined'.
+src/components/BlueprintEditor.tsx(669,72): error TS2304: Cannot find name 'setShowLinkModal'.
+src/components/InfraMap.tsx(593,17): error TS2322: Type '{ children: Element[]; nodes: Node<any, string | undefined>[]; edges: Edge<any>[]; nodeTypes: { infraNode: MemoExoticComponent<({ data }: { data: InfraNodeData; }) => Element>; }; ... 14 more ...; selectionOnDrag: true; }' is not assignable to type 'IntrinsicAttributes & Omit<HTMLAttributes<HTMLDivElement>, "onError"> & { nodes?: Node<any, string | undefined>[] | undefined; ... 109 more ...; nodeDragThreshold?: number | undefined; } & RefAttributes<...>'.
+  Property 'connectionLineComponentProps' does not exist on type 'IntrinsicAttributes & Omit<HTMLAttributes<HTMLDivElement>, "onError"> & { nodes?: Node<any, string | undefined>[] | undefined; ... 109 more ...; nodeDragThreshold?: number | undefined; } & RefAttributes<...>'. Did you mean 'connectionLineComponent'?
