@@ -112,7 +112,7 @@ The platform ships with a built-in testing infrastructure that runs on every `np
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/atlas-server-docs.git
+git clone https://github.com/davijls9/atlas-server-docs.git
 cd atlas-server-docs
 
 # Install dependencies
