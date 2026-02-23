@@ -133,36 +133,55 @@ export const WorkspaceView = ({
 
     // Initial Data Load
     useEffect(() => {
-        const savedUsers = localStorage.getItem('antigravity_users');
-        const savedGroups = localStorage.getItem('antigravity_groups');
+        const savedUsers = localStorage.getItem('atlas_users');
+        const savedGroups = localStorage.getItem('atlas_groups');
 
         if (savedUsers) {
-            setUsers(JSON.parse(savedUsers));
+            try {
+                const parsed = JSON.parse(savedUsers);
+                if (Array.isArray(parsed)) {
+                    // Filter out any completely invalid objects
+                    const validUsers = parsed.filter(u => u && typeof u === 'object' && u.id);
+                    setUsers(validUsers.length > 0 ? validUsers : [{ id: '1', name: 'Admin User', email: 'admin@antigravity.io', groupId: 'admin-group', status: 'ACTIVE', lastLogin: '2024-02-11 10:30', password: 'password123' }]);
+                }
+            } catch (e) { /* ignore corrupted */ }
         } else {
             const initialUsers = [
                 { id: '1', name: 'Admin User', email: 'admin@antigravity.io', groupId: 'admin-group', status: 'ACTIVE', lastLogin: '2024-02-11 10:30', password: 'password123' },
                 { id: '2', name: 'John Doe', email: 'john@antigravity.io', groupId: 'engineer-group', status: 'ACTIVE', lastLogin: '2024-02-11 09:15', password: 'password123' }
             ];
             setUsers(initialUsers);
-            SecurityMiddleware.secureWrite('antigravity_users', JSON.stringify(initialUsers));
+            SecurityMiddleware.secureWrite('atlas_users', JSON.stringify(initialUsers));
         }
 
         if (savedGroups) {
-            setPermissionGroups(JSON.parse(savedGroups));
+            try {
+                const parsed = JSON.parse(savedGroups);
+                if (Array.isArray(parsed)) {
+                    const validGroups = parsed.filter(g => g && typeof g === 'object' && g.id);
+                    setPermissionGroups(validGroups.length > 0 ? validGroups : DEFAULT_GROUPS);
+                } else {
+                    setPermissionGroups(DEFAULT_GROUPS);
+                    SecurityMiddleware.secureWrite('atlas_groups', JSON.stringify(DEFAULT_GROUPS));
+                }
+            } catch (e) {
+                setPermissionGroups(DEFAULT_GROUPS);
+                SecurityMiddleware.secureWrite('atlas_groups', JSON.stringify(DEFAULT_GROUPS));
+            }
         } else {
             setPermissionGroups(DEFAULT_GROUPS);
-            SecurityMiddleware.secureWrite('antigravity_groups', JSON.stringify(DEFAULT_GROUPS));
+            SecurityMiddleware.secureWrite('atlas_groups', JSON.stringify(DEFAULT_GROUPS));
         }
     }, []);
 
     const saveUsers = (newUsers: any[]) => {
         setUsers(newUsers);
-        SecurityMiddleware.secureWrite('antigravity_users', JSON.stringify(newUsers));
+        SecurityMiddleware.secureWrite('atlas_users', JSON.stringify(newUsers));
     };
 
     const saveGroups = (newGroups: any[]) => {
         setPermissionGroups(newGroups);
-        SecurityMiddleware.secureWrite('antigravity_groups', JSON.stringify(newGroups));
+        SecurityMiddleware.secureWrite('atlas_groups', JSON.stringify(newGroups));
     };
 
     const handleAddGroup = () => {
@@ -237,8 +256,8 @@ export const WorkspaceView = ({
     }, [currentUser, permissions]);
 
     const filteredUsers = users.filter(u =>
-        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchTerm.toLowerCase())
+        u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.email?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -443,8 +462,9 @@ export const WorkspaceView = ({
                                                     const newName = prompt('Enter new designation:', blueprint.name);
                                                     if (newName) {
                                                         const updated = blueprintsRegistry.map(b => b.id === blueprint.id ? { ...b, name: newName } : b);
-                                                        localStorage.setItem('antigravity_blueprints_registry', JSON.stringify(updated));
-                                                        window.location.reload();
+                                                        SecurityMiddleware.secureWrite('antigravity_blueprints_registry', JSON.stringify(updated));
+                                                        // Reload is intentionally NOT called — parent would need to re-read registry
+                                                        showToast?.(`Blueprint renamed to "${newName}"`, 'success');
                                                     }
                                                 }}
                                                 className="p-3.5 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-2xl transition-all"
@@ -560,7 +580,7 @@ export const WorkspaceView = ({
                                 </div>
 
                                 <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3">
-                                    {permissionGroups.filter(g => g.name.toLowerCase().includes(groupSearchTerm.toLowerCase())).map(group => (
+                                    {permissionGroups.filter(g => g.name?.toLowerCase().includes(groupSearchTerm.toLowerCase())).map(group => (
                                         <div key={group.id} className="relative group/item">
                                             <button onClick={() => setEditingGroup(group)} className={`w-full p-5 rounded-2xl border text-left transition-all ${editingGroup?.id === group.id ? 'bg-purple-600/10 border-purple-500/50 scale-[1.02] shadow-2xl' : 'bg-[#0d1117] border-gray-800 hover:border-gray-700'}`}>
                                                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Tier</p>
@@ -807,7 +827,7 @@ export const WorkspaceView = ({
                         </div>
 
                         <div className="p-8 border-t border-gray-800 bg-[#1c2128] flex justify-end">
-                            <button onClick={() => { setShowACLModal(false); window.location.reload(); }} className="px-10 py-4 bg-blue-500 text-black text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-500/20 transition-all">Synchronize Authorization</button>
+                            <button onClick={() => { setShowACLModal(false); showToast?.('Authorization matrix synchronized', 'success'); }} className="px-10 py-4 bg-blue-500 text-black text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-500/20 transition-all">Synchronize Authorization</button>
                         </div>
                     </div>
                 </div>

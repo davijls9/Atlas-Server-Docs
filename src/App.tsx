@@ -511,9 +511,15 @@ function App() {
 
         const savedGroups = localStorage.getItem('atlas_groups');
         if (!savedGroups) return {};
-        const groups = JSON.parse(savedGroups);
-        const group = groups.find((g: any) => g.id === currentUser.groupId);
-        return group?.permissions || {};
+        try {
+            const groups = JSON.parse(savedGroups);
+            const group = groups.find((g: any) => g.id === currentUser.groupId);
+            return group?.permissions || {};
+        } catch (e) {
+            console.error('[APP] Failed to parse atlas_groups, resetting corrupted data');
+            localStorage.removeItem('atlas_groups');
+            return {};
+        }
     }, [currentUser]);
 
     // Auto-save when jsonPreview changes

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { X, Save, Trash2, Plus, Info, Search, SortAsc, SortDesc, ArrowUp, Filter, Layers } from 'lucide-react';
 import type { BlueprintAttribute, NodeType } from '../modules/blueprint/types/blueprint.types';
 
@@ -15,6 +15,15 @@ export const FieldManagerModal = ({ isOpen, onClose, schema, onUpdateSchema }: F
     const [editingSchema, setEditingSchema] = useState<BlueprintAttribute[]>(schema);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortMode, setSortMode] = useState<SortMode>('A-Z');
+
+    // CRITICAL FIX: Re-sync editingSchema every time the modal opens
+    // useState(schema) only runs once on mount — stale data was shown on subsequent opens
+    useEffect(() => {
+        if (isOpen) {
+            setEditingSchema(schema);
+            setSearchTerm(''); // Reset search to avoid confusion
+        }
+    }, [isOpen, schema]);
 
     const nodeTypes: NodeType[] = ['PHYSICAL_SERVER', 'VIRTUAL_MACHINE', 'SWITCH', 'ROUTER', 'SYSTEM'];
 
@@ -162,17 +171,16 @@ export const FieldManagerModal = ({ isOpen, onClose, schema, onUpdateSchema }: F
                                                 {attr.enabled !== false ? 'ENABLED' : 'DISABLED'}
                                             </button>
 
-                                            {attr.type === 'BOOLEAN' && (
-                                                <button
-                                                    onClick={() => handleUpdate(attr.id, { showInSecurity: attr.showInSecurity === false ? true : false })}
-                                                    className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase transition-all ${attr.showInSecurity !== false
-                                                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                                                        : 'bg-transparent text-gray-600 hover:text-gray-400'
-                                                        }`}
-                                                >
-                                                    SECURITY
-                                                </button>
-                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={() => handleUpdate(attr.id, { showInSecurity: attr.showInSecurity === false ? true : false })}
+                                                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase transition-all ${attr.showInSecurity !== false
+                                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                                                    : 'bg-transparent text-gray-600 hover:text-gray-400'
+                                                    }`}
+                                            >
+                                                SECURITY
+                                            </button>
                                         </div>
 
                                         <button

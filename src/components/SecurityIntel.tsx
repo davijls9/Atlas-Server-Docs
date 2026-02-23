@@ -230,7 +230,7 @@ export const SecurityIntel: React.FC = () => {
 
             {/* Strategic Architecture Roadmap */}
             <div className="relative p-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-red-500/20 rounded-[4.5rem]">
-                <div className="bg-[#0d1117] rounded-[4.4rem] py-16 px-12 border border-gray-800/50 shadow-inner relative overflow-hidden">
+                <div className="bg-[#0d1117] rounded-[4.4rem] py-18 px-12 border border-gray-800/50 shadow-inner relative overflow-hidden">
                     {/* Layer Labels Background */}
                     <div className="absolute top-8 inset-x-0 flex justify-between px-20">
                         {['ENTRY', 'IDENTITY', 'SECURITY', 'GOVERNANCE'].map((label, i) => (
@@ -313,7 +313,7 @@ export const SecurityIntel: React.FC = () => {
                     </div>
 
                     {/* Tactical Detail Overlay (Fades in based on selection) */}
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-12 py-3 bg-[#1c2128]/90 border border-gray-800 rounded-2xl flex items-center gap-6 backdrop-blur-md">
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-12 py-3 bg-[#1c2128]/90 border border-gray-800 rounded-2xl flex items-center gap-6 backdrop-blur-md">
                         <div className="flex items-center gap-2">
                             <div className={`w-2 h-2 rounded-full animate-pulse ${activeLayerData.status === 'SECURE' ? 'bg-emerald-500' : activeLayerData.status === 'AT_RISK' ? 'bg-amber-500' : 'bg-red-500'}`}></div>
                             <span className="text-[10px] font-black text-white uppercase tracking-widest italic">{activeLayerData.label}</span>

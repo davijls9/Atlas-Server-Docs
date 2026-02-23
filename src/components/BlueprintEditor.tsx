@@ -106,7 +106,7 @@ export const BlueprintEditor = ({ onJsonChange, initialData, permissions, worksp
             })),
             links: links,
             global_stats: stats,
-            schema: schema.filter((a: BlueprintAttribute) => a.showInSecurity || a.id.includes('attr-') || a.type === 'BOOLEAN')
+            schema: schema
         };
         const newJson = JSON.stringify(exportData, null, 2);
 

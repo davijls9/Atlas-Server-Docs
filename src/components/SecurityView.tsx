@@ -137,14 +137,14 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
     return (
         <div className="h-full w-full flex flex-col bg-[#06080a] text-white overflow-hidden relative">
             {/* Header */}
-            <div className={`border-b border-gray-800 bg-[#0d1117] shrink-0 relative z-20 shadow-xl transition-all duration-500 ${activeSubTab === 'intel' || !showStats ? 'p-4' : 'p-8'}`}>
+            <div className={`border-b border-gray-800 bg-[#0d1117] shrink-0 relative z-20 shadow-xl transition-all duration-500 p-8`}>
                 <div className={`flex items-center justify-between gap-6 ${showStats ? 'mb-6' : 'mb-0'}`}>
                     <div className="flex items-center gap-4 shrink-0">
-                        <div className={`${activeSubTab === 'intel' || !showStats ? 'w-10 h-10' : 'w-12 h-12'} bg-red-500/10 rounded-2xl flex items-center justify-center border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] transition-all`}>
-                            <Lock className={`${activeSubTab === 'intel' || !showStats ? 'w-5 h-5' : 'w-6 h-6'} text-red-500`} />
+                        <div className="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+                            <Lock className="w-6 h-6 text-red-500" />
                         </div>
                         <div>
-                            <h1 className={`${activeSubTab === 'intel' || !showStats ? 'text-xl' : 'text-3xl'} font-black text-white uppercase tracking-tighter transition-all leading-none mb-1`}>Security Audit</h1>
+                            <h1 className="text-3xl font-black text-white uppercase tracking-tighter leading-none mb-1">Security Audit</h1>
                             <div className="flex items-center gap-2">
                                 <span className={`w-1.5 h-1.5 rounded-full ${globalScore === 100 ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : globalScore >= 80 ? 'bg-amber-500 shadow-[0_0_8px_#f59e0b]' : 'bg-red-500 shadow-[0_0_8px_#ef4444]'}`}></span>
                                 <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">
@@ -154,15 +154,17 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
                         </div>
                     </div>
 
-                    <div className="flex flex-1 items-center justify-center">
+                    <div className="absolute left-1/2 top-8 -translate-x-1/2 z-30">
                         <div className="flex bg-[#161b22] px-1 py-1 rounded-2xl border border-gray-800 shadow-inner">
                             <button
+                                type="button"
                                 onClick={() => setActiveSubTab('audit')}
                                 className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'audit' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
                             >
                                 Audit Matrix
                             </button>
                             <button
+                                type="button"
                                 onClick={() => setActiveSubTab('ssdlc')}
                                 className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'ssdlc' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
                             >
@@ -170,6 +172,7 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
                             </button>
                             {permissions?.view_security_intel && (
                                 <button
+                                    type="button"
                                     onClick={() => setActiveSubTab('intel')}
                                     className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'intel' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
                                 >
@@ -204,10 +207,10 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
 
                         <button
                             onClick={() => setShowReportModal(true)}
-                            className={`${activeSubTab === 'intel' || !showStats ? 'px-4 py-2' : 'px-6 py-2.5'} bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20 border border-blue-500/50 flex items-center gap-2`}
+                            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20 border border-blue-500/50 flex items-center gap-2"
                         >
                             <FileText className="w-3.5 h-3.5" />
-                            {activeSubTab === 'intel' || !showStats ? 'Report' : 'Full Report'}
+                            Full Report
                         </button>
                     </div>
                 </div>
