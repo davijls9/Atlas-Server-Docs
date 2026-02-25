@@ -93,6 +93,7 @@ function App() {
     const [currentUser, setCurrentUser] = useState<any>(null);
     const [activeTab, setActiveTab] = useState<'editor' | 'map' | 'data' | 'security' | 'workspace' | 'docs' | 'profile' | 'logs'>('editor');
     const [logs, setLogs] = useState<LogEntry[]>([]);
+    const [isSyncing, setIsSyncing] = useState(true);
 
     // Blueprint Management
     const [blueprintsRegistry, setBlueprintsRegistry] = useState<BlueprintMetadata[]>([]);
@@ -337,150 +338,141 @@ function App() {
         });
     }, [blueprintsRegistry, currentUser]);
 
-    // Initial Load with data migration and proper default
+    // Initial Load with data migration, server hydration and proper default
     useEffect(() => {
-        // DATA MIGRATION CHECK
-        const migrateData = () => {
-            const keysToMigrate = [
-                { old: 'antigravity_session', new: 'atlas_session' },
-                { old: 'antigravity_blueprints_registry', new: 'atlas_blueprints_registry' },
-                { old: 'antigravity_blueprint_global', new: 'atlas_blueprint_global' },
-                { old: 'antigravity_security_overrides', new: 'atlas_security_overrides' },
-                { old: 'antigravity_security_columns', new: 'atlas_security_columns' },
-                { old: 'antigravity_system_logs', new: 'atlas_system_logs' },
-                { old: 'antigravity_groups', new: 'atlas_groups' },
-                { old: 'antigravity_active_bp_id', new: 'atlas_active_bp_id' }
-            ];
+        const initializeApp = async () => {
+            setIsSyncing(true);
 
-            let migratedCount = 0;
-            keysToMigrate.forEach(({ old, new: newKey }) => {
-                const oldData = localStorage.getItem(old);
-                const newData = localStorage.getItem(newKey);
+            // 1. PULL FROM CLUSTER (New Server-Side Persistence)
+            await SecurityMiddleware.hydrateFromServer();
 
-                if (oldData && !newData) {
-                    // Start migration
-                    console.log(`[MIGRATION] Migrating ${old} to ${newKey}`);
-                    // Special handling for registry to update storage keys inside it
-                    if (newKey === 'atlas_blueprints_registry') {
-                        try {
-                            const registry = JSON.parse(oldData);
-                            const updatedRegistry = registry.map((bp: any) => ({
-                                ...bp,
-                                storageKey: bp.storageKey.replace('antigravity_', 'atlas_')
-                            }));
-                            // Also migrate the actual blueprint data files
-                            registry.forEach((bp: any) => {
-                                const oldBpKey = bp.storageKey;
-                                const newBpKey = bp.storageKey.replace('antigravity_', 'atlas_');
-                                const bpData = localStorage.getItem(oldBpKey);
-                                if (bpData) localStorage.setItem(newBpKey, bpData);
-                            });
-                            localStorage.setItem(newKey, JSON.stringify(updatedRegistry));
-                        } catch (e) {
-                            console.error('Migration error for registry', e);
+            // 2. DATA MIGRATION CHECK (Legacy support)
+            const migrateData = () => {
+                const keysToMigrate = [
+                    { old: 'antigravity_session', new: 'atlas_session' },
+                    { old: 'antigravity_blueprints_registry', new: 'atlas_blueprints_registry' },
+                    { old: 'antigravity_blueprint_global', new: 'atlas_blueprint_global' },
+                    { old: 'antigravity_security_overrides', new: 'atlas_security_overrides' },
+                    { old: 'antigravity_security_columns', new: 'atlas_security_columns' },
+                    { old: 'antigravity_system_logs', new: 'atlas_system_logs' },
+                    { old: 'antigravity_groups', new: 'atlas_groups' },
+                    { old: 'antigravity_active_bp_id', new: 'atlas_active_bp_id' }
+                ];
+
+                let migratedCount = 0;
+                keysToMigrate.forEach(({ old, new: newKey }) => {
+                    const oldData = localStorage.getItem(old);
+                    const newData = localStorage.getItem(newKey);
+
+                    if (oldData && !newData) {
+                        console.log(`[MIGRATION] Migrating ${old} to ${newKey}`);
+                        if (newKey === 'atlas_blueprints_registry') {
+                            try {
+                                const registry = JSON.parse(oldData);
+                                const updatedRegistry = registry.map((bp: any) => ({
+                                    ...bp,
+                                    storageKey: bp.storageKey.replace('antigravity_', 'atlas_')
+                                }));
+                                registry.forEach((bp: any) => {
+                                    const oldBpKey = bp.storageKey;
+                                    const newBpKey = bp.storageKey.replace('antigravity_', 'atlas_');
+                                    const bpData = localStorage.getItem(oldBpKey);
+                                    if (bpData) localStorage.setItem(newBpKey, bpData);
+                                });
+                                localStorage.setItem(newKey, JSON.stringify(updatedRegistry));
+                            } catch (e) {
+                                localStorage.setItem(newKey, oldData);
+                            }
+                        } else {
                             localStorage.setItem(newKey, oldData);
                         }
-                    } else {
-                        localStorage.setItem(newKey, oldData);
+                        migratedCount++;
                     }
-                    migratedCount++;
+                });
+            };
+
+            try { migrateData(); } catch (e) { console.error('Migration failed', e); }
+
+            // 3. LOAD SYSTEM LOGS
+            const savedLogs = localStorage.getItem('atlas_system_logs');
+            if (savedLogs) {
+                try { setLogs(JSON.parse(savedLogs)); } catch (e) { console.error('Log load error', e); }
+            }
+
+            // 4. LOAD SESSION
+            const session = localStorage.getItem('atlas_session');
+            let user: any = null;
+            if (session) {
+                try {
+                    user = JSON.parse(session);
+                    if (user && !user.id) user.id = user.email || 'anonymous';
+                    setCurrentUser(user);
+                } catch (e) {
+                    localStorage.removeItem('atlas_session');
                 }
+            }
+
+            // 5. LOAD BLUEPRINT REGISTRY
+            const savedRegistry = localStorage.getItem('atlas_blueprints_registry');
+            let registry: BlueprintMetadata[] = [];
+            if (savedRegistry) {
+                try { registry = JSON.parse(savedRegistry); } catch (e) { console.error('Registry load error', e); }
+            }
+
+            if (registry.length === 0) {
+                const globalBP: BlueprintMetadata = {
+                    id: 'global-v1',
+                    name: 'Main Production Blueprint',
+                    ownerId: 'sys',
+                    ownerName: 'Authorized system',
+                    groupId: 'admin-group',
+                    type: 'GLOBAL',
+                    createdAt: new Date().toISOString(),
+                    lastModified: new Date().toISOString(),
+                    storageKey: 'atlas_blueprint_global',
+                    authorizedUserIds: ['*'],
+                    authorizedGroupIds: ['admin-group']
+                };
+                registry = [globalBP];
+                SecurityMiddleware.secureWrite('atlas_blueprints_registry', JSON.stringify(registry));
+
+                const legacy = localStorage.getItem('atlas_blueprint') || localStorage.getItem('antigravity_blueprint');
+                if (legacy) SecurityMiddleware.secureWrite('atlas_blueprint_global', legacy);
+            }
+            setBlueprintsRegistry(registry);
+
+            // 6. LOAD DOCUMENTATION
+            const savedDocs = localStorage.getItem('atlas_documentation_pages');
+            if (savedDocs) {
+                try { setDocPages(JSON.parse(savedDocs)); } catch (e) { setDocPages(INITIAL_DOCS); }
+            } else {
+                setDocPages(INITIAL_DOCS);
+            }
+
+            // 7. DETERMINE ACTIVE CONTEXT
+            const activeKey = user ? `atlas_active_bp_id_${user.id}` : 'atlas_active_bp_id';
+            const lastActiveId = localStorage.getItem(activeKey);
+            const localAuth = registry.filter((b: any) => {
+                if (user?.role === 'ADMIN') return true;
+                const isAuthorizedUser = b.authorizedUserIds?.includes(user?.id) || b.authorizedUserIds?.includes('*');
+                const isAuthorizedGroup = b.authorizedGroupIds?.some((gid: string) => gid === user?.groupId);
+                return isAuthorizedUser || isAuthorizedGroup;
             });
 
-            if (migratedCount > 0) {
-                console.log(`[MIGRATION] Successfully migrated ${migratedCount} items to Atlas format`);
+            const initialActive = localAuth.find((b: any) => b.id === lastActiveId) || localAuth[0] || registry[0];
+            setActiveBlueprintId(initialActive.id);
+
+            let saved = localStorage.getItem(initialActive.storageKey);
+            if (!saved || saved === '[]' || saved === '{}') {
+                saved = CLEAN_BLUEPRINT_TEMPLATE;
             }
+
+            setJsonPreview(saved);
+            setJsonInput(saved);
+            setIsSyncing(false);
         };
 
-        try { migrateData(); } catch (e) { console.error('Migration failed', e); }
-
-        // Load System Logs
-        const savedLogs = localStorage.getItem('atlas_system_logs');
-        if (savedLogs) {
-            try { setLogs(JSON.parse(savedLogs)); } catch (e) { console.error('Log load error', e); }
-        }
-
-        // Load Session
-        const session = localStorage.getItem('atlas_session');
-        let user: any = null;
-        if (session) {
-            try {
-                user = JSON.parse(session);
-                // Ensure user has an ID
-                if (user && !user.id) user.id = user.email || 'anonymous';
-                setCurrentUser(user);
-            } catch (e) {
-                console.error('Session parse error', e);
-                localStorage.removeItem('atlas_session');
-            }
-        }
-
-        // Load Blueprint Registry
-        const savedRegistry = localStorage.getItem('atlas_blueprints_registry');
-        let registry: BlueprintMetadata[] = [];
-        if (savedRegistry) {
-            try { registry = JSON.parse(savedRegistry); } catch (e) { console.error('Registry load error', e); }
-        }
-
-        // Initialize Global Blueprint if it's the first run
-        if (registry.length === 0) {
-            const globalBP: BlueprintMetadata = {
-                id: 'global-v1',
-                name: 'Main Production Blueprint',
-                ownerId: 'sys',
-                ownerName: 'Authorized system',
-                groupId: 'admin-group',
-                type: 'GLOBAL',
-                createdAt: new Date().toISOString(),
-                lastModified: new Date().toISOString(),
-                storageKey: 'atlas_blueprint_global',
-                authorizedUserIds: ['*'],
-                authorizedGroupIds: ['admin-group']
-            };
-            registry = [globalBP];
-            SecurityMiddleware.secureWrite('atlas_blueprints_registry', JSON.stringify(registry));
-
-            // Migrate legacy data to global storageKey if exists
-            const legacy = localStorage.getItem('atlas_blueprint'); // Check atlas first
-            const legacyOld = localStorage.getItem('antigravity_blueprint'); // Check old
-            if (legacy) SecurityMiddleware.secureWrite('atlas_blueprint_global', legacy);
-            else if (legacyOld) SecurityMiddleware.secureWrite('atlas_blueprint_global', legacyOld);
-        }
-        setBlueprintsRegistry(registry);
-
-        // Load Documentation
-        const savedDocs = localStorage.getItem('atlas_documentation_pages');
-        if (savedDocs) {
-            try { setDocPages(JSON.parse(savedDocs)); } catch (e) { setDocPages(INITIAL_DOCS); }
-        } else {
-            setDocPages(INITIAL_DOCS);
-        }
-
-        // Determine Active Blueprint (User-scoped & Authorization-aware)
-        const activeKey = user ? `atlas_active_bp_id_${user.id}` : 'atlas_active_bp_id';
-        const lastActiveId = localStorage.getItem(activeKey);
-
-        // Re-calculate local authorized list for initialization
-        const localAuth = registry.filter((b: any) => {
-            if (user?.role === 'ADMIN') return true;
-            const isAuthorizedUser = b.authorizedUserIds?.includes(user?.id) || b.authorizedUserIds?.includes('*');
-            const isAuthorizedGroup = b.authorizedGroupIds?.some((gid: string) => gid === user?.groupId);
-            return isAuthorizedUser || isAuthorizedGroup;
-        });
-
-        const initialActive = localAuth.find((b: any) => b.id === lastActiveId) || localAuth[0] || registry[0];
-
-        setActiveBlueprintId(initialActive.id);
-
-        // Load the actual JSON data
-        let saved = localStorage.getItem(initialActive.storageKey);
-
-        if (!saved || saved === '[]' || saved === '{}') {
-            saved = CLEAN_BLUEPRINT_TEMPLATE;
-        }
-
-        setJsonPreview(saved);
-        setJsonInput(saved);
+        initializeApp();
     }, []);
 
     // Persist active blueprint ID (User-scoped with Security Validation)
@@ -604,15 +596,19 @@ function App() {
                         <div className="hidden sm:block">
                             <h1 className="text-lg font-bold tracking-tight text-white leading-none">Atlas Server Docs</h1>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+                                <span className={`w-1.5 h-1.5 rounded-full ${isSyncing ? 'bg-blue-400 animate-pulse' : 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]'}`}></span>
                                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest truncate max-w-[150px] lg:max-w-none">
-                                    {activeTab === 'editor' && 'Blueprint Architect'}
-                                    {activeTab === 'map' && 'Topological Map Rendering'}
-                                    {activeTab === 'data' && 'Structured Correlation Data'}
-                                    {activeTab === 'security' && 'Security Audit Framework'}
-                                    {activeTab === 'workspace' && 'Strategic Resource Manager'}
-                                    {activeTab === 'docs' && 'Infrastructure Encyclopedia'}
-                                    {activeTab === 'profile' && 'Identity & Sovereign Profile'}
+                                    {isSyncing ? 'Synchronizing Cluster...' : (
+                                        <>
+                                            {activeTab === 'editor' && 'Blueprint Architect'}
+                                            {activeTab === 'map' && 'Topological Map Rendering'}
+                                            {activeTab === 'data' && 'Structured Correlation Data'}
+                                            {activeTab === 'security' && 'Security Audit Framework'}
+                                            {activeTab === 'workspace' && 'Strategic Resource Manager'}
+                                            {activeTab === 'docs' && 'Infrastructure Encyclopedia'}
+                                            {activeTab === 'profile' && 'Identity & Sovereign Profile'}
+                                        </>
+                                    )}
                                 </p>
                             </div>
                         </div>

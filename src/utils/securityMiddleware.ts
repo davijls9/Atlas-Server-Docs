@@ -2,16 +2,44 @@ export class SecurityMiddleware {
     /**
      * securely writes data to local storage with validation
      */
-    static secureWrite(key: string, value: string): boolean {
+    /**
+     * securely writes data to local storage and syncs with server
+     */
+    static secureWrite(key: string, value: string): void {
         try {
-            // Enforce prefix policy
-            if (!key.startsWith('atlas_') && !key.startsWith('antigravity_')) {
-                console.warn(`[SECURITY] Key ${key} does not follow Atlas/Legacy naming convention`);
-            }
+            // 1. Update Local Cache for immediate UI reactivity
             localStorage.setItem(key, value);
-            return true;
+
+            // 2. Async Sync with Server
+            fetch(`/api/persist/${key}`, {
+                method: 'POST',
+                body: value
+            }).catch(e => console.error(`[SECURITY] Push to cluster failed for ${key}:`, e));
+
         } catch (e) {
             console.error('[SECURITY] Write violation:', e);
+        }
+    }
+
+    /**
+     * Pulls all persisted data from the server to synchronize the local environment
+     */
+    static async hydrateFromServer(): Promise<boolean> {
+        try {
+            console.log('[SECURITY] Synchronizing with cluster storage...');
+            const response = await fetch('/api/persist/all');
+            if (!response.ok) return false;
+
+            const allData = await response.json();
+            Object.entries(allData).forEach(([key, value]) => {
+                if (typeof value === 'string') {
+                    localStorage.setItem(key, value);
+                }
+            });
+            console.log('[SECURITY] Context synchronized successfully');
+            return true;
+        } catch (e) {
+            console.error('[SECURITY] Hydration failed:', e);
             return false;
         }
     }

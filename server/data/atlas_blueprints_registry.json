@@ -1,0 +1,1 @@
+[{"id":"global-v1","name":"Main Production Blueprint","ownerId":"sys","ownerName":"Authorized system","groupId":"admin-group","type":"GLOBAL","createdAt":"2026-02-25T21:51:34.249Z","lastModified":"2026-02-25T21:51:34.249Z","storageKey":"atlas_blueprint_global","authorizedUserIds":["*"],"authorizedGroupIds":["admin-group"]}]

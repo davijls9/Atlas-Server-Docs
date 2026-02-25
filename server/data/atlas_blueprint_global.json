@@ -1,0 +1,228 @@
+{
+  "pops": [
+    {
+      "id": "pop-1",
+      "name": "São Paulo HQ",
+      "city": "São Paulo",
+      "nodes": [
+        {
+          "id": "node-1",
+          "name": "Core-Switch-01",
+          "ip": "10.0.0.1",
+          "status": "ON",
+          "criticality": "HIGH",
+          "type": "switch",
+          "attributes": [],
+          "connected_servers": []
+        },
+        {
+          "id": "node-2",
+          "name": "Auth-Server-PRD",
+          "ip": "10.0.0.50",
+          "status": "ON",
+          "criticality": "HIGH",
+          "type": "physical_server",
+          "attributes": [],
+          "virtual_machines": []
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "sourceId": "node-1",
+      "targetId": "node-2",
+      "label": "Production Uplink",
+      "type": "DATA",
+      "routeName": "PRD-BACKBONE",
+      "color": "#10b981",
+      "sourceHandle": "if-2",
+      "targetHandle": "if-3",
+      "waypoints": []
+    }
+  ],
+  "global_stats": {
+    "physicalRAM": 0,
+    "virtualRAM": 0,
+    "vcpuCount": 0,
+    "efficiency": 0
+  },
+  "schema": [
+    {
+      "id": "attr-company",
+      "label": "Company",
+      "type": "TEXT",
+      "defaultValue": "Blink"
+    },
+    {
+      "id": "attr-type-sys",
+      "label": "System Type",
+      "type": "TEXT",
+      "defaultValue": "Bare Metal"
+    },
+    {
+      "id": "attr-os",
+      "label": "Operating System",
+      "type": "TEXT",
+      "defaultValue": "Ubuntu 22.04 LTS"
+    },
+    {
+      "id": "attr-veeam",
+      "label": "BKP Veeam BTP",
+      "type": "TEXT",
+      "defaultValue": "Não"
+    },
+    {
+      "id": "attr-zabbix",
+      "label": "Monitor Zabbix Agent 2",
+      "type": "BOOLEAN",
+      "defaultValue": true,
+      "enabled": true,
+      "showInSecurity": true
+    },
+    {
+      "id": "attr-tanium",
+      "label": "Instalação Tanium",
+      "type": "BOOLEAN",
+      "defaultValue": false,
+      "enabled": true,
+      "showInSecurity": true
+    },
+    {
+      "id": "attr-av",
+      "label": "Instalado AV",
+      "type": "BOOLEAN",
+      "defaultValue": false,
+      "enabled": true,
+      "showInSecurity": true
+    },
+    {
+      "id": "attr-model-srv",
+      "label": "Modelo Server",
+      "type": "TEXT",
+      "defaultValue": "DELL R660",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-proc-qt",
+      "label": "QT F Processador",
+      "type": "NUMBER",
+      "defaultValue": 1,
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-proc-name",
+      "label": "F Processador",
+      "type": "TEXT",
+      "defaultValue": "Intel(R) Xeon(R) Gold",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-ram-qt-1",
+      "label": "1 QT F Memoria",
+      "type": "NUMBER",
+      "defaultValue": 2,
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-ram-val-1",
+      "label": "1 F Memoria Ram",
+      "type": "TEXT",
+      "defaultValue": "32 GB",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-ram-type-1",
+      "label": "1 Tipo DDR",
+      "type": "TEXT",
+      "defaultValue": "DDR5",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-disk-qt-1",
+      "label": "1 QT F Disco",
+      "type": "NUMBER",
+      "defaultValue": 2,
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-disk-val-1",
+      "label": "1 F Disco",
+      "type": "TEXT",
+      "defaultValue": "480 GB",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-disk-type-1",
+      "label": "1 Tipo Disco",
+      "type": "TEXT",
+      "defaultValue": "SSD",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-raid-1",
+      "label": "1 Tipo Raid",
+      "type": "TEXT",
+      "defaultValue": "Raid 1",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-idrac-ip",
+      "label": "IP IDRAC",
+      "type": "TEXT",
+      "defaultValue": "https://172.16.x.x/",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-user",
+      "label": "USER",
+      "type": "TEXT",
+      "defaultValue": "admin",
+      "appliesTo": [
+        "VIRTUAL_MACHINE",
+        "SYSTEM"
+      ]
+    },
+    {
+      "id": "attr-pass",
+      "label": "SENHA",
+      "type": "TEXT",
+      "defaultValue": "",
+      "appliesTo": [
+        "VIRTUAL_MACHINE",
+        "SYSTEM"
+      ]
+    },
+    {
+      "id": "attr-sys-prop",
+      "label": "Responsible Party/Owner",
+      "type": "TEXT",
+      "defaultValue": "Interno",
+      "appliesTo": [
+        "SYSTEM"
+      ]
+    }
+  ]
+}
