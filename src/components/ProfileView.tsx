@@ -37,11 +37,11 @@ export const ProfileView = ({ user, logs, onViewFullHistory, onLogout }: Profile
 
                 <div className="sm:ml-8 text-center sm:text-left space-y-1 sm:space-y-2">
                     <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
-                        <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight uppercase truncate max-w-[200px] sm:max-w-none">{user?.name}</h2>
-                        <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-[8px] sm:text-[10px] font-black text-blue-400 uppercase tracking-widest">{user?.role}</span>
+                        <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight uppercase truncate max-w-[200px] sm:max-w-none">{user?.name || 'Administrator'}</h2>
+                        <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-[8px] sm:text-[10px] font-black text-blue-400 uppercase tracking-widest">{user?.role || 'ADMIN'}</span>
                     </div>
                     <p className="flex items-center justify-center sm:justify-start gap-2 text-gray-500 font-bold uppercase text-[9px] sm:text-xs tracking-tighter">
-                        <Mail className="w-3.5 h-3.5" /> {user?.email}
+                        <Mail className="w-3.5 h-3.5" /> {user?.email || 'admin@antigravity.io'}
                     </p>
                 </div>
 
@@ -72,7 +72,11 @@ export const ProfileView = ({ user, logs, onViewFullHistory, onLogout }: Profile
                                 </div>
                                 <div className="flex justify-between items-center p-4 bg-[#0d1117] rounded-2xl border border-gray-800/50">
                                     <span className="text-[10px] font-black uppercase text-gray-600 tracking-widest flex items-center gap-2"><ShieldCheck className="w-3 h-3" /> Clearance Level</span>
-                                    <span className="text-xs font-bold text-blue-400 capitalize">Tier-1 Administrator</span>
+                                    <span className="text-xs font-bold text-blue-400 capitalize">
+                                        {user?.groupId === 'admin-group' ? 'Tier-1 Root Admin' :
+                                            user?.groupId === 'engineer-group' ? 'Tier-2 Infrastructure' :
+                                                user?.groupId === 'viewer-group' ? 'Tier-3 Auditor' : 'Special Authorization'}
+                                    </span>
                                 </div>
                             </div>
                         </div>

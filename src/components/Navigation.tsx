@@ -197,7 +197,7 @@ export const Navigation = ({ activeTab, setActiveTab, collapsed, onToggleCollaps
                         {!collapsed && (
                             <div className="flex-1 min-w-0 animate-in slide-in-from-left duration-300 text-left">
                                 <p className="text-xs font-semibold text-white truncate group-hover:text-blue-400 transition-colors">{user?.name || 'Administrator'}</p>
-                                <p className="text-[10px] text-gray-500 truncate uppercase tracking-tighter">View Identity Profile</p>
+                                <p className="text-[10px] text-gray-500 truncate uppercase tracking-tighter">Sovereign Identity</p>
                             </div>
                         )}
                     </button>

@@ -409,7 +409,6 @@ function App() {
                 // Ensure user has an ID
                 if (user && !user.id) user.id = user.email || 'anonymous';
                 setCurrentUser(user);
-                userRef.current = user;
             } catch (e) {
                 console.error('Session parse error', e);
                 localStorage.removeItem('atlas_session');
@@ -534,7 +533,7 @@ function App() {
                     SecurityMiddleware.secureWrite('atlas_blueprint_global', jsonPreview);
                 }
                 setIsSaved(true);
-            }, 1000);
+            }, 500);
             return () => clearTimeout(timer);
         }
     }, [jsonPreview, currentUser, activeBlueprintId, blueprintsRegistry]);

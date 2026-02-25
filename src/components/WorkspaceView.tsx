@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { SecurityMiddleware } from '../utils/securityMiddleware';
 import {
-    Users, Shield, Lock, Search,
+    Users, Shield, Lock, Search, Save,
     Edit2, Trash2, X, Globe, Plus, ExternalLink, RefreshCw, Eye, EyeOff
 } from 'lucide-react';
 
@@ -32,25 +32,15 @@ const PERMISSION_ACTIONS = [
 const DEFAULT_GROUPS = [
     {
         id: 'admin-group',
-        name: 'Super Administrators',
+        name: 'Administrators',
         permissions: PERMISSION_ACTIONS.reduce((acc, action) => ({ ...acc, [action.id]: true }), {})
     },
     {
-        id: 'engineer-group',
-        name: 'Infrastructure Engineers',
-        permissions: {
-            view_editor: true, view_map: true, view_data: true, view_docs: true,
-            view_logs: true, view_profile: true, view_security_intel: true,
-            edit_node: true, delete_node: false, manage_security_cols: false,
-            generate_report: true, import_json: true, view_security: false, view_workspace: false, manage_users: false
-        }
-    },
-    {
         id: 'viewer-group',
-        name: 'Read-Only Viewers',
+        name: 'Standard Personnel',
         permissions: {
             view_editor: true, view_map: true, view_data: true, view_docs: true,
-            view_logs: true, view_profile: true,
+            view_logs: false, view_profile: true,
             edit_node: false, delete_node: false, manage_security_cols: false,
             generate_report: false, import_json: false, view_security: false, view_workspace: false, manage_users: false
         }
@@ -106,6 +96,10 @@ export const WorkspaceView = ({
     const [showACLModal, setShowACLModal] = useState(false);
     const [aclBlueprint, setACLBlueprint] = useState<BlueprintMetadata | null>(null);
     const [showUserPassword, setShowUserPassword] = useState(false);
+    const [showAddGroupModal, setShowAddGroupModal] = useState(false);
+    const [isSavingGovernance, setIsSavingGovernance] = useState(false);
+    const [isRenamingGroup, setIsRenamingGroup] = useState(false);
+    const [newNameValue, setNewNameValue] = useState('');
 
     // Governance Filtering
     const [groupSearchTerm, setGroupSearchTerm] = useState('');
@@ -134,20 +128,23 @@ export const WorkspaceView = ({
     // Initial Data Load
     useEffect(() => {
         const savedUsers = localStorage.getItem('atlas_users');
-        const savedGroups = localStorage.getItem('atlas_groups');
+        const savedGroups = localStorage.getItem('atlas_groups') || localStorage.getItem('antigravity_groups');
 
         if (savedUsers) {
             try {
                 const parsed = JSON.parse(savedUsers);
                 if (Array.isArray(parsed)) {
-                    // Filter out any completely invalid objects
-                    const validUsers = parsed.filter(u => u && typeof u === 'object' && u.id);
-                    setUsers(validUsers.length > 0 ? validUsers : [{ id: '1', name: 'Admin User', email: 'admin@antigravity.io', groupId: 'admin-group', status: 'ACTIVE', lastLogin: '2024-02-11 10:30', password: 'password123' }]);
+                    // Filter out any completely invalid objects and ensure valid group assignment
+                    const validUsers = parsed.filter(u => u && typeof u === 'object' && u.id).map(u => ({
+                        ...u,
+                        groupId: u.groupId || 'viewer-group' // Force standard group if missing
+                    }));
+                    setUsers(validUsers.length > 0 ? validUsers : [{ id: 'admin-root', name: 'Administrator', email: 'admin@antigravity.io', groupId: 'admin-group', status: 'ACTIVE', lastLogin: 'Never', password: 'password123' }]);
                 }
             } catch (e) { /* ignore corrupted */ }
         } else {
             const initialUsers = [
-                { id: '1', name: 'Admin User', email: 'admin@antigravity.io', groupId: 'admin-group', status: 'ACTIVE', lastLogin: '2024-02-11 10:30', password: 'password123' },
+                { id: 'admin-root', name: 'Administrator', email: 'admin@antigravity.io', groupId: 'admin-group', status: 'ACTIVE', lastLogin: '2024-02-11 10:30', password: 'password123' },
                 { id: '2', name: 'John Doe', email: 'john@antigravity.io', groupId: 'engineer-group', status: 'ACTIVE', lastLogin: '2024-02-11 09:15', password: 'password123' }
             ];
             setUsers(initialUsers);
@@ -158,11 +155,29 @@ export const WorkspaceView = ({
             try {
                 const parsed = JSON.parse(savedGroups);
                 if (Array.isArray(parsed)) {
-                    const validGroups = parsed.filter(g => g && typeof g === 'object' && g.id);
-                    setPermissionGroups(validGroups.length > 0 ? validGroups : DEFAULT_GROUPS);
-                } else {
-                    setPermissionGroups(DEFAULT_GROUPS);
-                    SecurityMiddleware.secureWrite('atlas_groups', JSON.stringify(DEFAULT_GROUPS));
+                    // Combine with DEFAULT_GROUPS and deduplicate by ID, prioritizing saved data
+                    const combined = [...parsed];
+                    DEFAULT_GROUPS.forEach(dg => {
+                        if (!combined.find(g => g.id === dg.id)) {
+                            combined.push(dg);
+                        }
+                    });
+
+                    // MERGING LOGIC: Ensure all groups have all current PERMISSION_ACTIONS
+                    const migratedGroups = combined.map(group => {
+                        if (!group || typeof group !== 'object' || !group.id) return null;
+                        const currentPerms = group.permissions || {};
+                        const mergedPerms = { ...currentPerms };
+                        PERMISSION_ACTIONS.forEach(action => {
+                            if (mergedPerms[action.id] === undefined) {
+                                mergedPerms[action.id] = group.id === 'admin-group';
+                            }
+                        });
+                        return { ...group, permissions: mergedPerms };
+                    }).filter(Boolean) as any[];
+
+                    setPermissionGroups(migratedGroups);
+                    SecurityMiddleware.secureWrite('atlas_groups', JSON.stringify(migratedGroups));
                 }
             } catch (e) {
                 setPermissionGroups(DEFAULT_GROUPS);
@@ -185,8 +200,10 @@ export const WorkspaceView = ({
     };
 
     const handleAddGroup = () => {
-        const name = prompt('Enter a name for the new security tier:');
-        if (!name) return;
+        setShowAddGroupModal(true);
+    };
+
+    const handleAddGroupComplete = (name: string) => {
         const newGroup = {
             id: `group_${Date.now()}`,
             name,
@@ -194,27 +211,48 @@ export const WorkspaceView = ({
         };
         saveGroups([...permissionGroups, newGroup]);
         setEditingGroup(newGroup);
+        setShowAddGroupModal(false);
         showToast?.(`New security tier "${name}" initialized`, 'success');
     };
 
-    const handleDeleteGroup = (id: string, e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (id === 'admin-group') {
-            showToast?.('Root tier cannot be decommissioned', 'error');
+    const handleDeleteGroup = (id: string, e: React.MouseEvent | React.FocusEvent | any) => {
+        if (e && e.stopPropagation) e.stopPropagation();
+        if (e && e.preventDefault) e.preventDefault();
+
+        if (id === 'admin-group' || id === 'viewer-group') {
+            showToast?.('Core security tier cannot be decommissioned', 'error');
             return;
         }
-        if (confirm('Decommission this security tier?')) {
-            const updated = permissionGroups.filter(g => g.id !== id);
-            saveGroups(updated);
+
+        const confirmMsg = 'Decommission this security tier? All personnel in this tier will be reassigned to standard clearance.';
+        if (window.confirm(confirmMsg)) {
+            // Reassign users to viewer-group
+            const updatedUsers = users.map(u => u.groupId === id ? { ...u, groupId: 'viewer-group' } : u);
+            saveUsers(updatedUsers);
+
+            // Filter groups
+            const updatedGroups = permissionGroups.filter(g => g.id !== id);
+            saveGroups(updatedGroups);
+
             if (editingGroup?.id === id) setEditingGroup(null);
-            showToast?.('Security tier purged', 'info');
+            showToast?.('Security tier purged and personnel reassigned', 'info');
         }
+    };
+
+    const handleRenameGroup = () => {
+        if (!editingGroup || !newNameValue.trim()) return;
+        const updated = permissionGroups.map(g => g.id === editingGroup.id ? { ...g, name: newNameValue.trim() } : g);
+        saveGroups(updated);
+        setEditingGroup({ ...editingGroup, name: newNameValue.trim() });
+        setIsRenamingGroup(false);
+        showToast?.('Security tier designation updated', 'success');
     };
 
     const handleAddUser = (userData: any) => {
         const newUser = {
             ...userData,
             id: `user_${Date.now()}`,
+            groupId: userData.groupId || 'viewer-group', // Integrity check
             status: 'ACTIVE',
             lastLogin: 'Never',
             email: userData.email.trim().toLowerCase()
@@ -246,7 +284,9 @@ export const WorkspaceView = ({
     };
 
     const getGroupName = (groupId: string) => {
-        return permissionGroups.find(g => g.id === groupId)?.name || 'Unknown Group';
+        const group = permissionGroups.find(g => g.id === groupId);
+        if (group) return group.name;
+        return 'ORPHANED/UNKNOWN';
     };
 
     const canManageUsers = useMemo(() => {
@@ -369,7 +409,7 @@ export const WorkspaceView = ({
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest px-3 py-1 bg-blue-500/5 rounded-lg border border-blue-500/10 italic">
+                                                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest px-3 py-1 bg-blue-500/5 rounded-lg border border-blue-500/10 italic truncate max-w-[200px] inline-block" title={getGroupName(user.groupId)}>
                                                     {getGroupName(user.groupId)}
                                                 </span>
                                             </td>
@@ -581,13 +621,34 @@ export const WorkspaceView = ({
 
                                 <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3">
                                     {permissionGroups.filter(g => g.name?.toLowerCase().includes(groupSearchTerm.toLowerCase())).map(group => (
-                                        <div key={group.id} className="relative group/item">
-                                            <button onClick={() => setEditingGroup(group)} className={`w-full p-5 rounded-2xl border text-left transition-all ${editingGroup?.id === group.id ? 'bg-purple-600/10 border-purple-500/50 scale-[1.02] shadow-2xl' : 'bg-[#0d1117] border-gray-800 hover:border-gray-700'}`}>
+                                        <div
+                                            key={group.id}
+                                            onClick={() => {
+                                                setEditingGroup(group);
+                                                setIsRenamingGroup(false);
+                                                setNewNameValue(group.name);
+                                            }}
+                                            className={`relative group/item cursor-pointer p-5 rounded-2xl border transition-all ${editingGroup?.id === group.id ? 'bg-purple-600/10 border-purple-500/50 shadow-2xl' : 'bg-[#0d1117] border-gray-800 hover:border-gray-700'}`}
+                                        >
+                                            <div className="pr-8">
                                                 <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Tier</p>
-                                                <p className="text-sm font-bold text-white uppercase">{group.name}</p>
-                                            </button>
-                                            {group.id !== 'admin-group' && (
-                                                <button onClick={(e) => handleDeleteGroup(group.id, e)} className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-gray-600 hover:text-red-500 opacity-0 group-hover/item:opacity-100 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
+                                                <p className="text-sm font-bold text-white uppercase truncate">{group.name}</p>
+                                            </div>
+                                            {group.id !== 'admin-group' && group.id !== 'viewer-group' && (
+                                                <button
+                                                    type="button"
+                                                    onMouseDown={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteGroup(group.id, e);
+                                                    }}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                    }}
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-3 text-gray-500 hover:text-red-400 hover:bg-red-500/20 rounded-xl opacity-0 group-hover/item:opacity-100 transition-all z-[120] cursor-pointer border-none flex items-center justify-center"
+                                                    title="Purge Tier"
+                                                >
+                                                    <Trash2 className="w-4 h-4 pointer-events-none" />
+                                                </button>
                                             )}
                                         </div>
                                     ))}
@@ -596,45 +657,111 @@ export const WorkspaceView = ({
                             <div className="flex-1 bg-[#0d1117] overflow-y-auto custom-scrollbar p-8">
                                 {editingGroup ? (
                                     <div className="space-y-8">
-                                        <div className="flex flex-col items-start border-b border-gray-800 pb-6 mb-8 gap-4">
-                                            <h4 className="text-xl font-black text-white uppercase italic tracking-tight">{editingGroup.name} Capability Matrix</h4>
+                                        <div className="flex items-center justify-between border-b border-gray-800 pb-6 mb-8">
+                                            <div className="flex-1 min-w-0 mr-4">
+                                                {isRenamingGroup ? (
+                                                    <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-2">
+                                                        <input
+                                                            autoFocus
+                                                            value={newNameValue}
+                                                            onChange={(e) => setNewNameValue(e.target.value)}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter') handleRenameGroup();
+                                                                if (e.key === 'Escape') setIsRenamingGroup(false);
+                                                            }}
+                                                            className="bg-[#161b22] border-2 border-purple-500 rounded-xl px-4 py-2 text-xl font-black text-white uppercase italic tracking-tight outline-none w-full max-w-md shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+                                                        />
+                                                        <button onClick={handleRenameGroup} className="p-2 bg-emerald-500 text-black rounded-lg hover:bg-emerald-400 transition-colors"><Save className="w-5 h-5" /></button>
+                                                        <button onClick={() => setIsRenamingGroup(false)} className="p-2 bg-gray-800 text-gray-400 rounded-lg hover:bg-gray-700 transition-colors"><X className="w-5 h-5" /></button>
+                                                    </div>
+                                                ) : (
+                                                    <div className="group/title flex items-center gap-3">
+                                                        <h4 className="text-xl font-black text-white uppercase italic tracking-tight truncate max-w-full">{editingGroup.name} Capability Matrix</h4>
+                                                        <button
+                                                            onClick={() => {
+                                                                setNewNameValue(editingGroup.name);
+                                                                setIsRenamingGroup(true);
+                                                            }}
+                                                            className="p-1.5 text-gray-600 hover:text-purple-400 opacity-0 group-hover/title:opacity-100 transition-all"
+                                                            title="Rename Tier"
+                                                        >
+                                                            <Edit2 className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1 opacity-50">Sovereign Policy Manifest</p>
+                                            </div>
 
-                                            <div className="relative w-full">
-                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" />
-                                                <input
-                                                    type="text"
-                                                    placeholder="Filter Capabilities..."
-                                                    value={actionSearchTerm}
-                                                    onChange={(e) => setActionSearchTerm(e.target.value)}
-                                                    className="w-full bg-[#161b22] border border-gray-800 rounded-xl py-2.5 pl-9 pr-3 text-[10px] text-white outline-none focus:border-purple-500 font-bold shadow-inner"
-                                                />
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    onClick={() => {
+                                                        setIsSavingGovernance(true);
+                                                        saveGroups(permissionGroups);
+                                                        setTimeout(() => {
+                                                            setIsSavingGovernance(false);
+                                                            showToast?.('Governance Protocol Persisted', 'success');
+                                                        }, 800);
+                                                    }}
+                                                    disabled={isSavingGovernance}
+                                                    className="px-6 py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-xl shadow-blue-500/20 transition-all"
+                                                >
+                                                    {isSavingGovernance ? (
+                                                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                                    ) : <Save className="w-4 h-4" />}
+                                                    {isSavingGovernance ? 'Persisting...' : 'Save Protocol'}
+                                                </button>
+                                                <div className="w-px h-8 bg-gray-800 mx-2"></div>
+                                                <button onClick={() => setEditingGroup(null)} className="p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl text-gray-400" title="Close Matrix"><X className="w-5 h-5" /></button>
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 gap-4">
-                                            {PERMISSION_ACTIONS.filter(a =>
-                                                a.label.toLowerCase().includes(actionSearchTerm.toLowerCase()) ||
-                                                a.category.toLowerCase().includes(actionSearchTerm.toLowerCase())
-                                            ).map(action => (
-                                                <div key={action.id} className="p-5 bg-[#161b22] border border-gray-800 rounded-3xl flex items-center justify-between group hover:border-purple-500/30 transition-all shadow-lg hover:shadow-purple-500/5">
-                                                    <div>
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            <span className="text-[8px] font-black text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded border border-purple-400/20 uppercase tracking-widest">{action.category}</span>
-                                                            <p className="text-sm font-bold text-gray-200">{action.label}</p>
-                                                        </div>
-                                                        <p className="text-[10px] text-gray-600 font-medium">{action.description}</p>
+                                        <div className="relative w-full mb-8">
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" />
+                                            <input
+                                                type="text"
+                                                placeholder="Filter Capabilities..."
+                                                value={actionSearchTerm}
+                                                onChange={(e) => setActionSearchTerm(e.target.value)}
+                                                className="w-full bg-[#161b22] border border-gray-800 rounded-xl py-2.5 pl-9 pr-3 text-[10px] text-white outline-none focus:border-purple-500 font-bold shadow-inner"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-12">
+                                            {['PAGES', 'ACTIONS'].map(category => (
+                                                <div key={category} className="space-y-4">
+                                                    <div className="flex items-center gap-3 mb-6">
+                                                        <div className={`w-1 h-6 ${category === 'PAGES' ? 'bg-purple-500' : 'bg-amber-500'} rounded-full`}></div>
+                                                        <h5 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{category} Protocol Layer</h5>
                                                     </div>
-                                                    <button
-                                                        onClick={() => {
-                                                            const updatedPerms = { ...editingGroup.permissions, [action.id]: !editingGroup.permissions[action.id] };
-                                                            const updated = permissionGroups.map(g => g.id === editingGroup.id ? { ...g, permissions: updatedPerms } : g);
-                                                            saveGroups(updated);
-                                                            setEditingGroup({ ...editingGroup, permissions: updatedPerms });
-                                                        }}
-                                                        className={`w-12 h-6 rounded-full relative transition-all ${editingGroup.permissions[action.id] ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]' : 'bg-gray-800'}`}
-                                                    >
-                                                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${editingGroup.permissions[action.id] ? 'right-1' : 'left-1'}`}></div>
-                                                    </button>
+
+                                                    <div className="grid grid-cols-1 gap-4">
+                                                        {PERMISSION_ACTIONS.filter(a =>
+                                                            a.category === category && (
+                                                                a.label.toLowerCase().includes(actionSearchTerm.toLowerCase()) ||
+                                                                a.category.toLowerCase().includes(actionSearchTerm.toLowerCase())
+                                                            )).map(action => (
+                                                                <div key={action.id} className="p-5 bg-[#161b22] border border-gray-800 rounded-3xl flex items-center justify-between group hover:border-purple-500/30 transition-all shadow-lg hover:shadow-purple-500/5">
+                                                                    <div>
+                                                                        <div className="flex items-center gap-2 mb-1">
+                                                                            <span className={`text-[8px] font-black ${category === 'PAGES' ? 'text-purple-400 bg-purple-400/10 border-purple-400/20' : 'text-amber-400 bg-amber-400/10 border-amber-400/20'} px-1.5 py-0.5 rounded border uppercase tracking-widest`}>{action.category}</span>
+                                                                            <p className="text-sm font-bold text-gray-200">{action.label}</p>
+                                                                        </div>
+                                                                        <p className="text-[10px] text-gray-600 font-medium">{action.description}</p>
+                                                                    </div>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            const updatedPerms = { ...editingGroup.permissions, [action.id]: !editingGroup.permissions[action.id] };
+                                                                            const updated = permissionGroups.map(g => g.id === editingGroup.id ? { ...g, permissions: updatedPerms } : g);
+                                                                            saveGroups(updated);
+                                                                            setEditingGroup({ ...editingGroup, permissions: updatedPerms });
+                                                                        }}
+                                                                        className={`w-12 h-6 rounded-full relative transition-all ${editingGroup.permissions?.[action.id] ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]' : 'bg-gray-800'}`}
+                                                                    >
+                                                                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${editingGroup.permissions?.[action.id] ? 'right-1' : 'left-1'}`}></div>
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
@@ -763,11 +890,6 @@ export const WorkspaceView = ({
                                                         <button
                                                             onClick={() => {
                                                                 let currentIds = aclBlueprint.authorizedUserIds || [];
-                                                                // If it was Universal (*), and we want to manage specifically, we should first convert * to a list of ALL users except this one? 
-                                                                // Or simpler: just toggle this user ID.
-                                                                // But if * is present, everyone is authorized.
-                                                                // Let's add a "Manage Specifically" button at the top if * is present.
-
                                                                 const newIds = isAuthorized ? currentIds.filter(id => id !== user.id && id !== '*') : [...currentIds.filter(id => id !== '*'), user.id];
                                                                 const updated = blueprintsRegistry.map(b => b.id === aclBlueprint.id ? { ...b, authorizedUserIds: newIds } : b);
                                                                 SecurityMiddleware.secureWrite('antigravity_blueprints_registry', JSON.stringify(updated));
@@ -804,7 +926,7 @@ export const WorkspaceView = ({
                                                     </div>
                                                 </div>
                                                 {isAdmin ? (
-                                                    <span className="text-[8px] font-black text-purple-500 uppercase tracking-widest px-2 py-1 bg-purple-500/10 rounded-md border border-purple-500/20">SYSTEM ADMIN</span>
+                                                    <span className="text-[8px] font-black text-purple-500 uppercase tracking-widest px-2 py-1 bg-purple-500/10 rounded-md border border-amber-500/20">SYSTEM ADMIN</span>
                                                 ) : (
                                                     <button
                                                         onClick={() => {
@@ -828,6 +950,47 @@ export const WorkspaceView = ({
 
                         <div className="p-8 border-t border-gray-800 bg-[#1c2128] flex justify-end">
                             <button onClick={() => { setShowACLModal(false); showToast?.('Authorization matrix synchronized', 'success'); }} className="px-10 py-4 bg-blue-500 text-black text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-500/20 transition-all">Synchronize Authorization</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showAddGroupModal && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[300] p-6 animate-in fade-in zoom-in duration-300">
+                    <div className="bg-[#161b22] border border-gray-800 w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden">
+                        <div className="p-8 border-b border-gray-800 bg-[#1c2128] flex items-center justify-between">
+                            <h3 className="text-xl font-black text-white uppercase tracking-tighter italic">New Security Tier</h3>
+                            <button onClick={() => setShowAddGroupModal(false)} className="p-2 hover:bg-gray-800 rounded-xl text-gray-500"><X className="w-6 h-6" /></button>
+                        </div>
+                        <div className="p-8 space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Tier Designation</label>
+                                <input
+                                    id="new-group-name"
+                                    autoFocus
+                                    className="w-full bg-[#0d1117] border border-gray-800 rounded-2xl py-4 px-5 text-sm text-white outline-none focus:border-purple-500 font-bold"
+                                    placeholder="e.g. Infrastructure Engineers"
+                                />
+                            </div>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setShowAddGroupModal(false)}
+                                    className="flex-1 py-4 bg-gray-800 text-[10px] uppercase font-black text-gray-400 rounded-2xl hover:bg-gray-700 transition-colors"
+                                >
+                                    Abort
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        const input = document.getElementById('new-group-name') as HTMLInputElement;
+                                        if (input?.value) {
+                                            handleAddGroupComplete(input.value);
+                                        }
+                                    }}
+                                    className="flex-2 py-4 bg-purple-600 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-purple-600/20 hover:bg-purple-500 transition-all"
+                                >
+                                    Initialize Tier
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

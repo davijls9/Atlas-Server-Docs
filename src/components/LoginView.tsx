@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Compass, Shield, Lock, Eye, EyeOff, ArrowRight, Server, Globe } from 'lucide-react';
+import { Lock, Eye, EyeOff, ArrowRight, Server, Globe } from 'lucide-react';
 
 interface LoginViewProps {
     onLogin: (user: any) => void;
@@ -18,13 +18,13 @@ export const LoginView = ({ onLogin }: LoginViewProps) => {
         // Simulate network delay
         setTimeout(() => {
             const normalizedEmail = email.trim().toLowerCase();
-            const savedUsers = localStorage.getItem('antigravity_users');
+            const savedUsers = localStorage.getItem('atlas_users');
             let userFound = false;
 
             if (savedUsers) {
                 const users = JSON.parse(savedUsers);
                 const foundUser = users.find((u: any) =>
-                    u.email.trim().toLowerCase() === normalizedEmail &&
+                    u.email?.trim().toLowerCase() === normalizedEmail &&
                     u.password === password
                 );
 
@@ -32,13 +32,12 @@ export const LoginView = ({ onLogin }: LoginViewProps) => {
                     const sessionUser = {
                         ...foundUser,
                         avatar: null,
-                        joinedAt: 'Jan 2026'
+                        joinedAt: foundUser.joinedAt || 'Jan 2026'
                     };
-                    localStorage.setItem('antigravity_session', JSON.stringify(sessionUser));
+                    localStorage.setItem('atlas_session', JSON.stringify(sessionUser));
                     onLogin(sessionUser);
                     setIsLoading(false);
                     return;
-                    userFound = true;
                 }
             }
 
@@ -47,7 +46,7 @@ export const LoginView = ({ onLogin }: LoginViewProps) => {
                 const adminUser = {
                     id: 'admin-root',
                     name: 'Administrator',
-                    email: 'admin@atlas.com',
+                    email: 'admin@antigravity.io',
                     role: 'ADMIN',
                     groupId: 'admin-group',
                     avatar: null,

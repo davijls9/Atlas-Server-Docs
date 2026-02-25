@@ -30,19 +30,24 @@ export class SecurityMiddleware {
         if (!session) return false;
 
         try {
-            const user = JSON.parse(session);
+            if (!session || session === 'undefined' || session === 'null') return false;
 
-            // ADMIN Role Bypas
+            const user = JSON.parse(session);
+            if (!user || typeof user !== 'object') return false;
+
+            // ADMIN Role Bypass
             if (user.role === 'ADMIN' || user.groupId === 'admin-group') return true;
 
             const savedGroups = localStorage.getItem('atlas_groups') || localStorage.getItem('antigravity_groups');
             if (!savedGroups) return false;
 
             const groups = JSON.parse(savedGroups);
-            const group = groups.find((g: any) => g.id === user.groupId);
+            if (!Array.isArray(groups)) return false;
+
+            const group = groups.find((g: any) => g && g.id === user.groupId);
             return group?.permissions?.[protocol] === true;
         } catch (e) {
-            console.error('[SECURITY] Authorization error:', e);
+            console.error('[SECURITY] Authorization violation/error:', e);
             return false;
         }
     }

@@ -138,35 +138,37 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
         <div className="h-full w-full flex flex-col bg-[#06080a] text-white overflow-hidden relative">
             {/* Header */}
             <div className={`border-b border-gray-800 bg-[#0d1117] shrink-0 relative z-20 shadow-xl transition-all duration-500 p-8`}>
-                <div className={`flex items-center justify-between gap-6 ${showStats ? 'mb-6' : 'mb-0'}`}>
-                    <div className="flex items-center gap-4 shrink-0">
-                        <div className="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+                <div className={`grid grid-cols-[1fr_auto_1fr] items-center gap-6 ${showStats ? 'mb-6' : 'mb-0'}`}>
+                    {/* Left Column: Title Block */}
+                    <div className="flex items-center gap-4 min-w-0">
+                        <div className="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] shrink-0">
                             <Lock className="w-6 h-6 text-red-500" />
                         </div>
-                        <div>
-                            <h1 className="text-3xl font-black text-white uppercase tracking-tighter leading-none mb-1">Security Audit</h1>
+                        <div className="min-w-0">
+                            <h1 className="text-3xl font-black text-white uppercase tracking-tighter leading-none mb-1 truncate">Security Audit</h1>
                             <div className="flex items-center gap-2">
-                                <span className={`w-1.5 h-1.5 rounded-full ${globalScore === 100 ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : globalScore >= 80 ? 'bg-amber-500 shadow-[0_0_8px_#f59e0b]' : 'bg-red-500 shadow-[0_0_8px_#ef4444]'}`}></span>
-                                <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">
+                                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${globalScore === 100 ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : globalScore >= 80 ? 'bg-amber-500 shadow-[0_0_8px_#f59e0b]' : 'bg-red-500 shadow-[0_0_8px_#ef4444]'}`}></span>
+                                <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest truncate">
                                     Risk: <span className={`${globalScore === 100 ? 'text-emerald-400' : globalScore >= 80 ? 'text-amber-400' : 'text-red-400'}`}>{globalScore}%</span>
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="absolute left-1/2 top-8 -translate-x-1/2 z-30">
+                    {/* Center Column: Sub-tab Navigator (Strict Centering) */}
+                    <div className="flex justify-center">
                         <div className="flex bg-[#161b22] px-1 py-1 rounded-2xl border border-gray-800 shadow-inner">
                             <button
                                 type="button"
                                 onClick={() => setActiveSubTab('audit')}
-                                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'audit' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
+                                className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'audit' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
                             >
                                 Audit Matrix
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setActiveSubTab('ssdlc')}
-                                className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'ssdlc' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
+                                className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'ssdlc' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
                             >
                                 SSDLC
                             </button>
@@ -174,7 +176,7 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
                                 <button
                                     type="button"
                                     onClick={() => setActiveSubTab('intel')}
-                                    className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'intel' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
+                                    className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'intel' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
                                 >
                                     Tactical Intel
                                 </button>
@@ -182,9 +184,10 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
+                    {/* Right Column: Dynamic Actions Block */}
+                    <div className="flex items-center justify-end gap-3 min-w-0">
                         {activeSubTab === 'audit' && (
-                            <div className="flex items-center bg-[#161b22] p-1 rounded-xl border border-gray-800 mr-2">
+                            <div className="flex items-center bg-[#161b22] p-1 rounded-xl border border-gray-800 animate-in fade-in slide-in-from-right-4 duration-300 overflow-hidden">
                                 {['SERVER', 'SWITCH', 'VM'].map((t) => (
                                     <button
                                         key={t}
@@ -199,7 +202,7 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
 
                         <button
                             onClick={() => setShowStats(!showStats)}
-                            className={`p-2 rounded-xl border transition-all ${showStats ? 'bg-gray-800/50 border-gray-700 text-blue-400' : 'bg-blue-500/10 border-blue-500/20 text-gray-400 hover:text-blue-400'}`}
+                            className={`p-2 rounded-xl border transition-all shrink-0 ${showStats ? 'bg-gray-800/50 border-gray-700 text-blue-400' : 'bg-blue-500/10 border-blue-500/20 text-gray-400 hover:text-blue-400'}`}
                             title={showStats ? "Hide Stats" : "Show Stats"}
                         >
                             {showStats ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -207,10 +210,10 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
 
                         <button
                             onClick={() => setShowReportModal(true)}
-                            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20 border border-blue-500/50 flex items-center gap-2"
+                            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20 border border-blue-500/50 flex items-center gap-2 shrink-0"
                         >
                             <FileText className="w-3.5 h-3.5" />
-                            Full Report
+                            <span className="hidden xl:inline">Full Report</span>
                         </button>
                     </div>
                 </div>
