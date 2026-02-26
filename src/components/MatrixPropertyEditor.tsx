@@ -314,12 +314,12 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
     };
 
     return (
-        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0d1117]">
+        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[var(--bg-main)]">
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar { width: 12px; height: 12px; }
-                .custom-scrollbar::-webkit-scrollbar-track { background: #0d1117; }
-                .custom-scrollbar::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 6px; border: 3px solid #0d1117; }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #718096; }
+                .custom-scrollbar::-webkit-scrollbar-track { background: var(--bg-deep); }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-main); border-radius: 6px; border: 3px solid var(--bg-deep); }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
                 
                 .matrix-cell-wrapper {
                     position: relative;
@@ -352,14 +352,14 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
             `}</style>
 
             {/* Matrix Toolbar */}
-            <div className="px-8 py-4 bg-[#161b22] border-b border-gray-800 flex flex-col gap-4 shadow-2xl z-20">
+            <div className="px-8 py-4 bg-[var(--bg-sidebar)] border-b border-[var(--border-main)] flex flex-col gap-4 shadow-2xl z-20">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-6">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-dim)]" />
                             <input
                                 placeholder="Search nodes or attributes..."
-                                className="bg-[#0d1117] border border-gray-800 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-blue-500 outline-none w-80 text-gray-300"
+                                className="bg-[var(--bg-deep)] border border-[var(--border-main)] rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-[var(--primary)] outline-none w-80 text-[var(--text-main)]"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -370,13 +370,13 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
                         <button
                             onClick={() => onAddAttribute('New Field', 'TEXT')}
                             disabled={permissions.edit_node === false}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest shadow-lg transition-all active:scale-95 ${permissions.edit_node !== false ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-500/10' : 'bg-gray-800 text-gray-600 cursor-not-allowed grayscale'}`}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest shadow-lg transition-all active:scale-95 ${permissions.edit_node !== false ? 'bg-[var(--primary)] hover:opacity-90 text-white shadow-[var(--primary-glow)]/10' : 'bg-[var(--bg-deep)] text-[var(--text-dim)] cursor-not-allowed grayscale border border-[var(--border-main)]'}`}
                         >
                             <Plus className="w-3.5 h-3.5" /> Manage Fields
                         </button>
                         <button
                             onClick={handleDownloadCSV}
-                            className="p-2 hover:bg-gray-800 rounded-lg border border-gray-800 text-blue-400 hover:text-blue-300 transition-colors"
+                            className="p-2 hover:bg-[var(--border-subtle)] rounded-lg border border-[var(--border-main)] text-[var(--primary)] hover:text-[var(--text-bright)] transition-colors"
                             title="Export Matrix CSV"
                         >
                             <Download className="w-4 h-4" />
@@ -389,7 +389,7 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
                         <button
                             key={cat.id}
                             onClick={() => setActiveCategory(cat.id)}
-                            className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${activeCategory === cat.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'bg-[#0d1117] text-gray-500 hover:text-gray-300 border border-gray-800'}`}
+                            className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${activeCategory === cat.id ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary-glow)]/30' : 'bg-[var(--bg-deep)] text-[var(--text-dim)] hover:text-[var(--text-main)] border border-[var(--border-main)]'}`}
                         >
                             {cat.label}
                         </button>
@@ -398,14 +398,14 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
             </div>
 
             {/* Matrix Grid */}
-            <div className="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar relative bg-[#0a0c10] min-w-0">
+            <div className="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar relative bg-[var(--bg-deep)] min-w-0">
                 <table className="border-collapse text-left min-w-max">
                     <thead className="sticky top-0 z-30">
-                        <tr className="bg-[#0a0c10] border-b border-gray-800 shadow-xl">
-                            <th className="px-6 py-4 w-12 sticky left-0 bg-[#0a0c10] z-50 border-r border-gray-800/30">
+                        <tr className="bg-[var(--bg-deep)] border-b border-[var(--border-main)] shadow-xl">
+                            <th className="px-6 py-4 w-12 sticky left-0 bg-[var(--bg-deep)] z-50 border-r border-[var(--border-main)]/30">
                                 <input
                                     type="checkbox"
-                                    className="rounded border-gray-700 bg-transparent"
+                                    className="rounded border-[var(--border-main)] bg-transparent"
                                     checked={selectedNodeIds.size === filteredNodes.length && filteredNodes.length > 0}
                                     onChange={(e) => {
                                         if (e.target.checked) setSelectedNodeIds(new Set(filteredNodes.map(n => n.id)));
@@ -413,32 +413,32 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
                                     }}
                                 />
                             </th>
-                            <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-gray-600 w-[240px] sticky left-12 bg-[#0a0c10] z-40 border-r border-gray-800/30">Node Identity</th>
-                            <th className="px-4 py-4 text-[10px] font-black uppercase tracking-widest text-gray-600 w-[140px]">POP Area</th>
-                            <th className="px-4 py-4 text-[10px] font-black uppercase tracking-widest text-gray-600 w-[150px]">Management IP</th>
+                            <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)] w-[240px] sticky left-12 bg-[var(--bg-deep)] z-40 border-r border-[var(--border-main)]/30">Node Identity</th>
+                            <th className="px-4 py-4 text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)] w-[140px]">POP Area</th>
+                            <th className="px-4 py-4 text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)] w-[150px]">Management IP</th>
                             {intelligentFilteredSchema.map(attr => {
                                 const summary = getColumnSummary(attr.id);
                                 return (
-                                    <th key={attr.id} className="px-4 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500 w-[200px] border-l border-gray-800/20 group relative">
+                                    <th key={attr.id} className="px-4 py-4 text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)] w-[200px] border-l border-[var(--border-main)]/20 group relative">
                                         <div className="flex justify-between items-center">
                                             <span>{attr.label}</span>
                                             <div className="flex items-center gap-1.5">
                                                 <div className="relative group/tooltip">
-                                                    <Info className="w-3 h-3 text-gray-600 hover:text-blue-400 cursor-help transition-colors" />
-                                                    <div className="absolute top-full right-0 mt-2 p-3 bg-[#161b22] border border-gray-800 rounded-xl shadow-2xl min-w-[160px] invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all z-50">
-                                                        <p className="text-[9px] text-gray-500 mb-2 border-b border-gray-800 pb-1">COLUMN ANALYTICS</p>
+                                                    <Info className="w-3 h-3 text-[var(--text-dim)] hover:text-[var(--primary)] cursor-help transition-colors" />
+                                                    <div className="absolute top-full right-0 mt-2 p-3 bg-[var(--bg-card)] border border-[var(--border-main)] rounded-xl shadow-2xl min-w-[160px] invisible group-hover/tooltip:visible opacity-0 group-hover/tooltip:opacity-100 transition-all z-50">
+                                                        <p className="text-[9px] text-[var(--text-dim)] mb-2 border-b border-[var(--border-main)] pb-1">COLUMN ANALYTICS</p>
                                                         <div className="space-y-1.5">
                                                             {Object.entries(summary.typeBreakdown).map(([type, count]) => (
                                                                 <div key={type} className="flex justify-between text-[9px] font-bold">
-                                                                    <span className="text-gray-400">{type.replace('_', ' ')}:</span>
-                                                                    <span className="text-white">{count}</span>
+                                                                    <span className="text-[var(--text-dim)]">{type.replace('_', ' ')}:</span>
+                                                                    <span className="text-[var(--text-bright)]">{count}</span>
                                                                 </div>
                                                             ))}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 {permissions.edit_node !== false && (
-                                                    <Settings2 className="w-3 h-3 opacity-0 group-hover:opacity-100 cursor-pointer text-gray-600 hover:text-white transition-all" onClick={() => onAddAttribute(attr.label, attr.type)} />
+                                                    <Settings2 className="w-3 h-3 opacity-0 group-hover:opacity-100 cursor-pointer text-[var(--text-dim)] hover:text-[var(--text-bright)] transition-all" onClick={() => onAddAttribute(attr.label, attr.type)} />
                                                 )}
                                             </div>
                                         </div>
@@ -454,7 +454,7 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
                                     node.type === 'SYSTEM' ? 'bg-purple-500/[0.02] hover:bg-purple-500/[0.05]' :
                                         'hover:bg-blue-600/[0.03]'
                                 }`}>
-                                <td className="px-6 py-4 w-12 sticky left-0 bg-[#0d1117] z-30 group-hover:bg-[#161b22] border-r border-gray-800/30">
+                                <td className="px-6 py-4 w-12 sticky left-0 bg-[var(--bg-main)] z-30 group-hover:bg-[var(--bg-card)] border-r border-[var(--border-main)]/30">
                                     <input
                                         type="checkbox"
                                         className="rounded border-gray-700 bg-transparent"
@@ -467,7 +467,7 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
                                         }}
                                     />
                                 </td>
-                                <td className="px-6 py-4 sticky left-12 bg-[#0d1117] z-20 group-hover:bg-[#161b22] transition-colors border-r border-gray-800/30">
+                                <td className="px-6 py-4 sticky left-12 bg-[var(--bg-main)] z-20 group-hover:bg-[var(--bg-card)] transition-colors border-r border-[var(--border-main)]/30">
                                     <div className="flex items-center gap-3">
                                         <div className={`w-1.5 h-6 rounded-full ${node.type === 'PHYSICAL_SERVER' ? 'bg-emerald-500 shadow-[0_0_8px_#10b98144]' :
                                             node.type === 'VIRTUAL_MACHINE' ? 'bg-orange-500 shadow-[0_0_8px_#f59e0b44]' :
@@ -564,7 +564,7 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
                                                                 }}
                                                             />
                                                         ) : (
-                                                            <span className={`text-[10px] font-bold px-2 py-1.5 block truncate select-none ${attr.type === 'NUMBER' ? 'text-blue-300' : 'text-gray-300'}`}>
+                                                            <span className={`text-[10px] font-bold px-2 py-1.5 block truncate select-none ${attr.type === 'NUMBER' ? 'text-[var(--primary)]' : 'text-[var(--text-main)]'}`}>
                                                                 {value || 'Default'}
                                                             </span>
                                                         )}
@@ -581,18 +581,18 @@ export const MatrixPropertyEditor = ({ pops, schema, onUpdateAttribute, onAddAtt
             </div>
 
             {/* Matrix Footer */}
-            <div className="px-8 py-3 bg-[#0a0c10] border-t border-gray-800 flex justify-between items-center z-20">
+            <div className="px-8 py-3 bg-[var(--bg-sidebar)] border-t border-[var(--border-main)] flex justify-between items-center z-20">
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 text-[10px] text-gray-500 uppercase font-black tracking-[0.2em]">
-                        <BarChart2 className="w-3.5 h-3.5 text-blue-500" />
+                    <div className="flex items-center gap-2 text-[10px] text-[var(--text-dim)] uppercase font-black tracking-[0.2em]">
+                        <BarChart2 className="w-3.5 h-3.5 text-[var(--primary)]" />
                         <span>Intelligence Engine Active</span>
                     </div>
-                    <div className="h-4 w-px bg-gray-800"></div>
-                    <span className="text-[10px] font-bold text-gray-600">Rows: <span className="text-white">{filteredNodes.length}</span></span>
-                    <span className="text-[10px] font-bold text-gray-600">Context Cols: <span className="text-white">{intelligentFilteredSchema.length}</span></span>
+                    <div className="h-4 w-px bg-[var(--border-main)]"></div>
+                    <span className="text-[10px] font-bold text-[var(--text-dim)]">Rows: <span className="text-[var(--text-bright)]">{filteredNodes.length}</span></span>
+                    <span className="text-[10px] font-bold text-[var(--text-dim)]">Context Cols: <span className="text-[var(--text-bright)]">{intelligentFilteredSchema.length}</span></span>
                 </div>
-                <div className="flex items-center gap-2 text-[9px] text-gray-600 font-bold uppercase tracking-tight">
-                    <Info className="w-3 h-3 text-blue-500/50" />
+                <div className="flex items-center gap-2 text-[9px] text-[var(--text-dim)] font-bold uppercase tracking-tight">
+                    <Info className="w-3 h-3 text-[var(--primary)]/50" />
                     Auto-Masking enabled for non-applicable contexts
                 </div>
             </div>

@@ -301,30 +301,30 @@ export const WorkspaceView = ({
     );
 
     return (
-        <div className="flex-1 flex flex-col bg-[#0d1117] overflow-hidden p-8 space-y-8 animate-in fade-in duration-500">
+        <div className="flex-1 flex flex-col bg-[var(--bg-main)] overflow-hidden p-8 space-y-8 animate-in fade-in duration-500">
             {/* Header */}
             <header className="flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center shadow-2xl">
-                        <Users className="w-8 h-8 text-amber-500" />
+                    <div className="w-16 h-16 bg-[var(--status-warn)]/10 border border-[var(--status-warn)]/20 rounded-2xl flex items-center justify-center shadow-2xl">
+                        <Users className="w-8 h-8 text-[var(--status-warn)]" />
                     </div>
                     <div>
-                        <h2 className="text-3xl font-black text-white tracking-tighter uppercase italic">Strategic Resource Manager</h2>
-                        <p className="text-xs text-amber-500 font-bold uppercase mt-1 tracking-widest">Global Governance & Asset Orchestration</p>
+                        <h2 className="text-3xl font-black text-[var(--text-bright)] tracking-tighter uppercase italic">Strategic Resource Manager</h2>
+                        <p className="text-xs text-[var(--status-warn)] font-bold uppercase mt-1 tracking-widest">Global Governance & Asset Orchestration</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <div className="flex bg-[#161b22] rounded-2xl p-1 border border-gray-800">
+                    <div className="flex bg-[var(--bg-card)] rounded-2xl p-1 border border-[var(--border-main)]">
                         <button
                             onClick={() => setActiveSubTab('personnel')}
-                            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'personnel' ? 'bg-amber-500 text-black' : 'text-gray-500 hover:text-white'}`}
+                            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'personnel' ? 'bg-[var(--status-warn)] text-black' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                         >
                             Personnel Hub
                         </button>
                         <button
                             onClick={() => setActiveSubTab('resources')}
-                            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'resources' ? 'bg-blue-500 text-black' : 'text-gray-500 hover:text-white'}`}
+                            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'resources' ? 'bg-[var(--primary)] text-black' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                         >
                             Blueprint Cluster
                         </button>
@@ -332,7 +332,7 @@ export const WorkspaceView = ({
                     {canManageUsers && (
                         <button
                             onClick={() => setShowGroupManager(true)}
-                            className="p-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-2xl text-amber-500 transition-all shadow-xl"
+                            className="p-3 bg-[var(--bg-sidebar)] hover:bg-[var(--bg-card)] border border-[var(--border-main)] rounded-2xl text-[var(--status-warn)] transition-all shadow-xl"
                             title="Governance Policy Matrix"
                         >
                             <Shield className="w-5 h-5" />
@@ -345,81 +345,81 @@ export const WorkspaceView = ({
                 <div className="flex-1 flex flex-col min-h-0 space-y-6">
                     {/* Personnel Content */}
                     <div className="grid grid-cols-4 gap-6">
-                        <div className="bg-[#161b22] p-6 rounded-[2rem] border border-gray-800 flex items-center gap-4">
-                            <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500">
+                        <div className="bg-[var(--bg-card)] p-6 rounded-[2rem] border border-[var(--border-main)] flex items-center gap-4">
+                            <div className="w-12 h-12 bg-[var(--primary)]/10 rounded-xl flex items-center justify-center text-[var(--primary)]">
                                 <Users className="w-6 h-6" />
                             </div>
                             <div>
-                                <p className="text-2xl font-black text-white">{users.length}</p>
-                                <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Active Personnel</p>
+                                <p className="text-2xl font-black text-[var(--text-bright)]">{users.length}</p>
+                                <p className="text-[9px] text-[var(--text-dim)] font-bold uppercase tracking-widest">Active Personnel</p>
                             </div>
                         </div>
-                        <div className="bg-[#161b22] p-6 rounded-[2rem] border border-gray-800 flex items-center gap-4">
-                            <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-500">
+                        <div className="bg-[var(--bg-card)] p-6 rounded-[2rem] border border-[var(--border-main)] flex items-center gap-4">
+                            <div className="w-12 h-12 bg-[var(--accent)]/10 rounded-xl flex items-center justify-center text-[var(--accent)]">
                                 <Lock className="w-6 h-6" />
                             </div>
                             <div>
-                                <p className="text-2xl font-black text-white">{permissionGroups.length}</p>
-                                <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Security Tiers</p>
+                                <p className="text-2xl font-black text-[var(--text-bright)]">{permissionGroups.length}</p>
+                                <p className="text-[9px] text-[var(--text-dim)] font-bold uppercase tracking-widest">Security Tiers</p>
                             </div>
                         </div>
                         <div className="col-span-2 flex items-center justify-end gap-3">
                             <div className="relative flex-1 max-w-sm">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-dim)]" />
                                 <input
                                     type="text"
                                     placeholder="Search Personnel..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full bg-[#0d1117] border border-gray-800 rounded-2xl py-3.5 pl-11 pr-4 text-xs text-white outline-none focus:border-amber-500 transition-all font-bold"
+                                    className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-2xl py-3.5 pl-11 pr-4 text-xs text-[var(--text-main)] outline-none focus:border-[var(--status-warn)] transition-all font-bold"
                                 />
                             </div>
                             <button
                                 onClick={() => setShowUserModal(true)}
-                                className="bg-amber-500 hover:bg-amber-400 text-black px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2"
+                                className="bg-[var(--status-warn)] hover:opacity-90 text-black px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2"
                             >
                                 <Plus className="w-4 h-4" /> Deploy Identity
                             </button>
                         </div>
                     </div>
 
-                    <div className="flex-1 bg-[#161b22] rounded-[2.5rem] border border-gray-800 overflow-hidden flex flex-col">
+                    <div className="flex-1 bg-[var(--bg-card)] rounded-[2.5rem] border border-[var(--border-main)] overflow-hidden flex flex-col">
                         <div className="flex-1 overflow-auto custom-scrollbar">
                             <table className="w-full text-left">
-                                <thead className="sticky top-0 bg-[#1c2128] z-10 border-b border-gray-800">
+                                <thead className="sticky top-0 bg-[var(--bg-sidebar)] z-10 border-b border-[var(--border-main)]">
                                     <tr>
-                                        <th className="px-8 py-5 text-[10px] font-black text-gray-500 uppercase tracking-widest">Identity</th>
-                                        <th className="px-8 py-5 text-[10px] font-black text-gray-500 uppercase tracking-widest">Clearance</th>
-                                        <th className="px-8 py-5 text-[10px] font-black text-gray-500 uppercase tracking-widest">Last Synced</th>
-                                        <th className="px-8 py-5 text-[10px] font-black text-gray-500 uppercase tracking-widest text-right">Ops</th>
+                                        <th className="px-8 py-5 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Identity</th>
+                                        <th className="px-8 py-5 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Clearance</th>
+                                        <th className="px-8 py-5 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Last Synced</th>
+                                        <th className="px-8 py-5 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest text-right">Ops</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-800/50">
+                                <tbody className="divide-y divide-[var(--border-main)]/50">
                                     {filteredUsers.map(user => (
-                                        <tr key={user.id} className="group hover:bg-white/[0.01]">
+                                        <tr key={user.id} className="group hover:bg-[var(--text-bright)]/[0.01]">
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center text-xs font-black text-gray-500">
+                                                    <div className="w-10 h-10 rounded-xl bg-[var(--bg-deep)] flex items-center justify-center text-xs font-black text-[var(--text-dim)]">
                                                         {user.name[0]}
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-bold text-white uppercase">{user.name}</p>
-                                                        <p className="text-[10px] text-gray-600 font-medium lowercase">{user.email}</p>
+                                                        <p className="text-sm font-bold text-[var(--text-bright)] uppercase">{user.name}</p>
+                                                        <p className="text-[10px] text-[var(--text-dim)] font-medium lowercase">{user.email}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest px-3 py-1 bg-blue-500/5 rounded-lg border border-blue-500/10 italic truncate max-w-[200px] inline-block" title={getGroupName(user.groupId)}>
+                                                <span className="text-[10px] font-black text-[var(--primary)] uppercase tracking-widest px-3 py-1 bg-[var(--primary)]/5 rounded-lg border border-[var(--primary)]/10 italic truncate max-w-[200px] inline-block" title={getGroupName(user.groupId)}>
                                                     {getGroupName(user.groupId)}
                                                 </span>
                                             </td>
-                                            <td className="px-8 py-6 text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                                            <td className="px-8 py-6 text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-widest">
                                                 {user.lastLogin}
                                             </td>
                                             <td className="px-8 py-6 text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <button onClick={() => { setEditingUser(user); setShowUserModal(true); }} className="p-2.5 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-xl"><Edit2 className="w-4 h-4" /></button>
-                                                    <button onClick={() => handleDeleteUser(user.id)} className="p-2.5 bg-gray-800 hover:bg-red-500/20 text-gray-400 hover:text-red-500 rounded-xl"><Trash2 className="w-4 h-4" /></button>
+                                                    <button onClick={() => { setEditingUser(user); setShowUserModal(true); }} className="p-2.5 bg-[var(--bg-deep)] hover:bg-[var(--border-main)] text-[var(--text-dim)] rounded-xl"><Edit2 className="w-4 h-4" /></button>
+                                                    <button onClick={() => handleDeleteUser(user.id)} className="p-2.5 bg-[var(--bg-deep)] hover:bg-[var(--status-error)]/20 text-[var(--text-dim)] hover:text-[var(--status-error)] rounded-xl"><Trash2 className="w-4 h-4" /></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -435,12 +435,12 @@ export const WorkspaceView = ({
                     <div className="grid grid-cols-12 gap-8 flex-1 min-h-0">
                         <div className="col-span-8 flex flex-col space-y-6">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-xl font-black text-white uppercase tracking-widest italic flex items-center gap-3">
-                                    <Globe className="w-6 h-6 text-blue-500" /> Blueprint Repository
+                                <h3 className="text-xl font-black text-[var(--text-bright)] uppercase tracking-widest italic flex items-center gap-3">
+                                    <Globe className="w-6 h-6 text-[var(--primary)]" /> Blueprint Repository
                                 </h3>
                                 <button
                                     onClick={() => setShowBlueprintModal(true)}
-                                    className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-xl shadow-blue-500/20"
+                                    className="px-6 py-3 bg-[var(--primary)] hover:opacity-90 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-xl shadow-[var(--primary-glow)]"
                                 >
                                     <Plus className="w-4 h-4" /> Provision New Cluster
                                 </button>
@@ -450,32 +450,32 @@ export const WorkspaceView = ({
                                 {blueprintsRegistry.map(blueprint => (
                                     <div
                                         key={blueprint.id}
-                                        className={`p-8 bg-[#161b22] border rounded-[2.5rem] flex flex-col transition-all group relative overflow-hidden ${activeBlueprintId === blueprint.id ? 'border-blue-500 bg-blue-500/5 ring-1 ring-blue-500/20' : 'border-gray-800 hover:border-gray-700'}`}
+                                        className={`p-8 bg-[var(--bg-card)] border rounded-[2.5rem] flex flex-col transition-all group relative overflow-hidden ${activeBlueprintId === blueprint.id ? 'border-[var(--primary)] bg-[var(--primary)]/5 ring-1 ring-[var(--primary)]/20' : 'border-[var(--border-main)] hover:border-[var(--text-dim)]/30'}`}
                                     >
                                         {activeBlueprintId === blueprint.id && (
-                                            <div className="absolute top-0 right-0 px-6 py-2 bg-blue-500 text-black text-[9px] font-black uppercase tracking-widest rounded-bl-3xl shadow-2xl">
+                                            <div className="absolute top-0 right-0 px-6 py-2 bg-[var(--primary)] text-white text-[9px] font-black uppercase tracking-widest rounded-bl-3xl shadow-2xl">
                                                 Active Manifest
                                             </div>
                                         )}
 
                                         <div className="mb-6 flex items-center gap-4">
-                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${blueprint.type === 'GLOBAL' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-blue-500/10 text-blue-400 border-blue-500/20'}`}>
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${blueprint.type === 'GLOBAL' ? 'bg-[var(--status-success)]/10 text-[var(--status-success)] border-[var(--status-success)]/20' : 'bg-[var(--primary)]/10 text-[var(--primary)] border-[var(--primary)]/20'}`}>
                                                 <ExternalLink className="w-6 h-6" />
                                             </div>
                                             <div>
-                                                <h4 className="text-lg font-black text-white uppercase tracking-tighter italic leading-none">{blueprint.name}</h4>
-                                                <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1.5">{blueprint.type} Manifest</p>
+                                                <h4 className="text-lg font-black text-[var(--text-bright)] uppercase tracking-tighter italic leading-none">{blueprint.name}</h4>
+                                                <p className="text-[9px] text-[var(--text-dim)] font-bold uppercase tracking-widest mt-1.5">{blueprint.type} Manifest</p>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-3 mb-8">
-                                            <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
-                                                <p className="text-[7px] text-gray-600 font-black uppercase tracking-widest mb-1.5">Architect</p>
-                                                <p className="text-[10px] text-gray-400 font-bold uppercase truncate">{blueprint.ownerName}</p>
+                                            <div className="bg-[var(--bg-deep)]/40 p-4 rounded-2xl border border-[var(--border-main)]/50">
+                                                <p className="text-[7px] text-[var(--text-dim)] font-black uppercase tracking-widest mb-1.5">Architect</p>
+                                                <p className="text-[10px] text-[var(--text-main)] font-bold uppercase truncate">{blueprint.ownerName}</p>
                                             </div>
-                                            <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
-                                                <p className="text-[7px] text-gray-600 font-black uppercase tracking-widest mb-1.5">Timestamp</p>
-                                                <p className="text-[10px] text-gray-400 font-bold uppercase">{new Date(blueprint.lastModified).toLocaleDateString()}</p>
+                                            <div className="bg-[var(--bg-deep)]/40 p-4 rounded-2xl border border-[var(--border-main)]/50">
+                                                <p className="text-[7px] text-[var(--text-dim)] font-black uppercase tracking-widest mb-1.5">Timestamp</p>
+                                                <p className="text-[10px] text-[var(--text-main)] font-bold uppercase">{new Date(blueprint.lastModified).toLocaleDateString()}</p>
                                             </div>
                                         </div>
 
@@ -483,7 +483,7 @@ export const WorkspaceView = ({
                                             <button
                                                 disabled={activeBlueprintId === blueprint.id}
                                                 onClick={() => onSwitchBlueprint?.(blueprint.id)}
-                                                className={`flex-1 py-3.5 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all ${activeBlueprintId === blueprint.id ? 'bg-gray-800 text-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-500/10'}`}
+                                                className={`flex-1 py-3.5 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all ${activeBlueprintId === blueprint.id ? 'bg-[var(--bg-deep)] text-[var(--text-dim)] cursor-not-allowed' : 'bg-[var(--primary)] hover:opacity-90 text-white shadow-xl shadow-[var(--primary-glow)]'}`}
                                             >
                                                 {activeBlueprintId === blueprint.id ? 'Synchronized' : 'Switch Blueprint'}
                                             </button>
@@ -492,7 +492,7 @@ export const WorkspaceView = ({
                                                     setACLBlueprint(blueprint);
                                                     setShowACLModal(true);
                                                 }}
-                                                className="p-3.5 bg-gray-800 hover:bg-gray-700 text-blue-400 rounded-2xl transition-all"
+                                                className="p-3.5 bg-[var(--bg-deep)] hover:bg-[var(--bg-sidebar)] text-[var(--primary)] rounded-2xl transition-all"
                                                 title="Manage Access Control"
                                             >
                                                 <Lock className="w-4 h-4" />
@@ -507,13 +507,13 @@ export const WorkspaceView = ({
                                                         showToast?.(`Blueprint renamed to "${newName}"`, 'success');
                                                     }
                                                 }}
-                                                className="p-3.5 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-2xl transition-all"
+                                                className="p-3.5 bg-[var(--bg-deep)] hover:bg-[var(--bg-sidebar)] text-[var(--text-dim)] rounded-2xl transition-all"
                                             >
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => onDeleteBlueprint?.(blueprint.id)}
-                                                className="p-3.5 bg-gray-800 hover:text-red-500 rounded-2xl transition-all"
+                                                className="p-3.5 bg-[var(--bg-deep)] hover:text-[var(--status-error)] rounded-2xl transition-all"
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
@@ -524,27 +524,27 @@ export const WorkspaceView = ({
                         </div>
 
                         <div className="col-span-4 flex flex-col space-y-6">
-                            <div className="bg-[#161b22] border border-gray-800 rounded-[2.5rem] p-8 flex-1 flex flex-col">
-                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-8">Asset Distribution Stats</h4>
+                            <div className="bg-[var(--bg-card)] border border-[var(--border-main)] rounded-[2.5rem] p-8 flex-1 flex flex-col">
+                                <h4 className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-8">Asset Distribution Stats</h4>
                                 <div className="space-y-6">
                                     {metrics.clusterDistribution.map((c: any, i: number) => (
                                         <div key={i} className="space-y-2">
                                             <div className="flex justify-between text-[10px] font-black uppercase">
-                                                <span className="text-gray-400">{c.name}</span>
-                                                <span className="text-white italic">{c.val}</span>
+                                                <span className="text-[var(--text-dim)]">{c.name}</span>
+                                                <span className="text-[var(--text-bright)] italic">{c.val}</span>
                                             </div>
-                                            <div className="h-2 bg-gray-800 rounded-full overflow-hidden p-0.5">
+                                            <div className="h-2 bg-[var(--bg-deep)] rounded-full overflow-hidden p-0.5">
                                                 <div className={`h-full ${c.color} rounded-full transition-all duration-1000 shadow-[0_0_10px_currentColor]`} style={{ width: c.val }}></div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                                 <div className="mt-auto pt-8 flex flex-col gap-4">
-                                    <div className="p-6 bg-blue-500/5 border border-blue-500/10 rounded-3xl flex items-center gap-4">
-                                        <RefreshCw className="w-6 h-6 text-blue-500" />
+                                    <div className="p-6 bg-[var(--primary)]/5 border border-[var(--primary)]/10 rounded-3xl flex items-center gap-4">
+                                        <RefreshCw className="w-6 h-6 text-[var(--primary)]" />
                                         <div>
-                                            <p className="text-[10px] font-black text-white uppercase italic tracking-tighter">Cluster Sync Active</p>
-                                            <p className="text-[9px] text-gray-500 font-bold uppercase mt-1">Real-time Data Stream Enabled</p>
+                                            <p className="text-[10px] font-black text-[var(--text-bright)] uppercase italic tracking-tighter">Cluster Sync Active</p>
+                                            <p className="text-[9px] text-[var(--text-dim)] font-bold uppercase mt-1">Real-time Data Stream Enabled</p>
                                         </div>
                                     </div>
                                 </div>
@@ -556,14 +556,14 @@ export const WorkspaceView = ({
 
             {/* Modals */}
             {showBlueprintModal && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[200] p-6 animate-in fade-in duration-300">
-                    <div className="bg-[#161b22] border border-gray-800 w-full max-w-lg rounded-[2.5rem] shadow-2xl relative overflow-hidden">
-                        <div className="p-8 border-b border-gray-800 bg-[#1c2128] flex items-center justify-between">
+                <div className="fixed inset-0 bg-[var(--bg-deep)]/60 backdrop-blur-md flex items-center justify-center z-[200] p-6 animate-in fade-in duration-300">
+                    <div className="bg-[var(--bg-card)] border border-[var(--border-main)] w-full max-w-lg rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+                        <div className="p-8 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)] flex items-center justify-between">
                             <div>
-                                <h3 className="text-xl font-black text-white uppercase tracking-tighter italic">Initialize Manifest</h3>
-                                <p className="text-[10px] text-blue-500 font-bold uppercase tracking-widest mt-1">Strategic provision orchestrator</p>
+                                <h3 className="text-xl font-black text-[var(--text-bright)] uppercase tracking-tighter italic">Initialize Manifest</h3>
+                                <p className="text-[10px] text-[var(--primary)] font-bold uppercase tracking-widest mt-1">Strategic provision orchestrator</p>
                             </div>
-                            <button onClick={() => setShowBlueprintModal(false)} className="p-2 hover:bg-gray-800 rounded-xl text-gray-500"><X className="w-6 h-6" /></button>
+                            <button onClick={() => setShowBlueprintModal(false)} className="p-2 hover:bg-[var(--bg-deep)] rounded-xl text-[var(--text-dim)]"><X className="w-6 h-6" /></button>
                         </div>
                         <form onSubmit={(e) => {
                             e.preventDefault();
@@ -572,20 +572,20 @@ export const WorkspaceView = ({
                             setShowBlueprintModal(false);
                         }} className="p-8 space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Manifest Designation</label>
-                                <input name="name" required className="w-full bg-[#0d1117] border border-gray-800 rounded-2xl py-4 px-5 text-sm text-white outline-none focus:border-blue-500 transition-all font-bold" placeholder="E.g. Core Production Manifest" />
+                                <label className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest ml-1">Manifest Designation</label>
+                                <input name="name" required className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-2xl py-4 px-5 text-sm text-[var(--text-main)] outline-none focus:border-[var(--primary)] transition-all font-bold" placeholder="E.g. Core Production Manifest" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Access Protocol (Type)</label>
-                                <select name="type" className="w-full bg-[#0d1117] border border-gray-800 rounded-2xl py-4 px-5 text-sm text-white outline-none focus:border-blue-500 transition-all font-bold appearance-none">
+                                <label className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest ml-1">Access Protocol (Type)</label>
+                                <select name="type" className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-2xl py-4 px-5 text-sm text-[var(--text-main)] outline-none focus:border-[var(--primary)] transition-all font-bold appearance-none">
                                     <option value="PERSONAL">Personnel (Private)</option>
                                     <option value="SHARED">Shared (Group Protocol)</option>
                                     {currentUser?.role === 'ADMIN' && <option value="GLOBAL">Global (System Master)</option>}
                                 </select>
                             </div>
                             <div className="pt-4 flex gap-3">
-                                <button type="button" onClick={() => setShowBlueprintModal(false)} className="flex-1 py-4 bg-gray-800 text-[10px] font-black uppercase text-gray-400 rounded-2xl">Abort</button>
-                                <button type="submit" className="flex-2 py-4 bg-blue-500 text-black text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-500/20 transition-all">Provision Manifest</button>
+                                <button type="button" onClick={() => setShowBlueprintModal(false)} className="flex-1 py-4 bg-[var(--bg-deep)] text-[10px] font-black uppercase text-[var(--text-dim)] rounded-2xl">Abort</button>
+                                <button type="submit" className="flex-2 py-4 bg-[var(--primary)] text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-[var(--primary-glow)] transition-all">Provision Manifest</button>
                             </div>
                         </form>
                     </div>
@@ -593,29 +593,29 @@ export const WorkspaceView = ({
             )}
 
             {showGroupManager && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[200] p-6 animate-in fade-in duration-300">
-                    <div className="bg-[#161b22] border border-gray-800 w-full max-w-[900px] h-[80vh] rounded-[3rem] shadow-2xl flex flex-col overflow-hidden">
-                        <div className="p-8 border-b border-gray-800 flex items-center justify-between shrink-0 bg-[#1c2128]">
+                <div className="fixed inset-0 bg-[var(--bg-deep)]/60 backdrop-blur-md flex items-center justify-center z-[200] p-6 animate-in fade-in duration-300">
+                    <div className="bg-[var(--bg-card)] border border-[var(--border-main)] w-full max-w-[900px] h-[80vh] rounded-[3rem] shadow-2xl flex flex-col overflow-hidden">
+                        <div className="p-8 border-b border-[var(--border-main)] flex items-center justify-between shrink-0 bg-[var(--bg-sidebar)]">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center border border-purple-500/30 text-purple-500">
+                                <div className="w-12 h-12 bg-[var(--accent)]/10 rounded-xl flex items-center justify-center border border-[var(--accent)]/20 text-[var(--accent)]">
                                     <Shield className="w-6 h-6" />
                                 </div>
-                                <h3 className="text-xl font-black text-white uppercase tracking-tighter">Governance Policy Matrix</h3>
+                                <h3 className="text-xl font-black text-[var(--text-bright)] uppercase tracking-tighter">Governance Policy Matrix</h3>
                             </div>
-                            <button onClick={() => setShowGroupManager(false)} className="p-2 hover:bg-gray-800 rounded-xl text-gray-500"><X className="w-6 h-6" /></button>
+                            <button onClick={() => setShowGroupManager(false)} className="p-2 hover:bg-[var(--bg-deep)] rounded-xl text-[var(--text-dim)]"><X className="w-6 h-6" /></button>
                         </div>
                         <div className="flex-1 flex min-h-0">
-                            <div className="w-1/3 border-r border-gray-800 flex flex-col p-6 space-y-4">
-                                <button onClick={handleAddGroup} className="w-full py-3 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 hover:bg-purple-500/20 transition-all shadow-xl"><Plus className="w-3.5 h-3.5" /> Add Tier</button>
+                            <div className="w-1/3 border-r border-[var(--border-main)] flex flex-col p-6 space-y-4">
+                                <button onClick={handleAddGroup} className="w-full py-3 bg-[var(--accent)]/10 border border-[var(--accent)]/20 text-[var(--accent)] text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 hover:bg-[var(--accent)]/20 transition-all shadow-xl"><Plus className="w-3.5 h-3.5" /> Add Tier</button>
 
                                 <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" />
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-dim)]" />
                                     <input
                                         type="text"
                                         placeholder="Filter Tiers..."
                                         value={groupSearchTerm}
                                         onChange={(e) => setGroupSearchTerm(e.target.value)}
-                                        className="w-full bg-[#0d1117] border border-gray-800 rounded-xl py-2 pl-9 pr-3 text-[10px] text-white outline-none focus:border-purple-500 font-bold"
+                                        className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-xl py-2 pl-9 pr-3 text-[10px] text-[var(--text-main)] outline-none focus:border-[var(--accent)] font-bold"
                                     />
                                 </div>
 
@@ -628,11 +628,11 @@ export const WorkspaceView = ({
                                                 setIsRenamingGroup(false);
                                                 setNewNameValue(group.name);
                                             }}
-                                            className={`relative group/item cursor-pointer p-5 rounded-2xl border transition-all ${editingGroup?.id === group.id ? 'bg-purple-600/10 border-purple-500/50 shadow-2xl' : 'bg-[#0d1117] border-gray-800 hover:border-gray-700'}`}
+                                            className={`relative group/item cursor-pointer p-5 rounded-2xl border transition-all ${editingGroup?.id === group.id ? 'bg-[var(--accent)]/10 border-[var(--accent)]/50 shadow-2xl' : 'bg-[var(--bg-deep)] border-[var(--border-main)] hover:border-[var(--text-dim)]/30'}`}
                                         >
                                             <div className="pr-8">
-                                                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Tier</p>
-                                                <p className="text-sm font-bold text-white uppercase truncate">{group.name}</p>
+                                                <p className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Tier</p>
+                                                <p className="text-sm font-bold text-[var(--text-bright)] uppercase truncate">{group.name}</p>
                                             </div>
                                             {group.id !== 'admin-group' && group.id !== 'viewer-group' && (
                                                 <button
@@ -644,7 +644,7 @@ export const WorkspaceView = ({
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                     }}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-3 text-gray-500 hover:text-red-400 hover:bg-red-500/20 rounded-xl opacity-0 group-hover/item:opacity-100 transition-all z-[120] cursor-pointer border-none flex items-center justify-center"
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-3 text-[var(--text-dim)] hover:text-[var(--status-error)] hover:bg-[var(--status-error)]/20 rounded-xl opacity-0 group-hover/item:opacity-100 transition-all z-[120] cursor-pointer border-none flex items-center justify-center"
                                                     title="Purge Tier"
                                                 >
                                                     <Trash2 className="w-4 h-4 pointer-events-none" />
@@ -654,10 +654,10 @@ export const WorkspaceView = ({
                                     ))}
                                 </div>
                             </div>
-                            <div className="flex-1 bg-[#0d1117] overflow-y-auto custom-scrollbar p-8">
+                            <div className="flex-1 bg-[var(--bg-main)] overflow-y-auto custom-scrollbar p-8">
                                 {editingGroup ? (
                                     <div className="space-y-8">
-                                        <div className="flex items-center justify-between border-b border-gray-800 pb-6 mb-8">
+                                        <div className="flex items-center justify-between border-b border-[var(--border-main)] pb-6 mb-8">
                                             <div className="flex-1 min-w-0 mr-4">
                                                 {isRenamingGroup ? (
                                                     <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-2">
@@ -669,27 +669,27 @@ export const WorkspaceView = ({
                                                                 if (e.key === 'Enter') handleRenameGroup();
                                                                 if (e.key === 'Escape') setIsRenamingGroup(false);
                                                             }}
-                                                            className="bg-[#161b22] border-2 border-purple-500 rounded-xl px-4 py-2 text-xl font-black text-white uppercase italic tracking-tight outline-none w-full max-w-md shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+                                                            className="bg-[var(--bg-card)] border-2 border-[var(--accent)] rounded-xl px-4 py-2 text-xl font-black text-[var(--text-bright)] uppercase italic tracking-tight outline-none w-full max-w-md shadow-[0_0_15px_var(--accent-glow)]"
                                                         />
-                                                        <button onClick={handleRenameGroup} className="p-2 bg-emerald-500 text-black rounded-lg hover:bg-emerald-400 transition-colors"><Save className="w-5 h-5" /></button>
-                                                        <button onClick={() => setIsRenamingGroup(false)} className="p-2 bg-gray-800 text-gray-400 rounded-lg hover:bg-gray-700 transition-colors"><X className="w-5 h-5" /></button>
+                                                        <button onClick={handleRenameGroup} className="p-2 bg-[var(--status-success)] text-white rounded-lg hover:opacity-90 transition-colors"><Save className="w-5 h-5" /></button>
+                                                        <button onClick={() => setIsRenamingGroup(false)} className="p-2 bg-[var(--bg-deep)] text-[var(--text-dim)] rounded-lg hover:bg-[var(--bg-sidebar)] transition-colors"><X className="w-5 h-5" /></button>
                                                     </div>
                                                 ) : (
                                                     <div className="group/title flex items-center gap-3">
-                                                        <h4 className="text-xl font-black text-white uppercase italic tracking-tight truncate max-w-full">{editingGroup.name} Capability Matrix</h4>
+                                                        <h4 className="text-xl font-black text-[var(--text-bright)] uppercase italic tracking-tight truncate max-w-full">{editingGroup.name} Capability Matrix</h4>
                                                         <button
                                                             onClick={() => {
                                                                 setNewNameValue(editingGroup.name);
                                                                 setIsRenamingGroup(true);
                                                             }}
-                                                            className="p-1.5 text-gray-600 hover:text-purple-400 opacity-0 group-hover/title:opacity-100 transition-all"
+                                                            className="p-1.5 text-[var(--text-dim)] hover:text-[var(--accent)] opacity-0 group-hover/title:opacity-100 transition-all"
                                                             title="Rename Tier"
                                                         >
                                                             <Edit2 className="w-4 h-4" />
                                                         </button>
                                                     </div>
                                                 )}
-                                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1 opacity-50">Sovereign Policy Manifest</p>
+                                                <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-widest mt-1 opacity-50">Sovereign Policy Manifest</p>
                                             </div>
 
                                             <div className="flex items-center gap-3">
@@ -703,26 +703,26 @@ export const WorkspaceView = ({
                                                         }, 800);
                                                     }}
                                                     disabled={isSavingGovernance}
-                                                    className="px-6 py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-xl shadow-blue-500/20 transition-all"
+                                                    className="px-6 py-3 bg-[var(--primary)] hover:opacity-90 disabled:opacity-50 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-xl shadow-[var(--primary-glow)] transition-all"
                                                 >
                                                     {isSavingGovernance ? (
                                                         <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                                                     ) : <Save className="w-4 h-4" />}
                                                     {isSavingGovernance ? 'Persisting...' : 'Save Protocol'}
                                                 </button>
-                                                <div className="w-px h-8 bg-gray-800 mx-2"></div>
-                                                <button onClick={() => setEditingGroup(null)} className="p-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl text-gray-400" title="Close Matrix"><X className="w-5 h-5" /></button>
+                                                <div className="w-px h-8 bg-[var(--border-main)] mx-2"></div>
+                                                <button onClick={() => setEditingGroup(null)} className="p-2.5 bg-[var(--bg-deep)] hover:bg-[var(--bg-sidebar)] rounded-xl text-[var(--text-dim)]" title="Close Matrix"><X className="w-5 h-5" /></button>
                                             </div>
                                         </div>
 
                                         <div className="relative w-full mb-8">
-                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" />
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-dim)]" />
                                             <input
                                                 type="text"
                                                 placeholder="Filter Capabilities..."
                                                 value={actionSearchTerm}
                                                 onChange={(e) => setActionSearchTerm(e.target.value)}
-                                                className="w-full bg-[#161b22] border border-gray-800 rounded-xl py-2.5 pl-9 pr-3 text-[10px] text-white outline-none focus:border-purple-500 font-bold shadow-inner"
+                                                className="w-full bg-[var(--bg-card)] border border-[var(--border-main)] rounded-xl py-2.5 pl-9 pr-3 text-[10px] text-[var(--text-main)] outline-none focus:border-[var(--accent)] font-bold shadow-inner"
                                             />
                                         </div>
 
@@ -730,8 +730,8 @@ export const WorkspaceView = ({
                                             {['PAGES', 'ACTIONS'].map(category => (
                                                 <div key={category} className="space-y-4">
                                                     <div className="flex items-center gap-3 mb-6">
-                                                        <div className={`w-1 h-6 ${category === 'PAGES' ? 'bg-purple-500' : 'bg-amber-500'} rounded-full`}></div>
-                                                        <h5 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{category} Protocol Layer</h5>
+                                                        <div className={`w-1 h-6 ${category === 'PAGES' ? 'bg-[var(--accent)]' : 'bg-[var(--status-warn)]'} rounded-full`}></div>
+                                                        <h5 className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em]">{category} Protocol Layer</h5>
                                                     </div>
 
                                                     <div className="grid grid-cols-1 gap-4">
@@ -740,13 +740,13 @@ export const WorkspaceView = ({
                                                                 a.label.toLowerCase().includes(actionSearchTerm.toLowerCase()) ||
                                                                 a.category.toLowerCase().includes(actionSearchTerm.toLowerCase())
                                                             )).map(action => (
-                                                                <div key={action.id} className="p-5 bg-[#161b22] border border-gray-800 rounded-3xl flex items-center justify-between group hover:border-purple-500/30 transition-all shadow-lg hover:shadow-purple-500/5">
+                                                                <div key={action.id} className="p-5 bg-[var(--bg-card)] border border-[var(--border-main)] rounded-3xl flex items-center justify-between group hover:border-[var(--accent)]/30 transition-all shadow-lg hover:shadow-[var(--accent-glow)]">
                                                                     <div>
                                                                         <div className="flex items-center gap-2 mb-1">
-                                                                            <span className={`text-[8px] font-black ${category === 'PAGES' ? 'text-purple-400 bg-purple-400/10 border-purple-400/20' : 'text-amber-400 bg-amber-400/10 border-amber-400/20'} px-1.5 py-0.5 rounded border uppercase tracking-widest`}>{action.category}</span>
-                                                                            <p className="text-sm font-bold text-gray-200">{action.label}</p>
+                                                                            <span className={`text-[8px] font-black ${category === 'PAGES' ? 'text-[var(--accent)] bg-[var(--accent)]/10 border-[var(--accent)]/20' : 'text-[var(--status-warn)] bg-[var(--status-warn)]/10 border-[var(--status-warn)]/20'} px-1.5 py-0.5 rounded border uppercase tracking-widest`}>{action.category}</span>
+                                                                            <p className="text-sm font-bold text-[var(--text-main)]">{action.label}</p>
                                                                         </div>
-                                                                        <p className="text-[10px] text-gray-600 font-medium">{action.description}</p>
+                                                                        <p className="text-[10px] text-[var(--text-dim)] font-medium">{action.description}</p>
                                                                     </div>
                                                                     <button
                                                                         onClick={() => {
@@ -755,7 +755,7 @@ export const WorkspaceView = ({
                                                                             saveGroups(updated);
                                                                             setEditingGroup({ ...editingGroup, permissions: updatedPerms });
                                                                         }}
-                                                                        className={`w-12 h-6 rounded-full relative transition-all ${editingGroup.permissions?.[action.id] ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]' : 'bg-gray-800'}`}
+                                                                        className={`w-12 h-6 rounded-full relative transition-all ${editingGroup.permissions?.[action.id] ? 'bg-[var(--status-success)] shadow-[0_0_10px_var(--status-success)]' : 'bg-[var(--bg-deep)]'}`}
                                                                     >
                                                                         <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${editingGroup.permissions?.[action.id] ? 'right-1' : 'left-1'}`}></div>
                                                                     </button>
@@ -768,8 +768,8 @@ export const WorkspaceView = ({
                                     </div>
                                 ) : (
                                     <div className="h-full flex flex-col items-center justify-center opacity-50">
-                                        <Shield className="w-20 h-20 text-gray-800 mb-6" />
-                                        <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Select security tier for policy synchronization</p>
+                                        <Shield className="w-20 h-20 text-[var(--text-dim)] mb-6" />
+                                        <p className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Select security tier for policy synchronization</p>
                                     </div>
                                 )}
                             </div>
@@ -779,11 +779,11 @@ export const WorkspaceView = ({
             )}
 
             {showUserModal && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[200] p-6 animate-in fade-in duration-300">
-                    <div className="bg-[#161b22] border border-gray-800 w-full max-w-lg rounded-[2.5rem] shadow-2xl relative overflow-hidden">
-                        <div className="p-8 border-b border-gray-800 bg-[#1c2128] flex items-center justify-between">
-                            <h3 className="text-xl font-black text-white uppercase tracking-tighter italic">Identity Manifest</h3>
-                            <button onClick={() => { setShowUserModal(false); setEditingUser(null); setShowUserPassword(false); }} className="p-2 hover:bg-gray-800 rounded-xl text-gray-500"><X className="w-6 h-6" /></button>
+                <div className="fixed inset-0 bg-[var(--bg-deep)]/60 backdrop-blur-md flex items-center justify-center z-[200] p-6 animate-in fade-in duration-300">
+                    <div className="bg-[var(--bg-card)] border border-[var(--border-main)] w-full max-w-lg rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+                        <div className="p-8 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)] flex items-center justify-between">
+                            <h3 className="text-xl font-black text-[var(--text-bright)] uppercase tracking-tighter italic">Identity Manifest</h3>
+                            <button onClick={() => { setShowUserModal(false); setEditingUser(null); setShowUserPassword(false); }} className="p-2 hover:bg-[var(--bg-deep)] rounded-xl text-[var(--text-dim)]"><X className="w-6 h-6" /></button>
                         </div>
                         <form onSubmit={(e) => {
                             e.preventDefault();
@@ -795,56 +795,56 @@ export const WorkspaceView = ({
                             };
                             editingUser ? handleUpdateUser(data) : handleAddUser(data);
                         }} className="p-8 space-y-6">
-                            <input name="name" defaultValue={editingUser?.name} required className="w-full bg-[#0d1117] border border-gray-800 rounded-2xl py-4 px-5 text-sm text-white outline-none focus:border-amber-500 font-bold" placeholder="Operational Name" />
-                            <input name="email" type="email" defaultValue={editingUser?.email} required className="w-full bg-[#0d1117] border border-gray-800 rounded-2xl py-4 px-5 text-sm text-white outline-none focus:border-amber-500 font-bold" placeholder="Designated Email" />
+                            <input name="name" defaultValue={editingUser?.name} required className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-2xl py-4 px-5 text-sm text-[var(--text-bright)] outline-none focus:border-[var(--status-warn)] font-bold" placeholder="Operational Name" />
+                            <input name="email" type="email" defaultValue={editingUser?.email} required className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-2xl py-4 px-5 text-sm text-[var(--text-bright)] outline-none focus:border-[var(--status-warn)] font-bold" placeholder="Designated Email" />
                             <div className="grid grid-cols-2 gap-4">
-                                <select name="groupId" defaultValue={editingUser?.groupId || 'viewer-group'} className="w-full bg-[#0d1117] border border-gray-800 rounded-2xl py-4 px-5 text-sm text-white outline-none font-bold appearance-none">
+                                <select name="groupId" defaultValue={editingUser?.groupId || 'viewer-group'} className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-2xl py-4 px-5 text-sm text-[var(--text-main)] outline-none font-bold appearance-none">
                                     {permissionGroups.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
                                 </select>
                                 <div className="relative">
-                                    <input name="password" type={showUserPassword ? "text" : "password"} defaultValue={editingUser?.password || 'password123'} required className="w-full bg-[#0d1117] border border-gray-800 rounded-2xl py-4 px-5 text-sm text-white outline-none focus:border-amber-500 font-bold pr-12" placeholder="Auth Key" />
+                                    <input name="password" type={showUserPassword ? "text" : "password"} defaultValue={editingUser?.password || 'password123'} required className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-2xl py-4 px-5 text-sm text-[var(--text-main)] outline-none focus:border-[var(--status-warn)] font-bold pr-12" placeholder="Auth Key" />
                                     <button
                                         type="button"
                                         onClick={() => setShowUserPassword(!showUserPassword)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-white transition-colors"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-[var(--text-dim)] hover:text-[var(--text-bright)] transition-colors"
                                     >
                                         {showUserPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                     </button>
                                 </div>
                             </div>
                             <div className="flex gap-3">
-                                <button type="button" onClick={() => { setShowUserModal(false); setEditingUser(null); setShowUserPassword(false); }} className="flex-1 py-4 bg-gray-800 text-[10px] uppercase font-black text-gray-400 rounded-2xl">Abort</button>
-                                <button type="submit" className="flex-2 py-4 bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-amber-500/20">Authorize Identity</button>
+                                <button type="button" onClick={() => { setShowUserModal(false); setEditingUser(null); setShowUserPassword(false); }} className="flex-1 py-4 bg-[var(--bg-deep)] text-[10px] uppercase font-black text-[var(--text-dim)] rounded-2xl">Abort</button>
+                                <button type="submit" className="flex-2 py-4 bg-[var(--status-warn)] text-black text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-[var(--status-warn-glow)]">Authorize Identity</button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
             {showACLModal && aclBlueprint && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[200] p-6 animate-in fade-in duration-300">
-                    <div className="bg-[#161b22] border border-gray-800 w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative overflow-hidden flex flex-col max-h-[80vh]">
-                        <div className="p-8 border-b border-gray-800 bg-[#1c2128] flex items-center justify-between">
+                <div className="fixed inset-0 bg-[var(--bg-deep)]/60 backdrop-blur-md flex items-center justify-center z-[200] p-6 animate-in fade-in duration-300">
+                    <div className="bg-[var(--bg-card)] border border-[var(--border-main)] w-full max-w-2xl rounded-[2.5rem] shadow-2xl relative overflow-hidden flex flex-col max-h-[80vh]">
+                        <div className="p-8 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)] flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20 text-blue-500">
+                                <div className="w-12 h-12 bg-[var(--primary)]/10 rounded-xl flex items-center justify-center border border-[var(--primary)]/20 text-[var(--primary)]">
                                     <Shield className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black text-white uppercase tracking-tighter italic">Access Control: {aclBlueprint.name}</h3>
-                                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Manage Authorization Matrix</p>
+                                    <h3 className="text-xl font-black text-[var(--text-bright)] uppercase tracking-tighter italic">Access Control: {aclBlueprint.name}</h3>
+                                    <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-widest mt-1">Manage Authorization Matrix</p>
                                 </div>
                             </div>
-                            <button onClick={() => setShowACLModal(false)} className="p-2 hover:bg-gray-800 rounded-xl text-gray-500"><X className="w-6 h-6" /></button>
+                            <button onClick={() => setShowACLModal(false)} className="p-2 hover:bg-[var(--bg-deep)] rounded-xl text-[var(--text-dim)]"><X className="w-6 h-6" /></button>
                         </div>
 
                         <div className="p-8 space-y-8 overflow-y-auto custom-scrollbar">
-                            <div className="p-6 bg-emerald-500/5 rounded-[2rem] border border-emerald-500/20 flex items-center justify-between group">
+                            <div className="p-6 bg-[var(--status-success)]/5 rounded-[2rem] border border-[var(--status-success)]/20 flex items-center justify-between group">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 text-emerald-500">
+                                    <div className="w-12 h-12 bg-[var(--status-success)]/10 rounded-xl flex items-center justify-center border border-[var(--status-success)]/20 text-[var(--status-success)]">
                                         <Globe className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-black text-white uppercase tracking-tighter">Universal System Access</h4>
-                                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Authorized for all verified personnel</p>
+                                        <h4 className="text-sm font-black text-[var(--text-bright)] uppercase tracking-tighter">Universal System Access</h4>
+                                        <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-widest mt-1">Authorized for all verified personnel</p>
                                     </div>
                                 </div>
                                 <button
@@ -856,14 +856,14 @@ export const WorkspaceView = ({
                                         SecurityMiddleware.secureWrite('antigravity_blueprints_registry', JSON.stringify(updated));
                                         setACLBlueprint({ ...aclBlueprint, authorizedUserIds: newIds });
                                     }}
-                                    className={`w-14 h-7 rounded-full relative transition-all ${aclBlueprint.authorizedUserIds?.includes('*') ? 'bg-emerald-500' : 'bg-gray-800'}`}
+                                    className={`w-14 h-7 rounded-full relative transition-all ${aclBlueprint.authorizedUserIds?.includes('*') ? 'bg-[var(--status-success)]' : 'bg-[var(--bg-deep)]'}`}
                                 >
                                     <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all ${aclBlueprint.authorizedUserIds?.includes('*') ? 'right-1' : 'left-1'}`}></div>
                                 </button>
                             </div>
 
                             <div className="space-y-4">
-                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                                <h4 className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest flex items-center gap-2">
                                     <Users className="w-3.5 h-3.5" /> Authorized Personnel
                                 </h4>
                                 <div className="grid grid-cols-1 gap-2">
@@ -872,20 +872,20 @@ export const WorkspaceView = ({
                                         const isOwner = user.id === aclBlueprint.ownerId;
 
                                         return (
-                                            <div key={user.id} className={`p-4 rounded-2xl border flex items-center justify-between transition-all ${isAuthorized ? 'bg-blue-500/5 border-blue-500/20' : 'bg-[#0d1117] border-gray-800 opacity-60'}`}>
+                                            <div key={user.id} className={`p-4 rounded-2xl border flex items-center justify-between transition-all ${isAuthorized ? 'bg-[var(--primary)]/5 border-[var(--primary)]/20' : 'bg-[var(--bg-main)] border-[var(--border-main)] opacity-60'}`}>
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center text-[10px] font-black">{user.name[0]}</div>
+                                                    <div className="w-8 h-8 rounded-lg bg-[var(--bg-deep)] flex items-center justify-center text-[10px] font-black">{user.name[0]}</div>
                                                     <div>
-                                                        <p className="text-xs font-bold text-white uppercase">{user.name}</p>
-                                                        <p className="text-[9px] text-gray-600 font-medium">{user.email}</p>
+                                                        <p className="text-xs font-bold text-[var(--text-bright)] uppercase">{user.name}</p>
+                                                        <p className="text-[9px] text-[var(--text-dim)] font-medium">{user.email}</p>
                                                     </div>
                                                 </div>
                                                 {isOwner ? (
-                                                    <span className="text-[8px] font-black text-amber-500 uppercase tracking-widest px-2 py-1 bg-amber-500/10 rounded-md border border-amber-500/20">OWNER</span>
+                                                    <span className="text-[8px] font-black text-[var(--status-warn)] uppercase tracking-widest px-2 py-1 bg-[var(--status-warn)]/10 rounded-md border border-[var(--status-warn)]/20">OWNER</span>
                                                 ) : (
                                                     <div className="flex items-center gap-2">
                                                         {aclBlueprint.authorizedUserIds?.includes('*') && (
-                                                            <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest px-2 py-1 bg-emerald-500/10 rounded-md border border-emerald-500/20">UNIVERSAL</span>
+                                                            <span className="text-[8px] font-black text-[var(--status-success)] uppercase tracking-widest px-2 py-1 bg-[var(--status-success)]/10 rounded-md border border-[var(--status-success)]/20">UNIVERSAL</span>
                                                         )}
                                                         <button
                                                             onClick={() => {
@@ -895,7 +895,7 @@ export const WorkspaceView = ({
                                                                 SecurityMiddleware.secureWrite('antigravity_blueprints_registry', JSON.stringify(updated));
                                                                 setACLBlueprint({ ...aclBlueprint, authorizedUserIds: newIds });
                                                             }}
-                                                            className={`w-10 h-5 rounded-full relative transition-all ${isAuthorized ? 'bg-blue-500' : 'bg-gray-800'}`}
+                                                            className={`w-10 h-5 rounded-full relative transition-all ${isAuthorized ? 'bg-[var(--primary)]' : 'bg-[var(--bg-deep)]'}`}
                                                         >
                                                             <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${isAuthorized ? 'right-0.5' : 'left-0.5'}`}></div>
                                                         </button>
@@ -907,8 +907,8 @@ export const WorkspaceView = ({
                                 </div>
                             </div>
 
-                            <div className="space-y-4 pt-4 border-t border-gray-800">
-                                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                            <div className="space-y-4 pt-4 border-t border-[var(--border-main)]">
+                                <h4 className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest flex items-center gap-2">
                                     <Shield className="w-3.5 h-3.5" /> Authorized Security Tiers
                                 </h4>
                                 <div className="grid grid-cols-1 gap-2">
@@ -917,16 +917,16 @@ export const WorkspaceView = ({
                                         const isAdmin = group.id === 'admin-group';
 
                                         return (
-                                            <div key={group.id} className={`p-4 rounded-2xl border flex items-center justify-between transition-all ${isAuthorized || isAdmin ? 'bg-purple-500/5 border-purple-500/20' : 'bg-[#0d1117] border-gray-800 opacity-60'}`}>
+                                            <div key={group.id} className={`p-4 rounded-2xl border flex items-center justify-between transition-all ${isAuthorized || isAdmin ? 'bg-[var(--accent)]/5 border-[var(--accent)]/20' : 'bg-[var(--bg-main)] border-[var(--border-main)] opacity-60'}`}>
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center"><Lock className="w-4 h-4 text-gray-600" /></div>
+                                                    <div className="w-8 h-8 rounded-lg bg-[var(--bg-deep)] flex items-center justify-center"><Lock className="w-4 h-4 text-[var(--text-dim)]" /></div>
                                                     <div>
-                                                        <p className="text-xs font-bold text-white uppercase">{group.name}</p>
-                                                        <p className="text-[9px] text-gray-600 font-medium">Clearance Group: {group.id}</p>
+                                                        <p className="text-xs font-bold text-[var(--text-bright)] uppercase">{group.name}</p>
+                                                        <p className="text-[9px] text-[var(--text-dim)] font-medium">Clearance Group: {group.id}</p>
                                                     </div>
                                                 </div>
                                                 {isAdmin ? (
-                                                    <span className="text-[8px] font-black text-purple-500 uppercase tracking-widest px-2 py-1 bg-purple-500/10 rounded-md border border-amber-500/20">SYSTEM ADMIN</span>
+                                                    <span className="text-[8px] font-black text-[var(--accent)] uppercase tracking-widest px-2 py-1 bg-[var(--accent)]/10 rounded-md border border-[var(--status-warn)]/20">SYSTEM ADMIN</span>
                                                 ) : (
                                                     <button
                                                         onClick={() => {
@@ -936,7 +936,7 @@ export const WorkspaceView = ({
                                                             SecurityMiddleware.secureWrite('antigravity_blueprints_registry', JSON.stringify(updated));
                                                             setACLBlueprint({ ...aclBlueprint, authorizedGroupIds: newIds });
                                                         }}
-                                                        className={`w-10 h-5 rounded-full relative transition-all ${isAuthorized ? 'bg-purple-500' : 'bg-gray-800'}`}
+                                                        className={`w-10 h-5 rounded-full relative transition-all ${isAuthorized ? 'bg-[var(--accent)]' : 'bg-[var(--bg-deep)]'}`}
                                                     >
                                                         <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${isAuthorized ? 'right-0.5' : 'left-0.5'}`}></div>
                                                     </button>
@@ -948,34 +948,34 @@ export const WorkspaceView = ({
                             </div>
                         </div>
 
-                        <div className="p-8 border-t border-gray-800 bg-[#1c2128] flex justify-end">
-                            <button onClick={() => { setShowACLModal(false); showToast?.('Authorization matrix synchronized', 'success'); }} className="px-10 py-4 bg-blue-500 text-black text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-500/20 transition-all">Synchronize Authorization</button>
+                        <div className="p-8 border-t border-[var(--border-main)] bg-[var(--bg-sidebar)] flex justify-end">
+                            <button onClick={() => { setShowACLModal(false); showToast?.('Authorization matrix synchronized', 'success'); }} className="px-10 py-4 bg-[var(--primary)] text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-[var(--primary-glow)] transition-all">Synchronize Authorization</button>
                         </div>
                     </div>
                 </div>
             )}
 
             {showAddGroupModal && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[300] p-6 animate-in fade-in zoom-in duration-300">
-                    <div className="bg-[#161b22] border border-gray-800 w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden">
-                        <div className="p-8 border-b border-gray-800 bg-[#1c2128] flex items-center justify-between">
-                            <h3 className="text-xl font-black text-white uppercase tracking-tighter italic">New Security Tier</h3>
-                            <button onClick={() => setShowAddGroupModal(false)} className="p-2 hover:bg-gray-800 rounded-xl text-gray-500"><X className="w-6 h-6" /></button>
+                <div className="fixed inset-0 bg-[var(--bg-deep)]/60 backdrop-blur-md flex items-center justify-center z-[300] p-6 animate-in fade-in zoom-in duration-300">
+                    <div className="bg-[var(--bg-card)] border border-[var(--border-main)] w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden">
+                        <div className="p-8 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)] flex items-center justify-between">
+                            <h3 className="text-xl font-black text-[var(--text-bright)] uppercase tracking-tighter italic">New Security Tier</h3>
+                            <button onClick={() => setShowAddGroupModal(false)} className="p-2 hover:bg-[var(--bg-deep)] rounded-xl text-[var(--text-dim)]"><X className="w-6 h-6" /></button>
                         </div>
                         <div className="p-8 space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Tier Designation</label>
+                                <label className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest ml-1">Tier Designation</label>
                                 <input
                                     id="new-group-name"
                                     autoFocus
-                                    className="w-full bg-[#0d1117] border border-gray-800 rounded-2xl py-4 px-5 text-sm text-white outline-none focus:border-purple-500 font-bold"
+                                    className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-2xl py-4 px-5 text-sm text-[var(--text-bright)] outline-none focus:border-[var(--accent)] font-bold"
                                     placeholder="e.g. Infrastructure Engineers"
                                 />
                             </div>
                             <div className="flex gap-3">
                                 <button
                                     onClick={() => setShowAddGroupModal(false)}
-                                    className="flex-1 py-4 bg-gray-800 text-[10px] uppercase font-black text-gray-400 rounded-2xl hover:bg-gray-700 transition-colors"
+                                    className="flex-1 py-4 bg-[var(--bg-deep)] text-[10px] uppercase font-black text-[var(--text-dim)] rounded-2xl hover:bg-[var(--bg-sidebar)] transition-colors"
                                 >
                                     Abort
                                 </button>
@@ -986,7 +986,7 @@ export const WorkspaceView = ({
                                             handleAddGroupComplete(input.value);
                                         }
                                     }}
-                                    className="flex-2 py-4 bg-purple-600 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-purple-600/20 hover:bg-purple-500 transition-all"
+                                    className="flex-2 py-4 bg-[var(--accent)] text-white text-[10px] font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-[var(--accent-glow)] hover:opacity-90 transition-all"
                                 >
                                     Initialize Tier
                                 </button>

@@ -25,31 +25,31 @@ export const DocQuickModal: React.FC<DocQuickModalProps> = ({ isOpen, onClose, p
     const activePage = pages.find(p => p.id === activePageId || (p.relatedPageIds?.includes(currentTab || '') && !activePageId)) || pages[0];
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="bg-[#0b0e14] border border-gray-800 rounded-[40px] w-full max-w-6xl h-full max-h-[85vh] flex flex-col shadow-[0_0_100px_rgba(37,99,235,0.2)] overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[var(--bg-deep)]/60 backdrop-blur-md animate-in fade-in duration-300">
+            <div className="bg-[var(--bg-card)] border border-[var(--border-main)] rounded-[40px] w-full max-w-6xl h-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
                 {/* Modal Header */}
-                <div className="px-10 py-6 border-b border-gray-800 bg-[#161b22] flex items-center justify-between shrink-0">
+                <div className="px-10 py-6 border-b border-[var(--border-main)] bg-[var(--bg-sidebar)] flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-600/10 rounded-2xl">
-                            <Library className="w-6 h-6 text-blue-500" />
+                        <div className="p-3 bg-[var(--primary)]/10 rounded-2xl border border-[var(--primary)]/20">
+                            <Library className="w-6 h-6 text-[var(--primary)]" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-black text-white uppercase tracking-tight">Sovereign Knowledge Base</h2>
-                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Global Infrastructure Intelligence</p>
+                            <h2 className="text-xl font-black text-[var(--text-bright)] uppercase tracking-tight">Sovereign Knowledge Base</h2>
+                            <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-widest">Global Infrastructure Intelligence</p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-4">
                         <button
                             onClick={onFullDocumentation}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-blue-400 rounded-xl text-[10px] font-black uppercase tracking-widest border border-gray-700 transition-all group"
+                            className="flex items-center gap-2 px-6 py-2.5 bg-[var(--bg-deep)] hover:bg-[var(--border-subtle)] text-[var(--primary)] rounded-xl text-[10px] font-black uppercase tracking-widest border border-[var(--border-main)] transition-all group"
                         >
                             <BookOpen className="w-4 h-4 group-hover:scale-110 transition-transform" />
                             Open Full Portal
                         </button>
                         <button
                             onClick={onClose}
-                            className="p-2 text-gray-500 hover:text-white transition-colors hover:bg-white/5 rounded-full"
+                            className="p-2 text-[var(--text-dim)] hover:text-[var(--text-bright)] transition-colors hover:bg-[var(--border-subtle)] rounded-full"
                         >
                             <X className="w-8 h-8" />
                         </button>
@@ -58,16 +58,16 @@ export const DocQuickModal: React.FC<DocQuickModalProps> = ({ isOpen, onClose, p
 
                 <div className="flex-1 flex overflow-hidden">
                     {/* Sidebar */}
-                    <aside className="w-80 border-r border-gray-800 flex flex-col bg-[#0d1117] shrink-0">
-                        <div className="p-6 border-b border-gray-800">
+                    <aside className="w-80 border-r border-[var(--border-main)] flex flex-col bg-[var(--bg-main)] shrink-0">
+                        <div className="p-6 border-b border-[var(--border-main)]">
                             <div className="relative group">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 group-focus-within:text-blue-400 transition-colors" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-dim)] group-focus-within:text-[var(--primary)] transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Scan knowledge..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full bg-[#06080a] border border-gray-800 rounded-xl py-2 pl-10 pr-4 text-xs text-white focus:border-blue-500/50 outline-none transition-all"
+                                    className="w-full bg-[var(--bg-deep)] border border-[var(--border-main)] rounded-xl py-2 pl-10 pr-4 text-xs text-[var(--text-main)] focus:border-[var(--primary)]/50 outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -78,13 +78,13 @@ export const DocQuickModal: React.FC<DocQuickModalProps> = ({ isOpen, onClose, p
                                     key={page.id}
                                     onClick={() => setActivePageId(page.id)}
                                     className={`w-full group px-4 py-4 rounded-2xl flex items-center justify-between transition-all ${activePageId === page.id
-                                        ? 'bg-blue-600/10 border border-blue-500/20 text-blue-400'
-                                        : 'text-gray-500 hover:bg-gray-800'
+                                        ? 'bg-[var(--primary)]/10 border border-[var(--primary)]/20 text-[var(--primary)]'
+                                        : 'text-[var(--text-dim)] hover:bg-[var(--border-subtle)]'
                                         }`}
                                 >
                                     <div className="flex items-center gap-3 overflow-hidden text-left">
-                                        <FileText className={`w-4 h-4 shrink-0 ${activePageId === page.id ? 'text-blue-400' : 'text-gray-700 group-hover:text-gray-500'}`} />
-                                        <span className={`text-[11px] font-bold truncate uppercase tracking-tight ${activePageId === page.id ? 'text-white' : ''}`}>
+                                        <FileText className={`w-4 h-4 shrink-0 ${activePageId === page.id ? 'text-[var(--primary)]' : 'text-[var(--text-dim)] opacity-50 group-hover:opacity-100'}`} />
+                                        <span className={`text-[11px] font-bold truncate uppercase tracking-tight ${activePageId === page.id ? 'text-[var(--text-bright)]' : ''}`}>
                                             {page.title}
                                         </span>
                                     </div>
@@ -95,13 +95,13 @@ export const DocQuickModal: React.FC<DocQuickModalProps> = ({ isOpen, onClose, p
                     </aside>
 
                     {/* Content */}
-                    <main className="flex-1 bg-[#06080a] p-10 overflow-hidden relative">
+                    <main className="flex-1 bg-[var(--bg-deep)] p-10 overflow-hidden relative">
                         {activePage ? (
                             <DocViewer page={activePage} />
                         ) : (
                             <div className="h-full flex flex-col items-center justify-center opacity-30">
-                                <Search className="w-16 h-16 mb-4" />
-                                <p className="text-sm font-black uppercase tracking-widest">No Intelligence Discovered</p>
+                                <Search className="w-16 h-16 mb-4 text-[var(--text-dim)]" />
+                                <p className="text-sm font-black uppercase tracking-widest text-[var(--text-dim)]">No Intelligence Discovered</p>
                             </div>
                         )}
                     </main>

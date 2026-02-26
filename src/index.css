@@ -1,17 +1,115 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: dark;
+  /* Atlas Design System Base Tokens */
+  --font-primary: 'Outfit', 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --glass-blur: blur(12px);
+  --shadow-premium: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* --- THEME: SOVEREIGN (DARK) --- */
+.theme-dark {
+  --bg-deep: #05070a;
+  --bg-main: #0d1117;
+  --bg-card: #161b22;
+  --bg-sidebar: #010409;
+  --bg-input: #0d1117;
+
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-main: rgba(255, 255, 255, 0.1);
+  --border-accent: rgba(56, 139, 253, 0.4);
+
+  --primary: #388bfd;
+  --primary-glow: rgba(56, 139, 253, 0.25);
+  --secondary: #7ee787;
+  --accent: #bc8cff;
+
+  --status-success: #238636;
+  --status-error: #da3633;
+  --status-warn: #d29922;
+  --status-info: #1f6feb;
+
+  --text-main: #c9d1d9;
+  --text-dim: #8b949e;
+  --text-bright: #f0f6fc;
+  --text-link: #58a6ff;
+
+  --glass-bg: rgba(22, 27, 34, 0.7);
+}
+
+/* --- THEME: TACTICAL (LIGHT) --- */
+.theme-light {
+  --bg-deep: #f0f2f5;
+  --bg-main: #ffffff;
+  --bg-card: #f6f8fa;
+  --bg-sidebar: #ffffff;
+  --bg-input: #f0f2f5;
+
+  --border-subtle: rgba(27, 31, 36, 0.05);
+  --border-main: rgba(27, 31, 36, 0.15);
+  --border-accent: rgba(9, 105, 218, 0.4);
+
+  --primary: #0969da;
+  --primary-glow: rgba(9, 105, 218, 0.1);
+  --secondary: #1a7f37;
+  --accent: #8250df;
+
+  --status-success: #1a7f37;
+  --status-error: #cf222e;
+  --status-warn: #9a6700;
+  --status-info: #0969da;
+
+  --text-main: #1f2328;
+  --text-dim: #656d76;
+  --text-bright: #000000;
+  --text-link: #0969da;
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+}
+
+/* --- THEME: STRATEGIC (SEPIA) --- */
+.theme-sepia {
+  --bg-deep: #e8e3d9;
+  --bg-main: #f4ecd8;
+  --bg-card: #faf4e8;
+  --bg-sidebar: #efe9db;
+  --bg-input: #e8e3d9;
+
+  --border-subtle: rgba(95, 75, 50, 0.05);
+  --border-main: rgba(95, 75, 50, 0.15);
+  --border-accent: rgba(140, 110, 80, 0.4);
+
+  --primary: #8c6e50;
+  --primary-glow: rgba(140, 110, 80, 0.1);
+  --secondary: #5f7450;
+  --accent: #7d5f8a;
+
+  --status-success: #5f7450;
+  --status-error: #a84a4a;
+  --status-warn: #8a7340;
+  --status-info: #4a6a8a;
+
+  --text-main: #433422;
+  --text-dim: #70604d;
+  --text-bright: #2d2215;
+  --text-link: #8c6e50;
+
+  --glass-bg: rgba(244, 236, 216, 0.7);
 }
 
 body {
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #0d1117;
+  padding: 0;
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Custom Scrollbar */
@@ -25,12 +123,12 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #30363d;
+  background: var(--border-main);
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #484f58;
+  background: var(--primary);
 }
 
 /* Animations */

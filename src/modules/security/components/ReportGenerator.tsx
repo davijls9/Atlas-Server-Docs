@@ -54,57 +54,57 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-[#06080a]/80 backdrop-blur-md z-[100] flex items-center justify-center p-6">
-            <div className="bg-[#0d1117] border border-gray-800 rounded-[32px] w-full max-w-lg p-8 shadow-2xl animate-in zoom-in duration-300">
+        <div className="fixed inset-0 bg-[var(--bg-deep)]/80 backdrop-blur-md z-[100] flex items-center justify-center p-6">
+            <div className="bg-[var(--bg-card)] border border-[var(--border-main)] rounded-[32px] w-full max-w-lg p-8 shadow-2xl animate-in zoom-in duration-300">
                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center gap-3">
-                        <FileText className="w-5 h-5 text-blue-500" />
-                        <h3 className="text-sm font-black text-white uppercase tracking-widest">
+                        <FileText className="w-5 h-5 text-[var(--primary)]" />
+                        <h3 className="text-sm font-black text-[var(--text-bright)] uppercase tracking-widest">
                             Generate Audit Report
                         </h3>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-gray-500 hover:text-white transition-colors"
+                        className="text-[var(--text-dim)] hover:text-[var(--text-bright)] transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 <div className="space-y-4 mb-6">
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-[var(--text-dim)]">
                         Generate a comprehensive security audit report in JSON format.
                     </p>
 
-                    <div className="bg-[#161b22] rounded-xl p-4 border border-gray-800">
-                        <h4 className="text-[10px] font-black text-gray-500 uppercase mb-3">Report Contents</h4>
-                        <ul className="space-y-2 text-xs text-gray-400">
+                    <div className="bg-[var(--bg-sidebar)] rounded-xl p-4 border border-[var(--border-main)]">
+                        <h4 className="text-[10px] font-black text-[var(--text-dim)] uppercase mb-3">Report Contents</h4>
+                        <ul className="space-y-2 text-xs text-[var(--text-dim)]">
                             <li className="flex items-center gap-2">
-                                <div className="w-1 h-1 rounded-full bg-blue-500"></div>
+                                <div className="w-1 h-1 rounded-full bg-[var(--primary)]"></div>
                                 Metadata (timestamp, user, compliance score)
                             </li>
                             <li className="flex items-center gap-2">
-                                <div className="w-1 h-1 rounded-full bg-blue-500"></div>
+                                <div className="w-1 h-1 rounded-full bg-[var(--primary)]"></div>
                                 Summary statistics
                             </li>
                             <li className="flex items-center gap-2">
-                                <div className="w-1 h-1 rounded-full bg-blue-500"></div>
+                                <div className="w-1 h-1 rounded-full bg-[var(--primary)]"></div>
                                 Attribute breakdown with compliance rates
                             </li>
                             <li className="flex items-center gap-2">
-                                <div className="w-1 h-1 rounded-full bg-blue-500"></div>
+                                <div className="w-1 h-1 rounded-full bg-[var(--primary)]"></div>
                                 Detailed asset information ({auditNodes.length} nodes)
                             </li>
                             <li className="flex items-center gap-2">
-                                <div className="w-1 h-1 rounded-full bg-blue-500"></div>
+                                <div className="w-1 h-1 rounded-full bg-[var(--primary)]"></div>
                                 Manual override tracking ({Object.keys(overrides).length} overrides)
                             </li>
                         </ul>
                     </div>
 
-                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
-                        <p className="text-xs text-blue-400 font-bold">
-                            Average Compliance Score: <span className="text-white font-black">{stats.avgScore}%</span>
+                    <div className="bg-[var(--primary)]/10 border border-[var(--primary)]/20 rounded-xl p-4">
+                        <p className="text-xs text-[var(--primary)] font-bold">
+                            Average Compliance Score: <span className="text-[var(--text-bright)] font-black">{stats.avgScore}%</span>
                         </p>
                     </div>
                 </div>
@@ -112,14 +112,14 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({
                 <div className="flex gap-3">
                     <button
                         onClick={onClose}
-                        className="flex-1 px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-2xl text-sm font-black uppercase text-gray-300 transition-all"
+                        className="flex-1 px-6 py-3 bg-[var(--bg-deep)] hover:bg-[var(--border-subtle)] border border-[var(--border-main)] rounded-2xl text-sm font-black uppercase text-[var(--text-main)] transition-all"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleGenerate}
                         disabled={isGenerating}
-                        className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-2xl text-sm font-black uppercase text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="flex-1 px-6 py-3 bg-[var(--primary)] hover:opacity-90 rounded-2xl text-sm font-black uppercase text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         <FileText className="w-4 h-4" />
                         {isGenerating ? 'Generating...' : 'Generate Report'}

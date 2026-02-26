@@ -49,15 +49,15 @@ export interface InfraNodeData {
 // --- Custom Premium Node ---
 const CustomNode = memo(({ data }: { data: InfraNodeData }) => {
     const Icon = data.type === 'SWITCH' ? Share2 : data.type === 'ROUTER' ? Globe : data.type === 'PHYSICAL_SERVER' ? Server : data.type === 'VIRTUAL_MACHINE' ? Layers : Database;
-    const accentColor = data.type === 'SWITCH' ? 'border-blue-500/50' : data.type === 'PHYSICAL_SERVER' ? 'border-emerald-500/50' : data.type === 'VIRTUAL_MACHINE' ? 'border-orange-500/50' : 'border-purple-500/50';
+    const accentColor = data.type === 'SWITCH' ? 'border-[var(--primary)]/50' : data.type === 'PHYSICAL_SERVER' ? 'border-[var(--status-warn)]/50' : data.type === 'VIRTUAL_MACHINE' ? 'border-[var(--accent)]/50' : 'border-[var(--text-dim)]/50';
 
     return (
-        <div className={`relative group px-4 py-3 rounded-2xl border ${accentColor} bg-[#161b22]/40 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-[#161b22]/60 ring-1 ring-white/5`}>
+        <div className={`relative group px-4 py-3 rounded-2xl border ${accentColor} bg-[var(--bg-card)]/40 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-[var(--bg-card)]/60 ring-1 ring-white/5`}>
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl pointer-events-none"></div>
 
             {/* Standard Handles */}
-            <Handle type="target" position={Position.Left} id="target-main" className="w-2 h-2 !bg-blue-500 !border-none" />
-            <Handle type="source" position={Position.Right} id="source-main" className="w-2 h-2 !bg-blue-500 !border-none" />
+            <Handle type="target" position={Position.Left} id="target-main" className="w-2 h-2 !bg-[var(--primary)] !border-none" />
+            <Handle type="source" position={Position.Right} id="source-main" className="w-2 h-2 !bg-[var(--primary)] !border-none" />
 
             {/* Dynamic Interface Handles */}
             {data.interfaces && data.interfaces.map((iface, idx) => (
@@ -67,7 +67,7 @@ const CustomNode = memo(({ data }: { data: InfraNodeData }) => {
                         position={Position.Right}
                         id={`source-${iface.id}`}
                         style={{ top: 40 + (idx * 20), right: -4 }}
-                        className={`w-1.5 h-1.5 !border-none ${iface.status === 'ACTIVE' ? '!bg-emerald-500 shadow-[0_0_5px_#10b981]' : '!bg-gray-600'}`}
+                        className={`w-1.5 h-1.5 !border-none ${iface.status === 'ACTIVE' ? '!bg-[var(--status-warn)] shadow-[0_0_5px_var(--status-warn)]' : '!bg-[var(--text-dim)]/50'}`}
                         title={`Port: ${iface.name} (${iface.type})`}
                     />
                     <Handle
@@ -75,22 +75,22 @@ const CustomNode = memo(({ data }: { data: InfraNodeData }) => {
                         position={Position.Left}
                         id={`target-${iface.id}`}
                         style={{ top: 40 + (idx * 20), left: -4 }}
-                        className={`w-1.5 h-1.5 !border-none ${iface.status === 'ACTIVE' ? '!bg-emerald-500 shadow-[0_0_5px_#10b981]' : '!bg-gray-600'}`}
+                        className={`w-1.5 h-1.5 !border-none ${iface.status === 'ACTIVE' ? '!bg-[var(--status-warn)] shadow-[0_0_5px_var(--status-warn)]' : '!bg-[var(--text-dim)]/50'}`}
                         title={`Port: ${iface.name} (${iface.type})`}
                     />
                 </div>
             ))}
 
             <div className="flex items-center gap-3 relative">
-                <div className={`w-8 h-8 rounded-lg bg-gray-900 border ${accentColor} flex items-center justify-center text-white/80 group-hover:text-white transition-colors`}>
+                <div className={`w-8 h-8 rounded-lg bg-[var(--bg-deep)] border ${accentColor} flex items-center justify-center text-[var(--text-bright)]/80 group-hover:text-[var(--text-bright)] transition-colors`}>
                     <Icon className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <h4 className="text-[11px] font-black text-white uppercase tracking-wider truncate">{data.name}</h4>
-                    <p className="text-[9px] font-mono text-gray-500">{data.ip || 'no-ip'}</p>
+                    <h4 className="text-[11px] font-black text-[var(--text-bright)] uppercase tracking-wider truncate">{data.name}</h4>
+                    <p className="text-[9px] font-mono text-[var(--text-dim)]">{data.ip || 'no-ip'}</p>
                 </div>
             </div>
-            <Handle type="source" position={Position.Right} className="w-2 h-2 !bg-blue-500 !border-none" />
+            <Handle type="source" position={Position.Right} className="w-2 h-2 !bg-[var(--primary)] !border-none" />
         </div>
     );
 });
@@ -159,7 +159,7 @@ const CustomWaypointEdge = memo(({
                             textTransform: 'uppercase',
                             letterSpacing: '0.1em',
                             paintOrder: 'stroke',
-                            stroke: '#0d1117',
+                            stroke: 'var(--bg-main)',
                             strokeWidth: '3px',
                             strokeLinejoin: 'round'
                         }}
@@ -571,7 +571,7 @@ const InfraMapContent = ({ jsonData, onJsonChange }: InfraMapProps) => {
 
     return (
         <div
-            className="w-full h-full bg-[#0d1117] relative"
+            className="w-full h-full bg-[var(--bg-main)] relative"
             onMouseMove={onGlobalMouseMove}
             onMouseUp={onMouseUp}
             onMouseLeave={onMouseUp}
@@ -595,22 +595,22 @@ const InfraMapContent = ({ jsonData, onJsonChange }: InfraMapProps) => {
                 panOnScroll
                 selectionOnDrag
             >
-                <Background color="#1e293b" gap={40} size={1} />
-                <Controls className="!bg-[#161b22] !border-white/10 !fill-white" />
+                <Background color="var(--border-main)" gap={40} size={1} />
+                <Controls className="!bg-[var(--bg-sidebar)] !border-[var(--border-main)] !fill-[var(--text-main)]" />
             </ReactFlow>
 
             {/* Floating UI */}
             <div className="absolute top-8 left-8 flex flex-col gap-4 z-20">
-                <div className="p-4 bg-[#161b22]/80 backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-2xl space-y-4 w-64">
-                    <div className="flex items-center gap-2 border-b border-white/5 pb-3">
-                        <Filter className="w-4 h-4 text-blue-400" />
-                        <h3 className="text-xs font-black text-white uppercase tracking-tighter">Topology Control</h3>
+                <div className="p-4 bg-[var(--bg-card)]/80 backdrop-blur-2xl border border-[var(--border-main)] rounded-[2rem] shadow-2xl space-y-4 w-64">
+                    <div className="flex items-center gap-2 border-b border-[var(--border-main)] pb-3">
+                        <Filter className="w-4 h-4 text-[var(--primary)]" />
+                        <h3 className="text-xs font-black text-[var(--text-bright)] uppercase tracking-tighter">Topology Control</h3>
                     </div>
 
                     <div className="space-y-1">
                         <button
                             onClick={() => setIsDesignMode(!isDesignMode)}
-                            className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isDesignMode ? 'bg-amber-500 border-amber-400 text-black' : 'bg-gray-800 border-white/5 text-gray-400'}`}
+                            className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${isDesignMode ? 'bg-[var(--primary)] text-white' : 'bg-[var(--bg-deep)] border-[var(--border-main)] text-[var(--text-dim)]'}`}
                         >
                             <div className="flex items-center gap-2">
                                 {isDesignMode ? <Move className="w-4 h-4" /> : <MousePointer2 className="w-4 h-4" />}
@@ -618,21 +618,21 @@ const InfraMapContent = ({ jsonData, onJsonChange }: InfraMapProps) => {
                             </div>
                             {isDesignMode && <Activity className="w-3 h-3 animate-pulse" />}
                         </button>
-                        <p className="text-[8px] text-gray-500 font-bold uppercase tracking-widest px-2 mt-1">
+                        <p className="text-[8px] text-[var(--text-dim)] font-bold uppercase tracking-widest px-2 mt-1">
                             {isDesignMode ? 'Click edge to add waypoint • Drag point to move • Shift+Click to remove' : 'Switch to Design Mode to organize paths'}
                         </p>
                     </div>
 
                     <div className="space-y-1.5 pt-2">
                         <div className="flex items-center gap-2 px-2 py-1">
-                            <Layers className="w-3 h-3 text-blue-400" />
-                            <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Type Visibility</span>
+                            <Layers className="w-3 h-3 text-[var(--primary)]" />
+                            <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Type Visibility</span>
                         </div>
                         {types.map(t => (
                             <button
                                 key={t}
                                 onClick={() => toggleFilter(t)}
-                                className={`w-full flex items-center justify-between p-2 rounded-xl border border-transparent transition-all ${!hiddenTypes.has(t) ? 'bg-blue-600/10 text-blue-400' : 'text-gray-600'}`}
+                                className={`w-full flex items-center justify-between p-2 rounded-xl border border-transparent transition-all ${!hiddenTypes.has(t) ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--text-dim)]'}`}
                             >
                                 <span className="text-[9px] font-bold uppercase tracking-widest">{t.replace('_', ' ')}</span>
                                 {!hiddenTypes.has(t) ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
@@ -641,16 +641,16 @@ const InfraMapContent = ({ jsonData, onJsonChange }: InfraMapProps) => {
                     </div>
 
                     {routes.length > 0 && (
-                        <div className="space-y-1.5 pt-4 border-t border-white/5">
+                        <div className="space-y-1.5 pt-4 border-t border-[var(--border-main)]">
                             <div className="flex items-center gap-2 px-2 py-1">
-                                <Share2 className="w-3 h-3 text-purple-400" />
-                                <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">Logical Routes</span>
+                                <Share2 className="w-3 h-3 text-[var(--accent)]" />
+                                <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Logical Routes</span>
                             </div>
                             {routes.map(r => (
                                 <div key={r} className="flex items-center gap-2 group/route">
                                     <button
                                         onClick={() => toggleRouteFilter(r)}
-                                        className={`flex-1 flex items-center gap-2 p-2 rounded-lg transition-all ${hiddenRoutes.has(r) ? 'bg-gray-800/50 text-gray-500' : 'bg-blue-600/10 text-blue-400 border border-blue-500/20'}`}
+                                        className={`flex-1 flex items-center gap-2 p-2 rounded-lg transition-all ${hiddenRoutes.has(r) ? 'bg-[var(--bg-deep)] text-[var(--text-dim)]' : 'bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20'}`}
                                     >
                                         <div className="w-2 h-2 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" style={{ backgroundColor: 'currentColor' }}></div>
                                         <span className="text-[10px] font-black uppercase truncate">{r}</span>
@@ -667,7 +667,7 @@ const InfraMapContent = ({ jsonData, onJsonChange }: InfraMapProps) => {
                                                     } catch (e) { }
                                                 }
                                             }}
-                                            className="p-2 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-lg opacity-0 group-hover/route:opacity-100 transition-opacity"
+                                            className="p-2 bg-[var(--bg-deep)] hover:bg-[var(--bg-sidebar)] text-[var(--text-dim)] rounded-lg opacity-0 group-hover/route:opacity-100 transition-opacity"
                                         >
                                             <Edit2 className="w-3 h-3" />
                                         </button>
@@ -681,9 +681,9 @@ const InfraMapContent = ({ jsonData, onJsonChange }: InfraMapProps) => {
 
             {/* Design Mode Indicator */}
             {isDesignMode && (
-                <div className="absolute top-8 right-8 px-6 py-3 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center gap-3 backdrop-blur-md animate-pulse">
-                    <span className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]" />
-                    <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Architectural Adjustment Mode</span>
+                <div className="absolute top-8 right-8 px-6 py-3 bg-[var(--status-warn)]/10 border border-[var(--status-warn)]/20 rounded-full flex items-center gap-3 backdrop-blur-md animate-pulse">
+                    <span className="w-2 h-2 rounded-full bg-[var(--status-warn)] shadow-[0_0_8px_var(--status-warn)]" />
+                    <span className="text-[10px] font-black text-[var(--status-warn)] uppercase tracking-widest">Architectural Adjustment Mode</span>
                 </div>
             )}
         </div>

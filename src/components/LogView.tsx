@@ -48,11 +48,11 @@ export const LogView = ({ logs, onClearLogs, permissions }: LogViewProps) => {
 
     const getLevelStyle = (level: string) => {
         switch (level) {
-            case 'DEBUG': return 'text-gray-400 bg-gray-500/10 border-gray-500/20';
-            case 'INFO': return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
-            case 'WARN': return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
-            case 'ERROR': return 'text-red-400 bg-red-500/10 border-red-500/20';
-            default: return 'text-gray-400 bg-gray-500/10 border-gray-500/20';
+            case 'DEBUG': return 'text-[var(--accent)] bg-[var(--accent)]/10 border-[var(--accent)]/20';
+            case 'INFO': return 'text-[var(--primary)] bg-[var(--primary)]/10 border-[var(--primary)]/20';
+            case 'WARN': return 'text-[var(--status-warn)] bg-[var(--status-warn)]/10 border-[var(--status-warn)]/20';
+            case 'ERROR': return 'text-[var(--status-error)] bg-[var(--status-error)]/10 border-[var(--status-error)]/20';
+            default: return 'text-[var(--text-dim)] bg-[var(--text-dim)]/10 border-[var(--text-dim)]/20';
         }
     };
 
@@ -64,53 +64,53 @@ export const LogView = ({ logs, onClearLogs, permissions }: LogViewProps) => {
     };
 
     return (
-        <div className="flex-1 flex flex-col bg-[#0d1117] p-8 space-y-8 animate-in fade-in duration-500 overflow-hidden">
+        <div className="flex-1 flex flex-col bg-[var(--bg-main)] p-8 space-y-8 animate-in fade-in duration-500 overflow-hidden">
             {/* Header / Stats */}
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="bg-[#161b22] px-6 py-4 rounded-2xl border border-gray-800 shadow-xl border-l-2 border-l-gray-500">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Total Logs</p>
-                    <h3 className="text-xl font-black text-white">{stats.total}</h3>
+                <div className="bg-[var(--bg-card)] px-6 py-4 rounded-2xl border border-[var(--border-main)] shadow-xl border-l-2 border-l-[var(--text-dim)]">
+                    <p className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Total Logs</p>
+                    <h3 className="text-xl font-black text-[var(--text-bright)]">{stats.total}</h3>
                 </div>
-                <div className="bg-[#161b22] px-6 py-4 rounded-2xl border border-gray-800 shadow-xl border-l-2 border-l-blue-500">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Information</p>
-                    <h3 className="text-xl font-black text-blue-400">{stats.info}</h3>
+                <div className="bg-[var(--bg-card)] px-6 py-4 rounded-2xl border border-[var(--border-main)] shadow-xl border-l-2 border-l-[var(--primary)]">
+                    <p className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Information</p>
+                    <h3 className="text-xl font-black text-[var(--primary)]">{stats.info}</h3>
                 </div>
-                <div className="bg-[#161b22] px-6 py-4 rounded-2xl border border-gray-800 shadow-xl border-l-2 border-l-yellow-500">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Warnings</p>
-                    <h3 className="text-xl font-black text-yellow-500">{stats.warn}</h3>
+                <div className="bg-[var(--bg-card)] px-6 py-4 rounded-2xl border border-[var(--border-main)] shadow-xl border-l-2 border-l-[var(--status-warn)]">
+                    <p className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Warnings</p>
+                    <h3 className="text-xl font-black text-[var(--status-warn)]">{stats.warn}</h3>
                 </div>
-                <div className="bg-[#161b22] px-6 py-4 rounded-2xl border border-gray-800 shadow-xl border-l-2 border-l-red-500">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Critical Errors</p>
-                    <h3 className="text-xl font-black text-red-500">{stats.error}</h3>
+                <div className="bg-[var(--bg-card)] px-6 py-4 rounded-2xl border border-[var(--border-main)] shadow-xl border-l-2 border-l-[var(--status-error)]">
+                    <p className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Critical Errors</p>
+                    <h3 className="text-xl font-black text-[var(--status-error)]">{stats.error}</h3>
                 </div>
-                <div className="bg-[#161b22] px-6 py-4 rounded-2xl border border-gray-800 shadow-xl border-l-2 border-l-purple-500">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Debug Events</p>
-                    <h3 className="text-xl font-black text-purple-400">{stats.debug}</h3>
+                <div className="bg-[var(--bg-card)] px-6 py-4 rounded-2xl border border-[var(--border-main)] shadow-xl border-l-2 border-l-[var(--accent)]">
+                    <p className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Debug Events</p>
+                    <h3 className="text-xl font-black text-[var(--accent)]">{stats.debug}</h3>
                 </div>
             </div>
 
             {/* Controls */}
-            <div className="bg-[#161b22] rounded-[32px] border border-gray-800 shadow-2xl overflow-hidden flex flex-col flex-1 relative">
-                <div className="p-6 border-b border-gray-800 flex justify-between items-center bg-[#1c2128]">
+            <div className="bg-[var(--bg-card)] rounded-[32px] border border-[var(--border-main)] shadow-2xl overflow-hidden flex flex-col flex-1 relative">
+                <div className="p-6 border-b border-[var(--border-main)] flex justify-between items-center bg-[var(--bg-sidebar)]">
                     <div className="flex items-center gap-6">
-                        <div className="flex items-center gap-2 bg-[#0d1117] p-1 rounded-xl border border-gray-800">
+                        <div className="flex items-center gap-2 bg-[var(--bg-main)] p-1 rounded-xl border border-[var(--border-main)]">
                             <button
                                 onClick={() => setActiveTab('logs')}
-                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2 ${activeTab === 'logs' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
+                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2 ${activeTab === 'logs' ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary-glow)]' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                             >
                                 <ScrollText className="w-3.5 h-3.5" />
                                 System Audit
                             </button>
                             <button
                                 onClick={() => setActiveTab('modules')}
-                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2 ${activeTab === 'modules' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
+                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2 ${activeTab === 'modules' ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary-glow)]' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                             >
                                 <LayoutPanelLeft className="w-3.5 h-3.5" />
                                 Module Health
                             </button>
                             <button
                                 onClick={() => setActiveTab('errors')}
-                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2 ${activeTab === 'errors' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
+                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2 ${activeTab === 'errors' ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary-glow)]' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                             >
                                 <Bug className="w-3.5 h-3.5" />
                                 Error Tracking
@@ -118,38 +118,38 @@ export const LogView = ({ logs, onClearLogs, permissions }: LogViewProps) => {
                             {permissions?.view_security_intel && (
                                 <button
                                     onClick={() => setActiveTab('intel')}
-                                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2 ${activeTab === 'intel' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
+                                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2 ${activeTab === 'intel' ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary-glow)]' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                                 >
                                     <ShieldAlert className="w-3.5 h-3.5" />
                                     <span>Security Intel</span>
-                                    <span className="text-[7px] bg-red-500/20 text-red-500 px-1 rounded-sm border border-red-500/30">STRATEGEM</span>
+                                    <span className="text-[7px] bg-[var(--status-error)]/20 text-[var(--status-error)] px-1 rounded-sm border border-[var(--status-error)]/30">STRATEGEM</span>
                                 </button>
                             )}
                         </div>
 
                         {activeTab === 'logs' && (
                             <>
-                                <div className="h-8 w-px bg-gray-800"></div>
+                                <div className="h-8 w-px bg-[var(--border-main)]"></div>
 
                                 {/* Search */}
                                 <div className="relative group">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 transition-colors group-focus-within:text-blue-400" />
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-dim)] transition-colors group-focus-within:text-[var(--primary)]" />
                                     <input
                                         type="text"
                                         placeholder="Search logs (message, source...)"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="bg-[#0d1117] border border-gray-800 rounded-xl py-2 pl-10 pr-4 text-xs text-white w-64 focus:border-blue-500 outline-none transition-all font-medium"
+                                        className="bg-[var(--bg-main)] border border-[var(--border-main)] rounded-xl py-2 pl-10 pr-4 text-xs text-[var(--text-main)] w-64 focus:border-[var(--primary)] outline-none transition-all font-medium"
                                     />
                                 </div>
 
                                 {/* Level Filter */}
-                                <div className="flex items-center gap-2 bg-[#0d1117] p-1 rounded-xl border border-gray-800">
+                                <div className="flex items-center gap-2 bg-[var(--bg-main)] p-1 rounded-xl border border-[var(--border-main)]">
                                     {['ALL', 'DEBUG', 'INFO', 'WARN', 'ERROR'].map((lvl) => (
                                         <button
                                             key={lvl}
                                             onClick={() => setLevelFilter(lvl as any)}
-                                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${levelFilter === lvl ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
+                                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${levelFilter === lvl ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary-glow)]' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                                         >
                                             {lvl}
                                         </button>
@@ -162,7 +162,7 @@ export const LogView = ({ logs, onClearLogs, permissions }: LogViewProps) => {
                     {activeTab === 'logs' && (
                         <button
                             onClick={onClearLogs}
-                            className="px-6 py-2.5 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white rounded-2xl text-[9px] font-black uppercase border border-red-500/20 transition-all flex items-center gap-2 group"
+                            className="px-6 py-2.5 bg-[var(--status-error)]/10 hover:bg-[var(--status-error)] text-[var(--status-error)] hover:text-white rounded-2xl text-[9px] font-black uppercase border border-[var(--status-error)]/20 transition-all flex items-center gap-2 group"
                         >
                             <Trash2 className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" /> Clear Audit Chain
                         </button>
@@ -173,37 +173,37 @@ export const LogView = ({ logs, onClearLogs, permissions }: LogViewProps) => {
                 <div className="flex-1 overflow-auto custom-scrollbar">
                     {activeTab === 'logs' ? (
                         <table className="w-full text-left border-collapse">
-                            <thead className="sticky top-0 bg-[#1c2128] z-10 border-b border-gray-800">
+                            <thead className="sticky top-0 bg-[var(--bg-sidebar)] z-10 border-b border-[var(--border-main)]">
                                 <tr>
-                                    <th className="px-8 py-5 text-[10px] font-black text-gray-500 uppercase tracking-widest">Timestamp</th>
-                                    <th className="px-6 py-5 text-[10px] font-black text-gray-500 uppercase tracking-widest">Level</th>
-                                    <th className="px-6 py-5 text-[10px] font-black text-gray-500 uppercase tracking-widest">Identity</th>
-                                    <th className="px-6 py-5 text-[10px] font-black text-gray-500 uppercase tracking-widest">Source</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-gray-500 uppercase tracking-widest">Event Detail</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Timestamp</th>
+                                    <th className="px-6 py-5 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Level</th>
+                                    <th className="px-6 py-5 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Identity</th>
+                                    <th className="px-6 py-5 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Source</th>
+                                    <th className="px-8 py-5 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Event Detail</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-800/50 font-mono">
+                            <tbody className="divide-y divide-[var(--border-main)]/50 font-mono">
                                 {filteredLogs.length === 0 ? (
                                     <tr>
-                                        <td colSpan={4} className="px-8 py-20 text-center">
+                                        <td colSpan={5} className="px-8 py-20 text-center">
                                             <div className="flex flex-col items-center gap-4">
-                                                <div className="p-4 bg-gray-800/20 rounded-full border border-gray-800/50">
-                                                    <Filter className="w-8 h-8 text-gray-600" />
+                                                <div className="p-4 bg-[var(--bg-deep)] rounded-full border border-[var(--border-main)]">
+                                                    <Filter className="w-8 h-8 text-[var(--text-dim)]" />
                                                 </div>
-                                                <p className="text-gray-500 text-sm font-bold uppercase tracking-widest italic">No matching system logs discovered in orbit</p>
+                                                <p className="text-[var(--text-dim)] text-sm font-bold uppercase tracking-widest italic">No matching system logs discovered in orbit</p>
                                             </div>
                                         </td>
                                     </tr>
                                 ) : (
                                     filteredLogs.map((log) => (
-                                        <tr key={log.id} className="hover:bg-white/[0.015] transition-colors group">
+                                        <tr key={log.id} className="hover:bg-[var(--text-bright)]/[0.015] transition-colors group">
                                             <td className="px-8 py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-3">
-                                                    <Clock className="w-3.5 h-3.5 text-gray-600" />
-                                                    <span className="text-[11px] text-gray-400 font-bold uppercase tracking-tighter italic">
+                                                    <Clock className="w-3.5 h-3.5 text-[var(--text-dim)] opacity-50" />
+                                                    <span className="text-[11px] text-[var(--text-dim)] font-bold uppercase tracking-tighter italic">
                                                         {new Date(log.timestamp).toLocaleTimeString()}
                                                     </span>
-                                                    <span className="text-[9px] text-gray-700 font-black">
+                                                    <span className="text-[9px] text-[var(--text-dim)] font-black opacity-30">
                                                         .{new Date(log.timestamp).getMilliseconds().toString().padStart(3, '0')}
                                                     </span>
                                                 </div>
@@ -215,25 +215,25 @@ export const LogView = ({ logs, onClearLogs, permissions }: LogViewProps) => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
-                                                    <div className="w-6 h-6 rounded bg-gray-800 flex items-center justify-center text-[8px] font-black text-gray-500">
+                                                    <div className="w-6 h-6 rounded bg-[var(--bg-deep)] flex items-center justify-center text-[8px] font-black text-[var(--text-dim)]">
                                                         {(log.details?.user || 'SYS').split(' ').map((n: string) => n[0]).join('')}
                                                     </div>
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{log.details?.user || 'System'}</span>
+                                                    <span className="text-[10px] text-[var(--text-main)] font-bold uppercase tracking-tight">{log.details?.user || 'System'}</span>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
-                                                    <div className="p-1 bg-gray-800 rounded text-gray-500">
+                                                    <div className="p-1 bg-[var(--bg-deep)] rounded text-[var(--text-dim)]">
                                                         {getSourceIcon(log.source)}
                                                     </div>
-                                                    <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{log.source}</span>
+                                                    <span className="text-[10px] text-[var(--text-dim)] font-black uppercase tracking-widest">{log.source}</span>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-4">
                                                 <div className="space-y-1">
-                                                    <p className="text-[11px] text-gray-200 font-medium leading-relaxed">{log.message}</p>
+                                                    <p className="text-[11px] text-[var(--text-main)] font-medium leading-relaxed">{log.message}</p>
                                                     {log.details && (
-                                                        <div className="text-[9px] text-gray-500 bg-black/20 p-2 rounded-lg border border-gray-800 group-hover:border-gray-700 transition-colors font-mono">
+                                                        <div className="text-[9px] text-[var(--text-dim)] bg-[var(--bg-deep)] p-2 rounded-lg border border-[var(--border-main)] group-hover:border-[var(--text-dim)]/30 transition-colors font-mono">
                                                             {(() => {
                                                                 // Filter out identity fields from display as they are in the column
                                                                 const { user, userId, role, ...rest } = log.details || {};
@@ -243,8 +243,8 @@ export const LogView = ({ logs, onClearLogs, permissions }: LogViewProps) => {
                                                                     <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                                                                         {Object.entries(rest).map(([key, value]) => (
                                                                             <div key={key} className="flex gap-2">
-                                                                                <span className="text-gray-600 uppercase tracking-wider">{key}:</span>
-                                                                                <span className="text-blue-400 truncate">{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
+                                                                                <span className="text-[var(--text-dim)] uppercase tracking-wider">{key}:</span>
+                                                                                <span className="text-[var(--primary)] truncate">{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
                                                                             </div>
                                                                         ))}
                                                                     </div>
@@ -263,7 +263,7 @@ export const LogView = ({ logs, onClearLogs, permissions }: LogViewProps) => {
                         <div className="p-8">
                             {isLoading ? (
                                 <div className="flex items-center justify-center h-64">
-                                    <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="w-8 h-8 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                             ) : (
                                 <ModuleAnalysis modules={modules} />
@@ -273,7 +273,7 @@ export const LogView = ({ logs, onClearLogs, permissions }: LogViewProps) => {
                         <div className="p-8">
                             {isLoading ? (
                                 <div className="flex items-center justify-center h-64">
-                                    <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="w-8 h-8 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                             ) : (
                                 <ErrorAnalysis modules={modules} />

@@ -135,21 +135,21 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
     // Column management functions removed as they are now driven by schema
 
     return (
-        <div className="h-full w-full flex flex-col bg-[#06080a] text-white overflow-hidden relative">
+        <div className="h-full w-full flex flex-col bg-[var(--bg-deep)] text-[var(--text-main)] overflow-hidden relative">
             {/* Header */}
-            <div className={`border-b border-gray-800 bg-[#0d1117] shrink-0 relative z-20 shadow-xl transition-all duration-500 p-8`}>
+            <div className={`border-b border-[var(--border-main)] bg-[var(--bg-main)] shrink-0 relative z-20 shadow-xl transition-all duration-500 p-8`}>
                 <div className={`grid grid-cols-[1fr_auto_1fr] items-center gap-6 ${showStats ? 'mb-6' : 'mb-0'}`}>
                     {/* Left Column: Title Block */}
                     <div className="flex items-center gap-4 min-w-0">
-                        <div className="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] shrink-0">
-                            <Lock className="w-6 h-6 text-red-500" />
+                        <div className="w-12 h-12 bg-[var(--status-error)]/10 rounded-2xl flex items-center justify-center border border-[var(--status-error)]/20 shadow-[var(--status-error)]/10 shrink-0">
+                            <Lock className="w-6 h-6 text-[var(--status-error)]" />
                         </div>
                         <div className="min-w-0">
-                            <h1 className="text-3xl font-black text-white uppercase tracking-tighter leading-none mb-1 truncate">Security Audit</h1>
+                            <h1 className="text-3xl font-black text-[var(--text-bright)] uppercase tracking-tighter leading-none mb-1 truncate">Security Audit</h1>
                             <div className="flex items-center gap-2">
-                                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${globalScore === 100 ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : globalScore >= 80 ? 'bg-amber-500 shadow-[0_0_8px_#f59e0b]' : 'bg-red-500 shadow-[0_0_8px_#ef4444]'}`}></span>
-                                <p className="text-[9px] text-gray-500 font-bold uppercase tracking-widest truncate">
-                                    Risk: <span className={`${globalScore === 100 ? 'text-emerald-400' : globalScore >= 80 ? 'text-amber-400' : 'text-red-400'}`}>{globalScore}%</span>
+                                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${globalScore === 100 ? 'bg-[var(--status-success)] shadow-[0_0_8px_var(--status-success)]' : globalScore >= 80 ? 'bg-[var(--status-warn)] shadow-[0_0_8px_var(--status-warn)]' : 'bg-[var(--status-error)] shadow-[0_0_8px_var(--status-error)]'}`}></span>
+                                <p className="text-[9px] text-[var(--text-dim)] font-bold uppercase tracking-widest truncate">
+                                    Risk: <span className={`${globalScore === 100 ? 'text-[var(--status-success)]' : globalScore >= 80 ? 'text-[var(--status-warn)]' : 'text-[var(--status-error)]'}`}>{globalScore}%</span>
                                 </p>
                             </div>
                         </div>
@@ -157,18 +157,18 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
 
                     {/* Center Column: Sub-tab Navigator (Strict Centering) */}
                     <div className="flex justify-center">
-                        <div className="flex bg-[#161b22] px-1 py-1 rounded-2xl border border-gray-800 shadow-inner">
+                        <div className="flex bg-[var(--bg-card)] px-1 py-1 rounded-2xl border border-[var(--border-main)] shadow-inner">
                             <button
                                 type="button"
                                 onClick={() => setActiveSubTab('audit')}
-                                className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'audit' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
+                                className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'audit' ? 'bg-[var(--status-error)] text-black shadow-lg shadow-[var(--status-error)]/20' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                             >
                                 Audit Matrix
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setActiveSubTab('ssdlc')}
-                                className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'ssdlc' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
+                                className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'ssdlc' ? 'bg-[var(--status-error)] text-black shadow-lg shadow-[var(--status-error)]/20' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                             >
                                 SSDLC
                             </button>
@@ -176,7 +176,7 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
                                 <button
                                     type="button"
                                     onClick={() => setActiveSubTab('intel')}
-                                    className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'intel' ? 'bg-red-500 text-black shadow-lg shadow-red-500/20' : 'text-gray-500 hover:text-white'}`}
+                                    className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeSubTab === 'intel' ? 'bg-[var(--status-error)] text-black shadow-lg shadow-[var(--status-error)]/20' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                                 >
                                     Tactical Intel
                                 </button>
@@ -187,12 +187,12 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
                     {/* Right Column: Dynamic Actions Block */}
                     <div className="flex items-center justify-end gap-3 min-w-0">
                         {activeSubTab === 'audit' && (
-                            <div className="flex items-center bg-[#161b22] p-1 rounded-xl border border-gray-800 animate-in fade-in slide-in-from-right-4 duration-300 overflow-hidden">
+                            <div className="flex items-center bg-[var(--bg-card)] p-1 rounded-xl border border-[var(--border-main)] animate-in fade-in slide-in-from-right-4 duration-300 overflow-hidden">
                                 {['SERVER', 'SWITCH', 'VM'].map((t) => (
                                     <button
                                         key={t}
                                         onClick={() => setFilterType(t as any)}
-                                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${filterType === t ? 'bg-red-500/10 text-red-400' : 'text-gray-600 hover:text-gray-300'}`}
+                                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all ${filterType === t ? 'bg-[var(--status-error)]/10 text-[var(--status-error)]' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}
                                     >
                                         {t}
                                     </button>
@@ -202,7 +202,7 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
 
                         <button
                             onClick={() => setShowStats(!showStats)}
-                            className={`p-2 rounded-xl border transition-all shrink-0 ${showStats ? 'bg-gray-800/50 border-gray-700 text-blue-400' : 'bg-blue-500/10 border-blue-500/20 text-gray-400 hover:text-blue-400'}`}
+                            className={`p-2 rounded-xl border transition-all shrink-0 ${showStats ? 'bg-[var(--border-subtle)] border-[var(--border-main)] text-[var(--primary)]' : 'bg-[var(--primary)]/10 border-[var(--primary)]/20 text-[var(--text-dim)] hover:text-[var(--primary)]'}`}
                             title={showStats ? "Hide Stats" : "Show Stats"}
                         >
                             {showStats ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -210,7 +210,7 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
 
                         <button
                             onClick={() => setShowReportModal(true)}
-                            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-blue-600/20 border border-blue-500/50 flex items-center gap-2 shrink-0"
+                            className="px-6 py-2.5 bg-[var(--primary)] hover:opacity-90 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-[var(--primary-glow)] border border-[var(--border-accent)] flex items-center gap-2 shrink-0"
                         >
                             <FileText className="w-3.5 h-3.5" />
                             <span className="hidden xl:inline">Full Report</span>
@@ -244,7 +244,7 @@ export const SecurityView: React.FC<SecurityViewProps> = ({ jsonData, showToast,
                             onRenameColumn={() => { }}
                         />
                     ) : (
-                        <div className="flex flex-col items-center justify-center h-64 text-gray-500 opacity-50">
+                        <div className="flex flex-col items-center justify-center h-64 text-[var(--text-dim)] opacity-50">
                             <Shield className="w-16 h-16 mb-4" />
                             <p className="text-sm font-black uppercase tracking-widest">No Security Data Available</p>
                         </div>

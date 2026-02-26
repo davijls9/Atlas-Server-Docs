@@ -48,38 +48,41 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ pages, onS
     };
 
     return (
-        <div className="h-full w-full flex bg-[#06080a] overflow-hidden">
+        <div className="h-full w-full flex bg-[var(--bg-main)] overflow-hidden">
             {/* Sidebar */}
-            <aside className="w-80 border-r border-gray-800 flex flex-col bg-[#0d1117] shrink-0">
-                <div className="p-6 border-b border-gray-800 bg-[#161b22]/50">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 bg-blue-500/10 rounded-xl">
-                            <Library className="w-5 h-5 text-blue-400" />
+            <aside className="w-96 border-r border-[var(--border-main)] flex flex-col bg-[var(--bg-sidebar)] shrink-0 shadow-2xl z-10">
+                <div className="p-8 border-b border-[var(--border-main)] bg-[var(--bg-card)]/50 backdrop-blur-md">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-2.5 bg-[var(--primary)]/10 rounded-2xl shadow-inner">
+                            <Library className="w-5 h-5 text-[var(--primary)]" />
                         </div>
-                        <h2 className="font-black text-white text-xs uppercase tracking-widest">Library</h2>
+                        <div>
+                            <h2 className="font-black text-[var(--text-bright)] text-sm uppercase tracking-[0.2em] leading-none">Knowledge Core</h2>
+                            <p className="text-[9px] text-[var(--text-dim)] font-bold uppercase tracking-widest mt-1.5 opacity-60">Sovereign Protocol Lib</p>
+                        </div>
                     </div>
 
-                    <div className="relative group mb-4">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 group-focus-within:text-blue-400 transition-colors" />
+                    <div className="relative group mb-6">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-dim)] group-focus-within:text-[var(--primary)] transition-colors" />
                         <input
                             type="text"
                             placeholder="Search protocols..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-[#06080a] border border-gray-800 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white focus:border-blue-500/50 outline-none transition-all placeholder:text-gray-700"
+                            className="w-full bg-[var(--bg-main)] border border-[var(--border-main)] rounded-2xl py-3.5 pl-12 pr-5 text-xs text-[var(--text-bright)] focus:border-[var(--primary)]/50 focus:bg-[var(--bg-card)] outline-none transition-all placeholder:text-[var(--text-dim)]/30 font-bold shadow-inner"
                         />
                     </div>
 
                     <button
                         onClick={handleCreatePage}
-                        className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20 transition-all active:scale-95"
+                        className="w-full flex items-center justify-center gap-2.5 py-4 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-[var(--primary-glow)] transition-all active:scale-95 group"
                     >
-                        <Plus className="w-3.5 h-3.5" />
-                        Init New Protocol
+                        <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+                        Initialize Protocol
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-auto custom-scrollbar p-4 space-y-1">
+                <div className="flex-1 overflow-auto custom-scrollbar p-6 space-y-2 bg-[var(--bg-sidebar)]/30">
                     {filteredPages.map(page => (
                         <div
                             key={page.id}
@@ -87,31 +90,37 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ pages, onS
                                 setActivePageId(page.id);
                                 setIsEditing(false);
                             }}
-                            className={`w-full group px-4 py-4 rounded-2xl flex items-center justify-between transition-all border cursor-pointer ${activePageId === page.id
-                                ? 'bg-blue-600/10 border-blue-500/20 text-blue-400'
-                                : 'text-gray-500 border-transparent hover:bg-gray-800/50'
+                            className={`w-full group px-5 py-5 rounded-[2rem] flex items-center justify-between transition-all border cursor-pointer relative overflow-hidden ${activePageId === page.id
+                                ? 'bg-[var(--primary)]/10 border-[var(--primary)]/30 text-[var(--primary)] shadow-lg'
+                                : 'text-[var(--text-dim)] border-transparent hover:bg-[var(--bg-card)] hover:border-[var(--border-main)]'
                                 }`}
                         >
-                            <div className="flex items-center gap-3 overflow-hidden text-left">
-                                <FileText className={`w-4 h-4 shrink-0 ${activePageId === page.id ? 'text-blue-400' : 'text-gray-700 group-hover:text-gray-500'}`} />
+                            {activePageId === page.id && (
+                                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--primary)] shadow-[0_0_15px_var(--primary)]"></div>
+                            )}
+                            <div className="flex items-center gap-4 overflow-hidden text-left pl-1">
+                                <div className={`p-2 rounded-xl transition-colors ${activePageId === page.id ? 'bg-[var(--primary)]/20 text-[var(--primary)]' : 'bg-[var(--bg-main)] text-[var(--text-dim)] group-hover:text-[var(--text-main)]'}`}>
+                                    <FileText className="w-4 h-4 shrink-0" />
+                                </div>
                                 <div className="min-w-0">
-                                    <span className={`text-[11px] font-black truncate block uppercase tracking-tight ${activePageId === page.id ? 'text-white' : ''}`}>
+                                    <span className={`text-[12px] font-black truncate block uppercase tracking-tight leading-none ${activePageId === page.id ? 'text-[var(--text-bright)]' : ''}`}>
                                         {page.title}
                                     </span>
-                                    <span className="text-[8px] font-bold opacity-40 block truncate uppercase">
+                                    <span className="text-[8px] font-bold opacity-50 block truncate uppercase tracking-widest mt-1.5">
                                         Last Sync: {new Date(page.lastModified).toLocaleDateString()}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity pr-2">
                                 <button
                                     onClick={(e) => handleDelete(page.id, e)}
-                                    className="p-1.5 hover:bg-red-500/10 hover:text-red-400 rounded-lg transition-colors"
+                                    className="p-2 hover:bg-[var(--status-error)]/10 hover:text-[var(--status-error)] rounded-xl transition-colors"
+                                    title="Purge Protocol"
                                 >
-                                    <Trash2 className="w-3 h-3" />
+                                    <Trash2 className="w-3.5 h-3.5" />
                                 </button>
-                                <ChevronRight className="w-3 h-3" />
+                                <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${activePageId === page.id ? 'text-[var(--primary)]' : 'text-[var(--text-dim)]'}`} />
                             </div>
                         </div>
                     ))}
@@ -124,50 +133,60 @@ export const DocumentationView: React.FC<DocumentationViewProps> = ({ pages, onS
                     )}
                 </div>
 
-                <div className="p-4 border-t border-gray-800 bg-[#0a0c10]">
-                    <div className="flex items-center justify-between text-[8px] font-black text-gray-600 uppercase tracking-widest px-2">
-                        <span>Total Protocols</span>
-                        <span className="text-blue-500">{pages.length}</span>
+                <div className="p-6 border-t border-[var(--border-main)] bg-[var(--bg-main)]/50 backdrop-blur-md px-10">
+                    <div className="flex items-center justify-between text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em]">
+                        <span className="opacity-50">Silo Capacity</span>
+                        <div className="flex items-center gap-2">
+                            <span className="text-[var(--primary)]">{pages.length}</span>
+                            <span className="opacity-30">/</span>
+                            <span className="opacity-30">∞</span>
+                        </div>
                     </div>
                 </div>
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col overflow-hidden relative">
+            <main className="flex-1 flex flex-col overflow-hidden relative bg-[var(--bg-main)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,var(--primary)_0%,transparent_25%)] opacity-5 pointer-events-none"></div>
+
                 {activePage ? (
-                    <div className="flex-1 flex flex-col p-8 bg-[#06080a] relative overflow-hidden">
-                        <div className="flex justify-end mb-6 shrink-0 h-10">
-                            {!isEditing ? (
+                    <div className="flex-1 flex flex-col p-10 relative overflow-hidden z-10">
+                        <div className="flex justify-end mb-8 shrink-0 h-12">
+                            {!isEditing && (
                                 <button
                                     onClick={() => setIsEditing(true)}
-                                    className="flex items-center gap-2 px-6 py-2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
+                                    className="flex items-center gap-3 px-8 py-2.5 bg-[var(--primary)]/10 hover:bg-[var(--primary)] hover:text-white text-[var(--primary)] border border-[var(--primary)]/30 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-95 shadow-lg group"
                                 >
-                                    <Edit3 className="w-3.5 h-3.5" />
-                                    Edit Protocol
+                                    <Edit3 className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                                    Modify Protocol
                                 </button>
-                            ) : null}
+                            )}
                         </div>
 
                         <div className="flex-1 overflow-hidden relative">
                             {isEditing ? (
-                                <DocEditor
-                                    page={activePage}
-                                    onSave={(updated) => {
-                                        onSavePage(updated);
-                                        setIsEditing(false);
-                                    }}
-                                    onCancel={() => setIsEditing(false)}
-                                />
+                                <div className="h-full rounded-[3.5rem] p-1 bg-[var(--primary)]/10">
+                                    <DocEditor
+                                        page={activePage}
+                                        onSave={(updated) => {
+                                            onSavePage(updated);
+                                            setIsEditing(false);
+                                        }}
+                                        onCancel={() => setIsEditing(false)}
+                                    />
+                                </div>
                             ) : (
                                 <DocViewer page={activePage} />
                             )}
                         </div>
                     </div>
                 ) : (
-                    <div className="flex-1 flex flex-col items-center justify-center p-20 opacity-30">
-                        <Book className="w-20 h-20 mb-6 text-gray-700" />
-                        <h2 className="text-xl font-black text-white uppercase tracking-tighter mb-2">Knowledge Silo Offline</h2>
-                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Select a protocol to begin transmission</p>
+                    <div className="flex-1 flex flex-col items-center justify-center p-24 opacity-20 select-none">
+                        <div className="p-10 bg-[var(--bg-deep)] rounded-[4rem] border-2 border-dashed border-[var(--border-main)] mb-10">
+                            <Book className="w-24 h-24 text-[var(--text-dim)]" />
+                        </div>
+                        <h2 className="text-3xl font-black text-[var(--text-bright)] uppercase tracking-tighter mb-4 leading-none">Knowledge Silo Offline</h2>
+                        <p className="text-[11px] font-black text-[var(--text-dim)] uppercase tracking-[0.3em] max-w-sm text-center leading-relaxed">System standby. Select a sovereign intelligence protocol to begin signal transmission.</p>
                     </div>
                 )}
             </main>

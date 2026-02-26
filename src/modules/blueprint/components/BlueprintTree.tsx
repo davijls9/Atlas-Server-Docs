@@ -36,15 +36,15 @@ export const BlueprintTree: React.FC<BlueprintTreeProps> = ({
         return (
             <div key={node.id} className="space-y-0.5">
                 <div
-                    className={`flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg cursor-pointer group transition-all ${isSelected ? 'bg-blue-600/20 ring-1 ring-blue-500/50' : 'hover:bg-gray-800/50'}`}
+                    className={`flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg cursor-pointer group transition-all ${isSelected ? 'bg-[var(--primary)]/20 ring-1 ring-[var(--primary)]/50' : 'hover:bg-[var(--border-subtle)]'}`}
                     onClick={(e) => { e.stopPropagation(); onSelectNode(node.id); if (node.children?.length) onToggleExpand(node.id); }}
                 >
                     {node.children && node.children.length > 0 ? (
-                        isExpanded ? <ChevronDown className="w-2.5 h-2.5 text-gray-600" /> : <ChevronRight className="w-2.5 h-2.5 text-gray-600" />
+                        isExpanded ? <ChevronDown className="w-2.5 h-2.5 text-[var(--text-dim)]" /> : <ChevronRight className="w-2.5 h-2.5 text-[var(--text-dim)]" />
                     ) : <div className="w-2.5" />}
 
                     <Icon className={`w-3 sm:w-3.5 h-3 sm:h-3.5 ${color} transition-transform group-hover:scale-110`} />
-                    <span className={`text-[9px] sm:text-[10px] font-black truncate flex-1 uppercase tracking-tighter ${isSelected ? 'text-white' : 'text-gray-400'}`}>{node.name}</span>
+                    <span className={`text-[9px] sm:text-[10px] font-black truncate flex-1 uppercase tracking-tighter ${isSelected ? 'text-[var(--text-bright)]' : 'text-[var(--text-dim)]'}`}>{node.name}</span>
 
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         {permissions.edit_node !== false && (
@@ -59,7 +59,7 @@ export const BlueprintTree: React.FC<BlueprintTreeProps> = ({
                         )}
                     </div>
                 </div>
-                {isExpanded && <div className="ml-3 pl-3 border-l border-gray-800 space-y-0.5">{node.children?.map(child => renderTreeNode(child))}</div>}
+                {isExpanded && <div className="ml-3 pl-3 border-l border-[var(--border-main)] space-y-0.5">{node.children?.map(child => renderTreeNode(child))}</div>}
             </div>
         );
     };
@@ -69,16 +69,16 @@ export const BlueprintTree: React.FC<BlueprintTreeProps> = ({
             <button onClick={onAddPop} className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/30 rounded-xl text-[10px] font-black uppercase text-blue-400 tracking-[0.2em] mb-4 transition-all"><Plus className="w-4 h-4" /> New Pop Region</button>
             {pops.map(pop => (
                 <div key={pop.id}>
-                    <div className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer group transition-colors ${selectedNodeId === pop.id ? 'bg-blue-600/20 ring-1 ring-blue-500/50' : 'hover:bg-gray-800'}`} onClick={() => { onSelectNode(pop.id); onToggleExpand(pop.id); }}>
-                        {expandedIds.has(pop.id) ? <ChevronDown className="w-4 h-4 text-gray-600" /> : <ChevronRight className="w-4 h-4 text-gray-600" />}
-                        <Globe className="w-4 h-4 text-blue-400" />
-                        <span className="text-[10px] font-black truncate flex-1 uppercase tracking-tight text-gray-400">{pop.name}</span>
+                    <div className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer group transition-colors ${selectedNodeId === pop.id ? 'bg-[var(--primary)]/20 ring-1 ring-[var(--primary)]/50' : 'hover:bg-[var(--border-subtle)]'}`} onClick={() => { onSelectNode(pop.id); onToggleExpand(pop.id); }}>
+                        {expandedIds.has(pop.id) ? <ChevronDown className="w-4 h-4 text-[var(--text-dim)]" /> : <ChevronRight className="w-4 h-4 text-[var(--text-dim)]" />}
+                        <Globe className="w-4 h-4 text-[var(--primary)]" />
+                        <span className="text-[10px] font-black truncate flex-1 uppercase tracking-tight text-[var(--text-dim)]">{pop.name}</span>
                         {permissions.delete_node !== false && (
                             <button onClick={(e) => { e.stopPropagation(); onRemovePop(pop.id); }} className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-opacity"><Trash2 className="w-3.5 h-3.5" /></button>
                         )}
                     </div>
                     {expandedIds.has(pop.id) && (
-                        <div className="ml-4 pl-4 border-l border-gray-800 mt-2 space-y-1">
+                        <div className="ml-4 pl-4 border-l border-[var(--border-main)] mt-2 space-y-1">
                             {pop.nodes.map(node => renderTreeNode(node))}
                             {permissions.edit_node !== false && (
                                 <button onClick={() => onAddNode(pop.id, 'SWITCH')} className="w-full flex items-center gap-2 p-2 text-[10px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-400/10 rounded-lg transition-all"><Plus className="w-3 h-3" /> Add Switch</button>

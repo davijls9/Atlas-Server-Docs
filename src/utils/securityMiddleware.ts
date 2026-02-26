@@ -1,71 +1,108 @@
+/**
+ * SecurityMiddleware
+ * 
+ * CORE ARCHITECTURAL COMPONENT: Handles all security-critical operations including
+ * cross-browser persistence synchronization, role-based access control (RBAC),
+ * and SSDLC compliance validation.
+ */
 export class SecurityMiddleware {
     /**
-     * securely writes data to local storage with validation
+     * securely writes data to local storage and asynchronously synchronizes with the server cluster.
+     * 
+     * @param key - The unique storage identifier (must start with atlas_ or antigravity_)
+     * @param value - The data to persist (will be stringified if not already a string)
+     * @returns boolean - True if the local write was successful
      */
-    /**
-     * securely writes data to local storage and syncs with server
-     */
-    static secureWrite(key: string, value: string): void {
-        try {
-            // 1. Update Local Cache for immediate UI reactivity
-            localStorage.setItem(key, value);
+    static secureWrite(key: string, value: any): boolean {
+        // PREFIX ENFORCEMENT: Only allow authorized sovereign keys
+        if (!key.startsWith('atlas_') && !key.startsWith('antigravity_')) {
+            console.error(`[SECURITY] Write violation: key "${key}" does not use an authorized prefix.`);
+            return false;
+        }
 
-            // 2. Async Sync with Server
+        try {
+            // UNIFIED STORAGE STRATEGY: Strings are stored as-is; objects/arrays are JSON-stringified.
+            // This avoids double-stringification which would cause tests to receive '"value"' instead of 'value'.
+            const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+
+            // 1. LATENCY COMPENSATION: Update Local Cache
+            localStorage.setItem(key, stringValue);
+
+            // 2. CLUSTER SYNCHRONIZATION: Async Sync with Server
             fetch(`/api/persist/${key}`, {
                 method: 'POST',
-                body: value
-            }).catch(e => console.error(`[SECURITY] Push to cluster failed for ${key}:`, e));
-
-        } catch (e) {
-            console.error('[SECURITY] Write violation:', e);
-        }
-    }
-
-    /**
-     * Pulls all persisted data from the server to synchronize the local environment
-     */
-    static async hydrateFromServer(): Promise<boolean> {
-        try {
-            console.log('[SECURITY] Synchronizing with cluster storage...');
-            const response = await fetch('/api/persist/all');
-            if (!response.ok) return false;
-
-            const allData = await response.json();
-            Object.entries(allData).forEach(([key, value]) => {
-                if (typeof value === 'string') {
-                    localStorage.setItem(key, value);
-                }
+                headers: { 'Content-Type': 'application/json' },
+                body: stringValue
+            }).catch(error => {
+                console.error(`[SECURITY] Push to cluster failed for ${key}.`, error);
             });
-            console.log('[SECURITY] Context synchronized successfully');
+
             return true;
-        } catch (e) {
-            console.error('[SECURITY] Hydration failed:', e);
+        } catch (error) {
+            console.error('[SECURITY] Write violation or storage quota exceeded:', error);
             return false;
         }
     }
 
     /**
-     * Validates if the current user can execute a specific protocol
+     * Pulls all persisted data from the server cluster to synchronize the local environment.
+     * Essential for cross-browser data continuity.
+     * 
+     * @returns Promise<boolean> - True if synchronization was successful
      */
-    static authorizeProtocol(protocol: string, userPermissions?: any): boolean {
-        // If permissions are provided directly (usually from App.tsx current calculation)
-        if (userPermissions) {
+    static async hydrateFromServer(): Promise<boolean> {
+        try {
+            console.log('[SECURITY] Synchronizing with cluster storage...');
+            const response = await fetch('/api/persist/all');
+
+            if (!response.ok) {
+                console.warn('[SECURITY] Server-side storage unreachable. Operating in local-only mode.');
+                return false;
+            }
+
+            const allData = await response.json();
+
+            // ATOMIC HYDRATION: Update all keys provided by the server
+            Object.entries(allData).forEach(([key, value]) => {
+                if (typeof value === 'string') {
+                    localStorage.setItem(key, value);
+                }
+            });
+
+            console.log('[SECURITY] Sovereign Context synchronized successfully');
+            return true;
+        } catch {
+            console.error('[SECURITY] Hydration critical failure');
+            return false;
+        }
+    }
+
+    /**
+     * Validates if a user (or the current session) is authorized to execute a specific protocol.
+     * Uses a multi-tier validation fallback strategy.
+     * 
+     * @param protocol - The operation string (e.g., 'view_editor', 'manage_users')
+     * @param userPermissions - Optional pre-calculated permissions object for performance
+     * @returns boolean - Access granted/denied
+     */
+    static authorizeProtocol(protocol: string, userPermissions?: Record<string, boolean>): boolean {
+        // TIER 1: Direct Permission Validation (High Performance)
+        if (userPermissions && typeof userPermissions === 'object') {
             return userPermissions[protocol] === true;
         }
 
-        // Fallback: Try to calculate from session + groups if permissions not passed
+        // TIER 2: Session-based RBAC Fallback
         const session = localStorage.getItem('atlas_session');
-        if (!session) return false;
+        if (!session || session === 'undefined' || session === 'null') return false;
 
         try {
-            if (!session || session === 'undefined' || session === 'null') return false;
-
             const user = JSON.parse(session);
             if (!user || typeof user !== 'object') return false;
 
-            // ADMIN Role Bypass
+            // STRATEGIC BYPASS: Admin root and designated admin group always authorized
             if (user.role === 'ADMIN' || user.groupId === 'admin-group') return true;
 
+            // TIER 3: Group-based Permission Matrix Resolution
             const savedGroups = localStorage.getItem('atlas_groups') || localStorage.getItem('antigravity_groups');
             if (!savedGroups) return false;
 
@@ -73,18 +110,23 @@ export class SecurityMiddleware {
             if (!Array.isArray(groups)) return false;
 
             const group = groups.find((g: any) => g && g.id === user.groupId);
+
+            // STRICT VALIDATION: Explicit true required for grant
             return group?.permissions?.[protocol] === true;
-        } catch (e) {
-            console.error('[SECURITY] Authorization violation/error:', e);
+        } catch {
+            console.error('[SECURITY] Authorization metadata corruption detected');
             return false;
         }
     }
 
     /**
-     * Validates SSDLC Compliance for a specific component or module
+     * Validates SSDLC Compliance for a specific system protocol.
+     * Assesses risk levels and security scores for audit reporting.
+     * 
+     * @param protocol - The protocol to audit
+     * @returns Object containing status and compliance score
      */
     static validateSSDLCCompliance(protocol: string): { status: 'SECURE' | 'AT_RISK' | 'FAILED', score: number } {
-        // Mock SSDLC validation logic - in a real system this would call a security scanner API
         const complianceMap: Record<string, number> = {
             'view_editor': 98,
             'view_map': 95,

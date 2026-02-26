@@ -28,7 +28,7 @@ class FileConnector implements StorageConnector {
             const filePath = path.join(this.dataDir, `${key}.json`);
             if (!fs.existsSync(filePath)) return null;
             return await readFile(filePath, 'utf-8');
-        } catch (e) {
+        } catch {
             return null;
         }
     }
@@ -41,7 +41,7 @@ class FileConnector implements StorageConnector {
             await writeFile(tempPath, value, 'utf-8');
             await rename(tempPath, filePath);
             return true;
-        } catch (e) {
+        } catch {
             return false;
         }
     }
@@ -51,7 +51,7 @@ class FileConnector implements StorageConnector {
             await this.ensureDir();
             const files = await promisify(fs.readdir)(this.dataDir);
             return files.filter(f => f.endsWith('.json')).map(f => f.replace('.json', ''));
-        } catch (e) {
+        } catch {
             return [];
         }
     }
@@ -87,7 +87,7 @@ export class PersistenceManager {
             if (!data) return null;
             JSON.parse(data); // Validate JSON integrity
             return data;
-        } catch (e) {
+        } catch {
             console.error(`[PERSISTENCE] Integrity check failed for ${key}`);
             return null;
         }
@@ -103,7 +103,7 @@ export class PersistenceManager {
                 // Pre-write validation
                 JSON.parse(value);
                 return await this.connector.write(key, value);
-            } catch (e) {
+            } catch {
                 console.error(`[PERSISTENCE] Write violation for ${key}: Invalid JSON`);
                 return false;
             }

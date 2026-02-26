@@ -12,41 +12,41 @@ export const ErrorAnalysis: React.FC<ErrorAnalysisProps> = ({ modules }) => {
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-3 gap-4">
-                <div className="bg-[#161b22] border border-red-500/20 p-6 rounded-2xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-4 opacity-10"><AlertCircle className="w-24 h-24 text-red-500" /></div>
-                    <h3 className="text-xs font-black text-red-400 uppercase tracking-widest mb-2">Active Errors</h3>
-                    <p className="text-4xl font-black text-white">{totalErrors}</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-[var(--bg-card)] border border-[var(--status-error)]/20 p-6 rounded-2xl relative overflow-hidden group hover:border-[var(--status-error)]/40 transition-all">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity"><AlertCircle className="w-24 h-24 text-[var(--status-error)]" /></div>
+                    <h3 className="text-xs font-black text-[var(--status-error)] uppercase tracking-widest mb-2 opacity-80">Active Errors</h3>
+                    <p className="text-4xl font-black text-[var(--text-bright)]">{totalErrors}</p>
                 </div>
-                <div className="bg-[#161b22] border border-gray-800 p-6 rounded-2xl">
-                    <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Impacted Modules</h3>
-                    <p className="text-4xl font-black text-white">{modulesWithErrors.length}</p>
-                    <p className="text-xs text-gray-500 mt-2">{((modulesWithErrors.length / modules.length) * 100).toFixed(0)}% of system</p>
+                <div className="bg-[var(--bg-card)] border border-[var(--border-main)] p-6 rounded-2xl hover:border-[var(--primary)]/30 transition-all">
+                    <h3 className="text-xs font-black text-[var(--text-dim)] uppercase tracking-widest mb-2">Impacted Modules</h3>
+                    <p className="text-4xl font-black text-[var(--text-bright)]">{modulesWithErrors.length}</p>
+                    <p className="text-xs text-[var(--text-dim)] mt-2 font-bold uppercase tracking-tighter">{((modulesWithErrors.length / modules.length) * 100).toFixed(0)}% of system</p>
                 </div>
-                <div className="bg-[#161b22] border border-gray-800 p-6 rounded-2xl">
-                    <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-2">System Health</h3>
-                    <p className="text-4xl font-black text-emerald-400">{(100 - (modulesWithErrors.length / modules.length) * 100).toFixed(0)}%</p>
-                    <p className="text-xs text-gray-500 mt-2">Operational</p>
+                <div className="bg-[var(--bg-card)] border border-[var(--border-main)] p-6 rounded-2xl hover:border-[var(--status-success)]/30 transition-all">
+                    <h3 className="text-xs font-black text-[var(--text-dim)] uppercase tracking-widest mb-2">System Health</h3>
+                    <p className="text-4xl font-black text-[var(--status-success)]">{(100 - (modulesWithErrors.length / modules.length) * 100).toFixed(0)}%</p>
+                    <p className="text-xs text-[var(--text-dim)] mt-2 font-bold uppercase tracking-tighter">Operational</p>
                 </div>
             </div>
 
-            <div className="bg-[#0d1117] border border-gray-800 rounded-3xl overflow-hidden">
-                <div className="p-6 border-b border-gray-800 bg-[#161b22]">
-                    <h3 className="text-sm font-black text-white uppercase tracking-widest">Error Log Analysis</h3>
+            <div className="bg-[var(--bg-card)] border border-[var(--border-main)] rounded-3xl overflow-hidden shadow-xl">
+                <div className="p-6 border-b border-[var(--border-main)] bg-[var(--bg-card)]/50">
+                    <h3 className="text-sm font-black text-[var(--text-bright)] uppercase tracking-widest">Error Log Analysis</h3>
                 </div>
                 <div className="p-6 space-y-4">
                     {modulesWithErrors.length > 0 ? (
                         modulesWithErrors.map(module => (
-                            <div key={module.path} className="border border-red-500/20 bg-red-500/5 rounded-xl p-4">
+                            <div key={module.path} className="border border-[var(--status-error)]/20 bg-[var(--status-error)]/5 rounded-xl p-4 hover:border-[var(--status-error)]/30 transition-all">
                                 <div className="flex items-center justify-between mb-4">
-                                    <h4 className="font-bold text-white text-sm">{module.name}</h4>
-                                    <span className="px-2 py-1 bg-red-500/10 text-red-400 text-[10px] font-black uppercase rounded border border-red-500/20">{module.errors.length} Issues</span>
+                                    <h4 className="font-bold text-[var(--text-bright)] text-sm">{module.name}</h4>
+                                    <span className="px-2 py-1 bg-[var(--status-error)]/10 text-[var(--status-error)] text-[10px] font-black uppercase rounded border border-[var(--status-error)]/20">{module.errors.length} Issues</span>
                                 </div>
                                 <div className="space-y-2">
                                     {module.errors.map((err: ModuleError, idx: number) => (
-                                        <div key={idx} className="flex items-start gap-3 text-xs text-gray-400 bg-[#0d1117] p-2 rounded border border-gray-800">
-                                            <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                                            <span>{err.message} ({err.line}:{err.column})</span>
+                                        <div key={idx} className="flex items-start gap-3 text-xs text-[var(--text-main)] bg-[var(--bg-deep)] p-2 rounded border border-[var(--border-main)]">
+                                            <XCircle className="w-4 h-4 text-[var(--status-error)] shrink-0 mt-0.5" />
+                                            <span className="opacity-80 font-medium">{err.message} <span className="text-[var(--text-dim)] font-black text-[9px] uppercase ml-1">({err.line}:{err.column})</span></span>
                                         </div>
                                     ))}
                                 </div>
@@ -54,8 +54,8 @@ export const ErrorAnalysis: React.FC<ErrorAnalysisProps> = ({ modules }) => {
                         ))
                     ) : (
                         <div className="text-center py-12">
-                            <CheckCircle className="w-16 h-16 text-emerald-500 mx-auto mb-4 opacity-20" />
-                            <p className="text-gray-500 font-bold uppercase tracking-widest">No Active Errors Detected</p>
+                            <CheckCircle className="w-16 h-16 text-[var(--status-success)] mx-auto mb-4 opacity-20" />
+                            <p className="text-[var(--text-dim)] font-black uppercase tracking-widest">No Active Errors Detected</p>
                         </div>
                     )}
                 </div>

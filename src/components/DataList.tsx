@@ -99,16 +99,16 @@ export const DataList = ({ jsonData }: DataListProps) => {
                                     {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
                                 </button>
                             ) : <div className="w-5" />}
-                            <div className={`p-2 rounded-lg ${isSelected ? 'bg-blue-500 text-white' : 'bg-gray-800 text-gray-400 group-hover:text-blue-400 transition-colors'}`}>
+                            <div className={`p-2 rounded-lg ${isSelected ? 'bg-[var(--primary)] text-white' : 'bg-[var(--border-subtle)] text-[var(--text-dim)] group-hover:text-[var(--primary)] transition-colors'}`}>
                                 {getIcon(node.type)}
                             </div>
-                            <span className={`font-semibold ${isSelected ? 'text-blue-400' : 'text-gray-200'}`}>
+                            <span className={`font-semibold ${isSelected ? 'text-[var(--primary)]' : 'text-[var(--text-main)]'}`}>
                                 {node.name}
                             </span>
                         </div>
                     </td>
                     <td className="px-6 py-4">
-                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter bg-gray-800 px-2 py-0.5 rounded-md border border-gray-700">
+                        <span className="text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-tighter bg-[var(--border-subtle)] px-2 py-0.5 rounded-md border border-[var(--border-main)]">
                             {node.type?.toUpperCase() || 'UNKNOWN'}
                         </span>
                     </td>
@@ -182,16 +182,16 @@ export const DataList = ({ jsonData }: DataListProps) => {
     };
 
     return (
-        <div className="flex flex-col h-full bg-[#0d1117] text-gray-100 p-8 space-y-6">
+        <div className="flex flex-col h-full bg-[var(--bg-main)] text-[var(--text-main)] p-8 space-y-6">
             {/* Action Bar */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#161b22] p-6 rounded-2xl border border-gray-800 shadow-xl backdrop-blur-md">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[var(--bg-card)] p-6 rounded-2xl border border-[var(--border-main)] shadow-xl backdrop-blur-md">
                 <div className="flex items-center gap-4 flex-1">
                     <div className="relative group">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-blue-400 w-5 h-5 transition-colors" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-dim)] group-focus-within:text-[var(--primary)] w-5 h-5 transition-colors" />
                         <input
                             type="text"
                             placeholder="Search nodes, IPs, types..."
-                            className="pl-11 pr-4 py-2.5 bg-[#0d1117] border border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none text-white w-full md:w-80 transition-all placeholder:text-gray-600"
+                            className="pl-11 pr-4 py-2.5 bg-[var(--bg-deep)] border border-[var(--border-main)] rounded-xl focus:ring-2 focus:ring-[var(--primary)]/50 focus:border-[var(--primary)] outline-none text-[var(--text-main)] w-full md:w-80 transition-all placeholder:text-[var(--text-dim)]"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -199,7 +199,7 @@ export const DataList = ({ jsonData }: DataListProps) => {
 
                     <div className="flex items-center gap-2">
                         <select
-                            className="bg-[#0d1117] border border-gray-700 rounded-xl py-2.5 px-4 focus:ring-2 focus:ring-blue-500/50 outline-none text-white transition-all cursor-pointer hover:border-gray-600"
+                            className="bg-[var(--bg-deep)] border border-[var(--border-main)] rounded-xl py-2.5 px-4 focus:ring-2 focus:ring-[var(--primary)]/50 outline-none text-[var(--text-main)] transition-all cursor-pointer hover:border-[var(--text-dim)]"
                             value={filterType}
                             onChange={(e) => setFilterType(e.target.value)}
                         >
@@ -215,14 +215,14 @@ export const DataList = ({ jsonData }: DataListProps) => {
                     <div className="flex items-center gap-2">
                         <button
                             onClick={handleExpandAll}
-                            className="p-2.5 bg-[#0d1117] hover:bg-gray-800 border border-gray-700 rounded-xl text-gray-400 hover:text-blue-400 transition-all"
+                            className="p-2.5 bg-[var(--bg-deep)] hover:bg-[var(--border-subtle)] border border-[var(--border-main)] rounded-xl text-[var(--text-dim)] hover:text-[var(--primary)] transition-all"
                             title="Expand All"
                         >
                             <Maximize2 className="w-4 h-4" />
                         </button>
                         <button
                             onClick={handleCollapseAll}
-                            className="p-2.5 bg-[#0d1117] hover:bg-gray-800 border border-gray-700 rounded-xl text-gray-400 hover:text-blue-400 transition-all"
+                            className="p-2.5 bg-[var(--bg-deep)] hover:bg-[var(--border-subtle)] border border-[var(--border-main)] rounded-xl text-[var(--text-dim)] hover:text-[var(--primary)] transition-all"
                             title="Collapse All"
                         >
                             <Minimize2 className="w-4 h-4" />
@@ -231,10 +231,10 @@ export const DataList = ({ jsonData }: DataListProps) => {
                 </div>
 
                 <div className="flex gap-3">
-                    <button onClick={() => handleExport('json')} className="flex items-center gap-2 px-5 py-2.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-xl font-semibold text-sm transition-all active:scale-95">
+                    <button onClick={() => handleExport('json')} className="flex items-center gap-2 px-5 py-2.5 bg-[var(--bg-deep)] hover:bg-[var(--border-subtle)] border border-[var(--border-main)] rounded-xl font-semibold text-sm transition-all active:scale-95 text-[var(--text-main)]">
                         <Download className="w-4 h-4 text-blue-400" /> JSON
                     </button>
-                    <button onClick={() => handleExport('csv')} className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/20 transition-all active:scale-95 text-white">
+                    <button onClick={() => handleExport('csv')} className="flex items-center gap-2 px-5 py-2.5 bg-[var(--primary)] hover:opacity-90 rounded-xl font-semibold text-sm shadow-lg shadow-[var(--primary-glow)]/20 transition-all active:scale-95 text-white">
                         <ExternalLink className="w-4 h-4" /> CSV
                     </button>
                 </div>
@@ -256,20 +256,20 @@ export const DataList = ({ jsonData }: DataListProps) => {
             )}
 
             {/* Table Area */}
-            <div className="flex-1 overflow-hidden bg-[#161b22] border border-gray-800 rounded-2xl shadow-2xl flex flex-col">
+            <div className="flex-1 overflow-hidden bg-[var(--bg-card)] border border-[var(--border-main)] rounded-2xl shadow-2xl flex flex-col">
                 <div className="overflow-auto custom-scrollbar flex-1">
                     <table className="w-full text-left border-collapse">
                         <thead className="sticky top-0 z-10">
-                            <tr className="bg-[#0d1117] border-b border-gray-800">
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Topology Node</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Type</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">IP Address</th>
+                            <tr className="bg-[var(--bg-sidebar)] border-b border-[var(--border-main)]">
+                                <th className="px-6 py-4 text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest">Topology Node</th>
+                                <th className="px-6 py-4 text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest">Type</th>
+                                <th className="px-6 py-4 text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest font-mono">IP Address</th>
                                 {dynamicColumns.map(col => (
-                                    <th key={col} className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-l border-gray-800/30">
+                                    <th key={col} className="px-6 py-4 text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest border-l border-[var(--border-main)]/30">
                                         {col.replace(/_/g, ' ')}
                                     </th>
                                 ))}
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest text-right">Status</th>
+                                <th className="px-6 py-4 text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest text-right">Status</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-800/50">

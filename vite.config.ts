@@ -47,7 +47,7 @@ export default defineConfig({
               const success = await PersistenceManager.write(key, body);
               res.statusCode = success ? 200 : 500;
               res.end(success ? 'OK' : 'Error');
-            } catch (e) {
+            } catch {
               res.statusCode = 400;
               res.end('Invalid Payload');
             }
@@ -63,7 +63,7 @@ export default defineConfig({
               console.log(message);
               res.statusCode = 200;
               res.end('OK');
-            } catch (e) {
+            } catch {
               res.statusCode = 400;
               res.end('Error');
             }

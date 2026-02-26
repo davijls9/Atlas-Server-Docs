@@ -12,135 +12,65 @@ import { LoginView } from './components/LoginView';
 import { ProfileView } from './components/ProfileView';
 import { LogView } from './components/LogView';
 import { SecurityMiddleware } from './utils/securityMiddleware';
-import type { DocPage } from './modules/documentation/types/documentation.types';
+import { ThemeSwitcher } from './components/ThemeSwitcher';
 
-interface LogEntry {
-    id: string;
-    timestamp: string;
-    level: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
-    source: string;
-    message: string;
-    details?: any;
-}
+// Hooks & Context
+import { useUI } from './context/UIContext';
+import { useToast } from './hooks/useToast';
+import { useAppSession } from './hooks/useAppSession';
+import { useSystemLogger } from './hooks/useSystemLogger';
+import { useBlueprintManager } from './hooks/useBlueprintManager';
+import { useDocumentation } from './hooks/useDocumentation';
 
-interface BlueprintMetadata {
-    id: string;
-    name: string;
-    ownerId: string;
-    ownerName: string;
-    groupId: string;
-    type: 'GLOBAL' | 'PERSONAL' | 'SHARED';
-    createdAt: string;
-    lastModified: string;
-    storageKey: string;
-    authorizedUserIds?: string[]; // '*' for universal
-    authorizedGroupIds?: string[];
-}
-
-const CLEAN_BLUEPRINT_TEMPLATE = JSON.stringify({
-    pops: [
-        {
-            id: 'pop-1',
-            name: 'São Paulo HQ',
-            city: 'São Paulo',
-            nodes: [
-                {
-                    id: 'node-1',
-                    type: 'SWITCH',
-                    name: 'Core-Switch-01',
-                    ip: '10.0.0.1',
-                    status: 'ON',
-                    criticality: 'HIGH',
-                    attributes: [],
-                    interfaces: [
-                        { id: 'if-1', name: 'GigabitEthernet0/1', type: 'COPPER', status: 'ACTIVE' },
-                        { id: 'if-2', name: 'GigabitEthernet0/2', type: 'FIBER', status: 'ACTIVE' }
-                    ]
-                },
-                {
-                    id: 'node-2',
-                    type: 'PHYSICAL_SERVER',
-                    name: 'Auth-Server-PRD',
-                    ip: '10.0.0.50',
-                    status: 'ON',
-                    criticality: 'HIGH',
-                    attributes: [],
-                    interfaces: [
-                        { id: 'if-3', name: 'eth0', type: 'COPPER', status: 'ACTIVE' }
-                    ]
-                }
-            ]
-        }
-    ],
-    links: [
-        {
-            sourceId: 'node-1',
-            targetId: 'node-2',
-            label: 'Production Uplink',
-            type: 'DATA',
-            routeName: 'PRD-BACKBONE',
-            color: '#10b981',
-            sourceHandle: 'if-2',
-            targetHandle: 'if-3',
-            waypoints: []
-        }
-    ],
-    global_stats: { physicalRAM: 128, virtualRAM: 256, vcpuCount: 16, efficiency: 95 },
-    schema: []
-}, null, 2);
+// Constants & Types
+import { CLEAN_BLUEPRINT_TEMPLATE } from './constants/templates';
+import type { BlueprintMetadata } from './types/app.types';
 
 function App() {
-    const [currentUser, setCurrentUser] = useState<any>(null);
-    const [activeTab, setActiveTab] = useState<'editor' | 'map' | 'data' | 'security' | 'workspace' | 'docs' | 'profile' | 'logs'>('editor');
-    const [logs, setLogs] = useState<LogEntry[]>([]);
-    const [isSyncing, setIsSyncing] = useState(true);
+    // 1. Core UI State (Context)
+    const {
+        activeTab, setActiveTab,
+        isSyncing, setIsSyncing,
+        sidebarWidth, setSidebarWidth,
+        isNavCollapsed, setIsNavCollapsed,
+        isMobileMenuOpen, setIsMobileMenuOpen,
+        theme
+    } = useUI();
 
-    // Blueprint Management
-    const [blueprintsRegistry, setBlueprintsRegistry] = useState<BlueprintMetadata[]>([]);
-    const [activeBlueprintId, setActiveBlueprintId] = useState<string | null>(null);
+    // 2. Utility Hooks
+    const { toast, showToast } = useToast();
 
-    const [jsonPreview, setJsonPreview] = useState<string>('');
-    const [jsonInput, setJsonInput] = useState<string>(''); // For live editing
-    const [sidebarWidth, setSidebarWidth] = useState(400);
-    const [isNavCollapsed, setIsNavCollapsed] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    // 3. Domain Logic Hooks
+    const { currentUser, setCurrentUser, userRef, handleLogout, loadSession } = useAppSession(showToast);
+    const { logs, setLogs, logEvent, loadLogs } = useSystemLogger(userRef);
+    const {
+        blueprintsRegistry, setBlueprintsRegistry,
+        activeBlueprintId, setActiveBlueprintId,
+        jsonPreview, setJsonPreview,
+        jsonInput, setJsonInput,
+        isSaved, setIsSaved,
+        switchBlueprint, handleJsonChange, handleManualSave, createBlueprint, deleteBlueprint
+    } = useBlueprintManager(currentUser, logEvent, showToast);
+    const {
+        docPages, setDocPages,
+        isDocModalOpen, setIsDocModalOpen,
+        handleSaveDocPage, loadDocumentation
+    } = useDocumentation(showToast);
+
+    // 4. Local App State (Remaining)
     const [isResizing, setIsResizing] = useState(false);
-    const [isSaved, setIsSaved] = useState(true);
-    const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' | 'info' } | null>(null);
-
-    // Documentation Global State
-    const [docPages, setDocPages] = useState<DocPage[]>([]);
-    const [isDocModalOpen, setIsDocModalOpen] = useState(false);
-
-    const INITIAL_DOCS: DocPage[] = [
-        {
-            id: 'welcome',
-            title: 'Infrastructure Encyclopedia Welcome',
-            content: '# Welcome to the Global Infrastructure Encyclopedia\n\nThis is your central source of truth for all documentation related to the Atlas Server system.\n\n## Getting Started\n- Use the sidebar to navigate between documentation pages.\n- Click **Create New Page** to add a new document to the encyclopedia.\n- Use the **Edit Protocol** button to modify existing content.',
-            lastModified: new Date().toISOString(),
-            tags: ['Help', 'Overview', 'Welcome'],
-            relatedNodeIds: [],
-            relatedPageIds: ['editor', 'map', 'data', 'security', 'workspace', 'docs', 'logs']
-        }
-    ];
-
-    const handleSaveDocPage = (updatedPage: DocPage) => {
-        const newPages = docPages.some(p => p.id === updatedPage.id)
-            ? docPages.map(p => p.id === updatedPage.id ? updatedPage : p)
-            : [...docPages, updatedPage];
-
-        setDocPages(newPages);
-        SecurityMiddleware.secureWrite('atlas_documentation_pages', JSON.stringify(newPages));
-        showToast(`Protocol "${updatedPage.title}" synchronized`, 'success');
-    };
-
-
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const userRef = useRef<any>(null); // Ref to track current user for logs without staleness
 
-    useEffect(() => {
-        userRef.current = currentUser;
-    }, [currentUser]);
+    // Calculate authorized blueprints
+    const authorizedBlueprints = useMemo(() => {
+        if (!currentUser) return [];
+        return blueprintsRegistry.filter(b => {
+            if (currentUser.role === 'ADMIN') return true;
+            const isAuthorizedUser = b.authorizedUserIds?.includes(currentUser.id) || b.authorizedUserIds?.includes('*');
+            const isAuthorizedGroup = b.authorizedGroupIds?.some(gid => gid === currentUser.groupId);
+            return isAuthorizedUser || isAuthorizedGroup;
+        });
+    }, [blueprintsRegistry, currentUser]);
 
     const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -161,265 +91,70 @@ function App() {
         reader.readAsText(file);
     };
 
-    const handleJsonChange = (newJson: string) => {
-        setJsonPreview(newJson);
-        setJsonInput(newJson);
-        setIsSaved(false);
-
-        // AUTO-SAVE LOGIC: Persist to active blueprint context
-        const activeBlueprint = blueprintsRegistry.find(b => b.id === activeBlueprintId);
-        if (activeBlueprint) {
-            SecurityMiddleware.secureWrite(activeBlueprint.storageKey, newJson);
-            // Optional: Debounce this in a real high-traffic app, but here it's fine
-            setIsSaved(true);
-        }
-    };
-
     const handleSchemaEdit = (value: string) => {
         setJsonInput(value);
         setIsSaved(false);
     };
 
-    const handleManualSave = () => {
-        try {
-            JSON.parse(jsonInput); // Validate
-            setJsonPreview(jsonInput);
 
-            const activeBlueprint = blueprintsRegistry.find(b => b.id === activeBlueprintId);
-
-            // STRICT CORRELATION: Always use the active blueprint's storage key
-            if (!activeBlueprint) {
-                showToast('No active blueprint context found', 'error');
-                return;
-            }
-
-            const key = activeBlueprint.storageKey;
-            SecurityMiddleware.secureWrite(key, jsonInput);
-
-            // Update Registry Metadata
-            if (activeBlueprintId) {
-                const updatedRegistry = blueprintsRegistry.map(b =>
-                    b.id === activeBlueprintId
-                        ? { ...b, lastModified: new Date().toISOString() }
-                        : b
-                );
-                setBlueprintsRegistry(updatedRegistry);
-                SecurityMiddleware.secureWrite('atlas_blueprints_registry', JSON.stringify(updatedRegistry));
-            }
-
-            setIsSaved(true);
-            showToast(`Blueprint "${activeBlueprint?.name || 'Local'}" saved successfully`, 'success');
-            logEvent('INFO', 'Manual blueprint save triggered', 'EDITOR_SAVE', { target: key, name: activeBlueprint?.name });
-        } catch (e) {
-            showToast('Invalid JSON syntax', 'error');
-        }
-    };
-
-    const switchBlueprint = (blueprintId: string) => {
-        const blueprint = blueprintsRegistry.find(b => b.id === blueprintId);
-        if (!blueprint) return;
-
-        // Persist the selection (User-scoped)
-        const activeKey = currentUser ? `atlas_active_bp_id_${currentUser.id}` : 'atlas_active_bp_id';
-        setActiveBlueprintId(blueprintId);
-        SecurityMiddleware.secureWrite(activeKey, blueprintId);
-
-        let savedData = localStorage.getItem(blueprint.storageKey);
-
-        // Use clean template if no data exists
-        if (!savedData || savedData === '[]' || savedData === '{}') {
-            savedData = CLEAN_BLUEPRINT_TEMPLATE;
-        }
-
-        setJsonPreview(savedData);
-        setJsonInput(savedData);
-        setIsSaved(true);
-        showToast(`Sovereign Context: ${blueprint.name}`, 'info');
-        logEvent('INFO', `User switched context to: ${blueprint.name}`, 'WORKSPACE_ACTION', { blueprintId });
-    };
-
-    const deleteBlueprint = (blueprintId: string) => {
-        const blueprint = blueprintsRegistry.find(b => b.id === blueprintId);
-        if (!blueprint) return;
-
-        if (blueprintId === activeBlueprintId) {
-            showToast('Cannot delete active blueprint', 'error');
-            return;
-        }
-
-        const updatedRegistry = blueprintsRegistry.filter(b => b.id !== blueprintId);
-        setBlueprintsRegistry(updatedRegistry);
-        SecurityMiddleware.secureWrite('atlas_blueprints_registry', JSON.stringify(updatedRegistry));
-        localStorage.removeItem(blueprint.storageKey);
-
-        showToast(`Blueprint "${blueprint.name}" deleted`, 'success');
-        logEvent('WARN', `User deleted blueprint: ${blueprint.name}`, 'WORKSPACE_ACTION', { blueprintId });
-    };
-
-    const createBlueprint = (name: string, type: BlueprintMetadata['type'] = 'PERSONAL') => {
-        const user = userRef.current;
-        const id = `bp_${Date.now()}`;
-        const newBP: BlueprintMetadata = {
-            id,
-            name,
-            ownerId: user?.id || 'sys',
-            ownerName: user?.name || 'Authorized system',
-            groupId: user?.groupId || 'default',
-            type,
-            createdAt: new Date().toISOString(),
-            lastModified: new Date().toISOString(),
-            storageKey: `atlas_bp_data_${id}`,
-            authorizedUserIds: type === 'GLOBAL' ? ['*'] : [user?.id],
-            authorizedGroupIds: type === 'SHARED' ? [user?.groupId] : []
-        };
-
-        const updatedRegistry = [...blueprintsRegistry, newBP];
-        setBlueprintsRegistry(updatedRegistry);
-        SecurityMiddleware.secureWrite('atlas_blueprints_registry', JSON.stringify(updatedRegistry));
-
-        // Initialize with CLEAN template (No more cloning current data)
-        SecurityMiddleware.secureWrite(newBP.storageKey, CLEAN_BLUEPRINT_TEMPLATE);
-
-        // SYNC STATE: Reset inputs IMMEDIATELY to prevent auto-save from writing previous manifest data
-        setJsonPreview(CLEAN_BLUEPRINT_TEMPLATE);
-        setJsonInput(CLEAN_BLUEPRINT_TEMPLATE);
-        setIsSaved(true);
-
-        const activeKey = user ? `atlas_active_bp_id_${user.id}` : 'atlas_active_bp_id';
-        setActiveBlueprintId(id);
-        SecurityMiddleware.secureWrite(activeKey, id);
-
-        showToast(`Blueprint "${name}" created`, 'success');
-        logEvent('INFO', `User created blueprint: ${name}`, 'WORKSPACE_ACTION', { blueprintId: id, type });
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem('atlas_session');
-        setCurrentUser(null);
-        showToast('Logged out successfully', 'info');
-    };
-
-
-    const logEvent = (level: LogEntry['level'], message: string, source: string, details?: any) => {
-        const user = userRef.current;
-        const newEntry: LogEntry = {
-            id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            timestamp: new Date().toISOString(),
-            level,
-            message,
-            source,
-            details: {
-                ...details,
-                user: user?.name || 'Authorized System',
-                userId: user?.id || 'sys',
-                role: user?.role || 'SYSTEM'
-            }
-        };
-        const updatedLogs = [newEntry, ...logs].slice(0, 1000);
-        setLogs(updatedLogs);
-        SecurityMiddleware.secureWrite('atlas_system_logs', JSON.stringify(updatedLogs));
-        console.log(`[${level}][${source}][${user?.name || 'SYSTEM'}] ${message}`, details || '');
-    };
-
-    const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
-        setToast({ message, type });
-        setTimeout(() => setToast(null), 3000);
-        logEvent(type === 'error' ? 'ERROR' : type === 'success' ? 'INFO' : 'DEBUG', message, 'SYSTEM_NOTIFICATION');
-    };
-
-    // Calculate authorized blueprints
-    const authorizedBlueprints = useMemo(() => {
-        if (!currentUser) return [];
-        return blueprintsRegistry.filter(b => {
-            if (currentUser.role === 'ADMIN') return true;
-            const isAuthorizedUser = b.authorizedUserIds?.includes(currentUser.id) || b.authorizedUserIds?.includes('*');
-            const isAuthorizedGroup = b.authorizedGroupIds?.some(gid => gid === currentUser.groupId);
-            return isAuthorizedUser || isAuthorizedGroup;
-        });
-    }, [blueprintsRegistry, currentUser]);
-
-    // Initial Load with data migration, server hydration and proper default
+    // 5. Initial Load Orchestration
     useEffect(() => {
         const initializeApp = async () => {
             setIsSyncing(true);
 
-            // 1. PULL FROM CLUSTER (New Server-Side Persistence)
+            // a. Sync with Server
             await SecurityMiddleware.hydrateFromServer();
 
-            // 2. DATA MIGRATION CHECK (Legacy support)
-            const migrateData = () => {
-                const keysToMigrate = [
-                    { old: 'antigravity_session', new: 'atlas_session' },
-                    { old: 'antigravity_blueprints_registry', new: 'atlas_blueprints_registry' },
-                    { old: 'antigravity_blueprint_global', new: 'atlas_blueprint_global' },
-                    { old: 'antigravity_security_overrides', new: 'atlas_security_overrides' },
-                    { old: 'antigravity_security_columns', new: 'atlas_security_columns' },
-                    { old: 'antigravity_system_logs', new: 'atlas_system_logs' },
-                    { old: 'antigravity_groups', new: 'atlas_groups' },
-                    { old: 'antigravity_active_bp_id', new: 'atlas_active_bp_id' }
-                ];
+            // b. Legacy Migration
+            const keysToMigrate = [
+                { old: 'antigravity_session', new: 'atlas_session' },
+                { old: 'antigravity_blueprints_registry', new: 'atlas_blueprints_registry' },
+                { old: 'antigravity_blueprint_global', new: 'atlas_blueprint_global' },
+                { old: 'antigravity_security_overrides', new: 'atlas_security_overrides' },
+                { old: 'antigravity_security_columns', new: 'atlas_security_columns' },
+                { old: 'antigravity_system_logs', new: 'atlas_system_logs' },
+                { old: 'antigravity_groups', new: 'atlas_groups' },
+                { old: 'antigravity_active_bp_id', new: 'atlas_active_bp_id' }
+            ];
 
-                let migratedCount = 0;
-                keysToMigrate.forEach(({ old, new: newKey }) => {
-                    const oldData = localStorage.getItem(old);
-                    const newData = localStorage.getItem(newKey);
+            keysToMigrate.forEach(({ old, new: newKey }) => {
+                const oldData = localStorage.getItem(old);
+                if (oldData && !localStorage.getItem(newKey)) {
+                    localStorage.setItem(newKey, oldData);
+                }
+            });
 
-                    if (oldData && !newData) {
-                        console.log(`[MIGRATION] Migrating ${old} to ${newKey}`);
-                        if (newKey === 'atlas_blueprints_registry') {
-                            try {
-                                const registry = JSON.parse(oldData);
-                                const updatedRegistry = registry.map((bp: any) => ({
-                                    ...bp,
-                                    storageKey: bp.storageKey.replace('antigravity_', 'atlas_')
-                                }));
-                                registry.forEach((bp: any) => {
-                                    const oldBpKey = bp.storageKey;
-                                    const newBpKey = bp.storageKey.replace('antigravity_', 'atlas_');
-                                    const bpData = localStorage.getItem(oldBpKey);
-                                    if (bpData) localStorage.setItem(newBpKey, bpData);
-                                });
-                                localStorage.setItem(newKey, JSON.stringify(updatedRegistry));
-                            } catch (e) {
-                                localStorage.setItem(newKey, oldData);
-                            }
-                        } else {
-                            localStorage.setItem(newKey, oldData);
-                        }
-                        migratedCount++;
-                    }
-                });
-            };
-
-            try { migrateData(); } catch (e) { console.error('Migration failed', e); }
-
-            // 3. LOAD SYSTEM LOGS
-            const savedLogs = localStorage.getItem('atlas_system_logs');
-            if (savedLogs) {
-                try { setLogs(JSON.parse(savedLogs)); } catch (e) { console.error('Log load error', e); }
-            }
-
-            // 4. LOAD SESSION
-            const session = localStorage.getItem('atlas_session');
-            let user: any = null;
-            if (session) {
+            // c. Hydrate Data through Hooks
+            // Sanitize logs storage before loading (guard against double-stringified legacy data)
+            const rawLogs = localStorage.getItem('atlas_system_logs');
+            if (rawLogs) {
                 try {
-                    user = JSON.parse(session);
-                    if (user && !user.id) user.id = user.email || 'anonymous';
-                    setCurrentUser(user);
-                } catch (e) {
-                    localStorage.removeItem('atlas_session');
+                    const parsed = JSON.parse(rawLogs);
+                    if (typeof parsed === 'string') {
+                        // Double-stringified: unwrap and re-save correctly
+                        const inner = JSON.parse(parsed);
+                        if (Array.isArray(inner)) {
+                            localStorage.setItem('atlas_system_logs', JSON.stringify(inner));
+                        } else {
+                            localStorage.removeItem('atlas_system_logs');
+                        }
+                    }
+                } catch (_) {
+                    localStorage.removeItem('atlas_system_logs');
                 }
             }
+            loadLogs();
+            const user = loadSession();
+            loadDocumentation();
 
-            // 5. LOAD BLUEPRINT REGISTRY
+            // Initialize Registry
             const savedRegistry = localStorage.getItem('atlas_blueprints_registry');
-            let registry: BlueprintMetadata[] = [];
+            let blueRegistry: BlueprintMetadata[] = [];
             if (savedRegistry) {
-                try { registry = JSON.parse(savedRegistry); } catch (e) { console.error('Registry load error', e); }
+                try { blueRegistry = JSON.parse(savedRegistry); } catch (e) { console.error('Registry load error', e); }
             }
 
-            if (registry.length === 0) {
+            if (blueRegistry.length === 0) {
                 const globalBP: BlueprintMetadata = {
                     id: 'global-v1',
                     name: 'Main Production Blueprint',
@@ -433,33 +168,25 @@ function App() {
                     authorizedUserIds: ['*'],
                     authorizedGroupIds: ['admin-group']
                 };
-                registry = [globalBP];
-                SecurityMiddleware.secureWrite('atlas_blueprints_registry', JSON.stringify(registry));
-
+                blueRegistry = [globalBP];
+                SecurityMiddleware.secureWrite('atlas_blueprints_registry', JSON.stringify(blueRegistry));
                 const legacy = localStorage.getItem('atlas_blueprint') || localStorage.getItem('antigravity_blueprint');
                 if (legacy) SecurityMiddleware.secureWrite('atlas_blueprint_global', legacy);
             }
-            setBlueprintsRegistry(registry);
+            setBlueprintsRegistry(blueRegistry);
 
-            // 6. LOAD DOCUMENTATION
-            const savedDocs = localStorage.getItem('atlas_documentation_pages');
-            if (savedDocs) {
-                try { setDocPages(JSON.parse(savedDocs)); } catch (e) { setDocPages(INITIAL_DOCS); }
-            } else {
-                setDocPages(INITIAL_DOCS);
-            }
-
-            // 7. DETERMINE ACTIVE CONTEXT
+            // d. Active Context Determination
             const activeKey = user ? `atlas_active_bp_id_${user.id}` : 'atlas_active_bp_id';
             const lastActiveId = localStorage.getItem(activeKey);
-            const localAuth = registry.filter((b: any) => {
+
+            const localAuth = blueRegistry.filter((b: BlueprintMetadata) => {
                 if (user?.role === 'ADMIN') return true;
                 const isAuthorizedUser = b.authorizedUserIds?.includes(user?.id) || b.authorizedUserIds?.includes('*');
                 const isAuthorizedGroup = b.authorizedGroupIds?.some((gid: string) => gid === user?.groupId);
                 return isAuthorizedUser || isAuthorizedGroup;
             });
 
-            const initialActive = localAuth.find((b: any) => b.id === lastActiveId) || localAuth[0] || registry[0];
+            const initialActive = localAuth.find((b: BlueprintMetadata) => b.id === lastActiveId) || localAuth[0] || blueRegistry[0];
             setActiveBlueprintId(initialActive.id);
 
             let saved = localStorage.getItem(initialActive.storageKey);
@@ -473,7 +200,7 @@ function App() {
         };
 
         initializeApp();
-    }, []);
+    }, [loadLogs, loadSession, loadDocumentation, setBlueprintsRegistry, setActiveBlueprintId, setJsonPreview, setJsonInput, setIsSyncing]);
 
     // Persist active blueprint ID (User-scoped with Security Validation)
     useEffect(() => {
@@ -553,7 +280,23 @@ function App() {
 
     // LOGIN CHECK - must be logged in to access the app
     if (!currentUser) {
-        return <LoginView onLogin={setCurrentUser} />;
+        return (
+            <div className={`theme-${theme} w-full h-screen relative`}>
+                <LoginView onLogin={setCurrentUser} />
+
+                {toast && (
+                    <div className="fixed top-24 right-8 z-[200] animate-in slide-in-from-right duration-500">
+                        <div className={`px-6 py-4 rounded-2xl border flex items-center gap-3 shadow-2xl backdrop-blur-xl ${toast.type === 'success' ? 'bg-[var(--status-success)]/10 border-[var(--status-success)]/20 text-[var(--status-success)]' :
+                            toast.type === 'error' ? 'bg-[var(--status-error)]/10 border-[var(--status-error)]/20 text-[var(--status-error)]' :
+                                'bg-[var(--primary)]/10 border-[var(--primary)]/20 text-[var(--primary)]'
+                            }`}>
+                            <div className={`w-2 h-2 rounded-full ${toast.type === 'success' ? 'bg-[var(--status-success)]' : toast.type === 'error' ? 'bg-[var(--status-error)]' : 'bg-[var(--primary)]'} shadow-[0_0_8px_currentColor]`}></div>
+                            <span className="text-xs font-black uppercase tracking-widest">{toast.message}</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
     }
 
     const handleResize = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -563,7 +306,7 @@ function App() {
     };
 
     return (
-        <div className="flex h-screen bg-gray-900 text-white font-sans overflow-hidden" onMouseMove={handleResize} onMouseUp={() => setIsResizing(false)}>
+        <div className={`flex h-screen bg-[var(--bg-deep)] text-[var(--text-main)] font-sans overflow-hidden transition-all duration-300 theme-${theme}`} onMouseMove={handleResize} onMouseUp={() => setIsResizing(false)}>
             {/* LEFT NAVIGATION */}
             <Navigation
                 activeTab={activeTab}
@@ -581,23 +324,23 @@ function App() {
             />
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col overflow-hidden bg-[#0d1117] relative">
-                <header className="flex items-center justify-between px-4 lg:px-8 py-5 bg-[#0a0c10] border-b border-gray-800 shadow-2xl z-10 shrink-0">
+            <main className="flex-1 flex flex-col overflow-hidden bg-[var(--bg-main)] relative">
+                <header className="flex items-center justify-between px-4 lg:px-8 py-5 bg-[var(--bg-sidebar)] border-b border-[var(--border-main)] shadow-2xl z-10 shrink-0">
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => setIsMobileMenuOpen(true)}
-                            className="lg:hidden p-2 hover:bg-gray-800 rounded-xl transition-colors"
+                            className="lg:hidden p-2 hover:bg-[var(--border-subtle)] rounded-xl transition-colors"
                         >
-                            <Menu className="w-6 h-6 text-gray-400" />
+                            <Menu className="w-6 h-6 text-[var(--text-dim)]" />
                         </button>
-                        <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
-                            <span className="font-black text-xl text-white tracking-tighter">AS</span>
+                        <div className="w-10 h-10 bg-gradient-to-tr from-[var(--primary)] to-[var(--accent)] rounded-xl flex items-center justify-center shadow-lg shadow-[var(--primary-glow)] shrink-0">
+                            <span className="font-black text-xl text-[var(--text-bright)] tracking-tighter">AS</span>
                         </div>
                         <div className="hidden sm:block">
-                            <h1 className="text-lg font-bold tracking-tight text-white leading-none">Atlas Server Docs</h1>
+                            <h1 className="text-lg font-bold tracking-tight text-[var(--text-bright)] leading-none">Atlas Server Docs</h1>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className={`w-1.5 h-1.5 rounded-full ${isSyncing ? 'bg-blue-400 animate-pulse' : 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]'}`}></span>
-                                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest truncate max-w-[150px] lg:max-w-none">
+                                <span className={`w-1.5 h-1.5 rounded-full ${isSyncing ? 'bg-[var(--primary)] animate-pulse' : 'bg-[var(--status-success)] shadow-[0_0_8px_var(--status-success)]'}`}></span>
+                                <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-widest truncate max-w-[150px] lg:max-w-none">
                                     {isSyncing ? 'Synchronizing Cluster...' : (
                                         <>
                                             {activeTab === 'editor' && 'Blueprint Architect'}
@@ -617,21 +360,21 @@ function App() {
                     <div className="flex-1 px-4 lg:px-8 max-w-md">
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Layers className="h-3.5 w-3.5 text-gray-500 group-hover:text-blue-400 transition-colors" />
+                                <Layers className="h-3.5 w-3.5 text-[var(--text-dim)] group-hover:text-[var(--primary)] transition-colors" />
                             </div>
                             <select
                                 value={activeBlueprintId || ''}
                                 onChange={(e) => switchBlueprint(e.target.value)}
-                                className="block w-full pl-9 pr-8 py-2 text-[10px] font-black uppercase tracking-widest bg-[#161b22] border border-gray-800 rounded-xl text-white outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 appearance-none hover:bg-[#1c2128] transition-all cursor-pointer"
+                                className="block w-full pl-9 pr-8 py-2 text-[10px] font-black uppercase tracking-widest bg-[var(--bg-card)] border border-[var(--border-main)] rounded-xl text-[var(--text-bright)] outline-none focus:ring-2 focus:ring-[var(--primary-glow)] focus:border-[var(--primary)] appearance-none hover:bg-[var(--bg-sidebar)] transition-all cursor-pointer"
                             >
                                 {authorizedBlueprints.length > 0 ? (
                                     <>
-                                        <optgroup label="System Global" className="bg-[#0a0c10] text-gray-500">
+                                        <optgroup label="System Global" className="bg-[var(--bg-sidebar)] text-[var(--text-dim)]">
                                             {authorizedBlueprints.filter(b => b.type === 'GLOBAL').map(b => (
                                                 <option key={b.id} value={b.id}>{b.name}</option>
                                             ))}
                                         </optgroup>
-                                        <optgroup label="Private Manifests" className="bg-[#0a0c10] text-gray-400">
+                                        <optgroup label="Private Manifests" className="bg-[var(--bg-sidebar)] text-[var(--text-dim)]">
                                             {authorizedBlueprints.filter(b => b.type === 'PERSONAL').map(b => (
                                                 <option key={b.id} value={b.id}>{b.name}</option>
                                             ))}
@@ -642,15 +385,15 @@ function App() {
                                 )}
                             </select>
                             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+                                <ChevronDown className="h-3.5 w-3.5 text-[var(--text-dim)]" />
                             </div>
                         </div>
                         {/* Persistent Manifest Badge - Hidden on small mobile */}
                         <div className="hidden md:flex justify-center mt-2">
                             {activeBlueprintId && (
                                 <div className={`px-4 py-0.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] border flex items-center gap-1.5 shadow-lg ${blueprintsRegistry.find(b => b.id === activeBlueprintId)?.type === 'GLOBAL'
-                                    ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
-                                    : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                                    ? 'bg-[var(--status-success)]/10 text-[var(--status-success)] border-[var(--status-success)]/20 shadow-[0_4px_12px_var(--status-success)]/10'
+                                    : 'bg-[var(--primary)]/10 text-[var(--primary)] border-[var(--primary)]/20 shadow-[0_4px_12px_var(--primary-glow)]/10'
                                     }`}>
                                     <span className="w-1 h-1 rounded-full bg-current animate-pulse"></span>
                                     {authorizedBlueprints.find(b => b.id === activeBlueprintId)?.name}
@@ -660,15 +403,17 @@ function App() {
                     </div>
 
                     <div className="flex items-center gap-2 lg:gap-3">
+                        <ThemeSwitcher />
+                        <div className="hidden md:block w-px h-6 bg-[var(--border-main)] mx-1"></div>
                         <input type="file" ref={fileInputRef} onChange={handleImport} className="hidden" accept=".json" />
                         <button
                             onClick={() => fileInputRef.current?.click()}
                             disabled={effectivePermissions.import_json === false}
-                            className={`hidden md:flex px-4 py-2 border rounded-xl text-xs font-bold transition-all items-center gap-2 ${effectivePermissions.import_json !== false ? 'bg-gray-800 hover:bg-gray-700 border-gray-700 text-blue-400' : 'bg-gray-800/50 border-gray-800 text-gray-600 cursor-not-allowed grayscale'}`}
+                            className={`hidden md:flex px-4 py-2 border rounded-xl text-xs font-bold transition-all items-center gap-2 ${effectivePermissions.import_json !== false ? 'bg-[var(--bg-deep)] hover:bg-[var(--border-subtle)] border-[var(--border-main)] text-[var(--primary)]' : 'bg-[var(--bg-deep)]/50 border-[var(--border-main)] text-[var(--text-dim)] cursor-not-allowed grayscale'}`}
                         >
                             <Download className="w-3.5 h-3.5 rotate-180" /> <span className="hidden lg:inline">Import JSON</span>
                         </button>
-                        <div className="hidden md:block w-px h-6 bg-gray-800 mx-1"></div>
+                        <div className="hidden md:block w-px h-6 bg-[var(--border-main)] mx-1"></div>
                         <button
                             onClick={() => {
                                 if (effectivePermissions.view_docs !== false) {
@@ -679,7 +424,7 @@ function App() {
                                 }
                             }}
                             disabled={effectivePermissions.view_docs === false}
-                            className={`text-[10px] font-black uppercase tracking-widest transition-all bg-blue-500/10 hover:bg-blue-500/20 px-3 lg:px-4 py-2 rounded-xl border border-blue-500/20 ${effectivePermissions.view_docs === false ? 'opacity-50 grayscale cursor-not-allowed' : 'text-blue-400 hover:text-white'}`}
+                            className={`text-[10px] font-black uppercase tracking-widest transition-all bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 px-3 lg:px-4 py-2 rounded-xl border border-[var(--primary)]/20 ${effectivePermissions.view_docs === false ? 'opacity-50 grayscale cursor-not-allowed' : 'text-[var(--primary)] hover:text-[var(--text-bright)]'}`}
                         >
                             <span className="hidden sm:inline">Docs: </span>{activeTab.toUpperCase()}
                         </button>
@@ -689,11 +434,11 @@ function App() {
                 {/* Global Toast */}
                 {toast && (
                     <div className="fixed top-24 right-8 z-[100] animate-in slide-in-from-right duration-500">
-                        <div className={`px-6 py-4 rounded-2xl border flex items-center gap-3 shadow-2xl backdrop-blur-xl ${toast.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' :
-                            toast.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
-                                'bg-blue-500/10 border-blue-500/20 text-blue-400'
+                        <div className={`px-6 py-4 rounded-2xl border flex items-center gap-3 shadow-2xl backdrop-blur-xl ${toast.type === 'success' ? 'bg-[var(--status-success)]/10 border-[var(--status-success)]/20 text-[var(--status-success)]' :
+                            toast.type === 'error' ? 'bg-[var(--status-error)]/10 border-[var(--status-error)]/20 text-[var(--status-error)]' :
+                                'bg-[var(--primary)]/10 border-[var(--primary)]/20 text-[var(--primary)]'
                             }`}>
-                            <div className={`w-2 h-2 rounded-full ${toast.type === 'success' ? 'bg-emerald-500' : toast.type === 'error' ? 'bg-red-500' : 'bg-blue-500'} shadow-[0_0_8px_currentColor]`}></div>
+                            <div className={`w-2 h-2 rounded-full ${toast.type === 'success' ? 'bg-[var(--status-success)]' : toast.type === 'error' ? 'bg-[var(--status-error)]' : 'bg-[var(--primary)]'} shadow-[0_0_8px_currentColor]`}></div>
                             <span className="text-xs font-black uppercase tracking-widest">{toast.message}</span>
                         </div>
                     </div>
@@ -712,7 +457,7 @@ function App() {
                 />
 
                 {/* View Switcher */}
-                <div className="flex-1 relative overflow-hidden bg-[#0d1117]">
+                <div className="flex-1 relative overflow-hidden bg-[var(--bg-main)]">
 
                     {/* EDITOR VIEW */}
                     <div className={`absolute inset-0 flex ${activeTab === 'editor' ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'}`}>
@@ -728,50 +473,50 @@ function App() {
                         {/* Live Preview Sidebar for Editor */}
                         <div
                             style={{ width: sidebarWidth }}
-                            className={`transition-all duration-300 ease-in-out shrink-0 bg-[#0d1117] border-l border-gray-800 flex flex-col shadow-[0_0_40px_rgba(0,0,0,0.5)] z-20 overflow-hidden relative ${sidebarWidth < 50 ? 'border-none' : ''}`}
+                            className={`transition-all duration-300 ease-in-out shrink-0 bg-[var(--bg-main)] border-l border-[var(--border-main)] flex flex-col shadow-[var(--shadow-premium)] z-20 overflow-hidden relative ${sidebarWidth < 50 ? 'border-none' : ''}`}
                         >
                             {/* Resize Handle */}
                             <div
-                                className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-blue-500/50 transition-colors z-30"
+                                className="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-[var(--primary)]/50 transition-colors z-30"
                                 onMouseDown={() => setIsResizing(true)}
                             />
 
                             {/* Sidebar Header Toggle (Matching Topology sidebar style) */}
                             <button
                                 onClick={() => setSidebarWidth(sidebarWidth > 0 ? 0 : 384)}
-                                className="absolute -left-3 top-20 w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center border border-gray-700 text-gray-400 z-30 hover:text-white transition-colors"
+                                className="absolute -left-3 top-20 w-6 h-6 bg-[var(--bg-card)] rounded-full flex items-center justify-center border border-[var(--border-main)] text-[var(--text-dim)] z-40 hover:text-[var(--text-bright)] transition-colors"
                                 title={sidebarWidth > 0 ? "Collapse Panel" : "Expand Panel"}
                             >
                                 {sidebarWidth > 0 ? <span className="w-3 h-3 flex items-center justify-center">→</span> : <span className="w-3 h-3 flex items-center justify-center">←</span>}
                             </button>
 
-                            <div className={`px-6 py-4 border-b border-gray-800 bg-[#161b22] flex items-center justify-between shrink-0 transition-opacity ${sidebarWidth < 100 ? 'opacity-0' : 'opacity-100'}`}>
-                                <h2 className="font-bold text-gray-400 text-[10px] uppercase tracking-widest flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${isSaved ? 'bg-emerald-500 shadow-[0_0_8px_#10b98166]' : 'bg-orange-500 animate-pulse shadow-[0_0_8px_#f59e0b66]'}`}></div>
+                            <div className={`px-6 py-4 border-b border-[var(--border-main)] bg-[var(--bg-card)] flex items-center justify-between shrink-0 transition-opacity ${sidebarWidth < 100 ? 'opacity-0' : 'opacity-100'}`}>
+                                <h2 className="font-bold text-[var(--text-dim)] text-[10px] uppercase tracking-widest flex items-center gap-2">
+                                    <div className={`w-2 h-2 rounded-full ${isSaved ? 'bg-[var(--status-success)] shadow-[0_0_8px_var(--status-success)]' : 'bg-[var(--status-warn)] animate-pulse shadow-[0_0_8px_var(--status-warn)]'}`}></div>
                                     Schema Manifest
                                 </h2>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[9px] font-mono text-gray-600 uppercase font-black">{isSaved ? 'Sync Stable' : 'Unsaved Changes'}</span>
+                                    <span className="text-[9px] font-mono text-[var(--text-dim)] uppercase font-black">{isSaved ? 'Sync Stable' : 'Unsaved Changes'}</span>
                                 </div>
                             </div>
 
-                            <div className={`flex-1 p-0 overflow-hidden bg-[#0d1117] transition-opacity ${sidebarWidth < 100 ? 'opacity-0' : 'opacity-100'}`}>
+                            <div className={`flex-1 p-0 overflow-hidden bg-[var(--bg-main)] transition-opacity ${sidebarWidth < 100 ? 'opacity-0' : 'opacity-100'}`}>
                                 <textarea
                                     spellCheck={false}
-                                    className="w-full h-full text-[11px] font-mono text-blue-300/80 p-6 bg-transparent outline-none resize-none custom-scrollbar leading-relaxed selection:bg-blue-500/20"
+                                    className="w-full h-full text-[11px] font-mono text-[var(--primary)] p-6 bg-transparent outline-none resize-none custom-scrollbar leading-relaxed selection:bg-[var(--primary-glow)]"
                                     value={jsonInput}
                                     onChange={(e) => handleSchemaEdit(e.target.value)}
                                     placeholder="// Paste or edit manifest JSON here..."
                                 />
                             </div>
 
-                            <div className={`p-4 bg-[#161b22] border-t border-gray-800 shrink-0 flex gap-2 transition-opacity ${sidebarWidth < 100 ? 'opacity-0' : 'opacity-100'}`}>
+                            <div className={`p-4 bg-[var(--bg-card)] border-t border-[var(--border-main)] shrink-0 flex gap-2 transition-opacity ${sidebarWidth < 100 ? 'opacity-0' : 'opacity-100'}`}>
                                 <button
                                     onClick={() => {
                                         handleManualSave();
                                         logEvent('INFO', 'Blueprint manifest manually synchronized', 'EDITOR_WORKSPACE');
                                     }}
-                                    className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${isSaved ? 'bg-gray-800 text-gray-500' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/10'}`}
+                                    className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${isSaved ? 'bg-[var(--bg-deep)] text-[var(--text-dim)]' : 'bg-[var(--status-success)] hover:opacity-90 text-white shadow-lg shadow-[var(--status-success)]/10'}`}
                                 >
                                     Save
                                 </button>
@@ -780,7 +525,7 @@ function App() {
                                         navigator.clipboard.writeText(jsonPreview);
                                         alert("Manifest copied to clipboard!");
                                     }}
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-500/10"
+                                    className="px-4 py-2 bg-[var(--primary)] hover:opacity-90 text-white rounded-lg text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-[var(--primary-glow)]/10"
                                 >
                                     Copy
                                 </button>

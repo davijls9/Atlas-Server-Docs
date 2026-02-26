@@ -47,11 +47,12 @@ export interface ErrorFlowEdge {
     condition?: string;
 }
 
-export interface ErrorDiagram {
-    nodes: ErrorFlowNode[];
-    edges: ErrorFlowEdge[];
+export interface ErrorDiagramType {
+    nodes: any[];
+    edges: any[];
     mermaidCode: string;
 }
+
 
 export interface DocumentationPermissions {
     view_documentation: boolean;

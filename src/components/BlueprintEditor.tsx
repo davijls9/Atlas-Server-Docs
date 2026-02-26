@@ -132,7 +132,7 @@ export const BlueprintEditor = ({ onJsonChange, initialData, permissions, worksp
     const selectedNode = selectedNodeId ? (pops.find(p => p.id === selectedNodeId) || findNodeById(selectedNodeId, pops.flatMap(p => p.nodes))) : null;
 
     return (
-        <div className="flex flex-col lg:flex-row h-full bg-[#0d1117] text-gray-200 overflow-hidden font-sans relative">
+        <div className="flex flex-col lg:flex-row h-full bg-[var(--bg-main)] text-[var(--text-main)] overflow-hidden font-sans relative">
             {/* Field Manager Modal */}
             <FieldManagerModal
                 isOpen={isFieldModalOpen}
@@ -142,33 +142,33 @@ export const BlueprintEditor = ({ onJsonChange, initialData, permissions, worksp
             />
 
             {/* Sidebar: Tree View */}
-            <div className={`transition-all duration-300 ease-in-out border-b lg:border-b-0 lg:border-r border-gray-800 flex flex-col bg-[#161b22]/50 backdrop-blur-md relative ${isTreeCollapsed ? 'h-12 lg:w-12 lg:h-full' : 'h-1/2 lg:w-80 lg:h-full'}`}>
+            <div className={`transition-all duration-300 ease-in-out border-b lg:border-b-0 lg:border-r border-[var(--border-main)] flex flex-col bg-[var(--bg-card)] relative ${isTreeCollapsed ? 'h-12 lg:w-12 lg:h-full' : 'h-1/2 lg:w-80 lg:h-full'}`}>
                 {/* Fixed Toggle Button - Vertically Centered on Sidebar Edge */}
                 <button
                     onClick={() => setIsTreeCollapsed(!isTreeCollapsed)}
-                    className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border border-blue-400/50 text-white z-40 hover:bg-blue-500 transition-all shadow-lg"
+                    className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-[var(--primary)] rounded-full flex items-center justify-center border border-[var(--border-main)] text-white z-40 hover:opacity-90 transition-all shadow-lg"
                     title={isTreeCollapsed ? "Expand Blueprint Schema" : "Collapse Blueprint Schema"}
                 >
                     <ChevronDown className={`w-3 h-3 transition-transform ${isTreeCollapsed ? '-rotate-90' : 'rotate-90'}`} />
                 </button>
 
-                <div className={`p-3 lg:p-3 border-b border-gray-800 flex justify-between items-center bg-[#161b22] transition-opacity duration-300 ${isTreeCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                <div className={`p-3 lg:p-3 border-b border-[var(--border-main)] flex justify-between items-center bg-[var(--bg-sidebar)] transition-opacity duration-300 ${isTreeCollapsed ? 'opacity-0' : 'opacity-100'}`}>
                     <div className="flex items-center gap-2">
-                        <Layout className="w-4 h-4 text-blue-400" />
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Topology</h3>
+                        <Layout className="w-4 h-4 text-[var(--primary)]" />
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--text-dim)]">Topology</h3>
                         <button
                             onClick={() => setIsTreeCollapsed(!isTreeCollapsed)}
-                            className="lg:hidden ml-2 p-1 text-gray-500 hover:text-white"
+                            className="lg:hidden ml-2 p-1 text-[var(--text-dim)] hover:text-[var(--text-main)]"
                         >
                             <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isTreeCollapsed ? '' : 'rotate-180'}`} />
                         </button>
                     </div>
                     {!isTreeCollapsed && (
                         <div className="flex gap-1">
-                            <button onClick={() => setShowHierarchy(!showHierarchy)} title="Topology Knowledge Base & Logic" className="p-1.5 text-gray-500 hover:text-white transition-colors"><Info className="w-3.5 h-3.5" /></button>
-                            <button onClick={() => setIsFieldModalOpen(true)} title="Dynamic Attribute Logic Manager" className="p-1.5 text-gray-500 hover:text-white transition-colors"><Settings2 className="w-3.5 h-3.5" /></button>
-                            <button onClick={() => setViewMode('TREE')} title="Blueprint Architect (Tree View)" className={`p-1.5 rounded-lg transition-all ${viewMode === 'TREE' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-gray-500 hover:text-gray-300'}`}><ChevronDown className="w-3.5 h-3.5" /></button>
-                            <button onClick={() => setViewMode('MATRIX')} title="Resource Spreadsheet (Matrix View)" className={`p-1.5 rounded-lg transition-all ${viewMode === 'MATRIX' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-gray-500 hover:text-gray-300'}`}><Table className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => setShowHierarchy(!showHierarchy)} title="Topology Knowledge Base & Logic" className="p-1.5 text-[var(--text-dim)] hover:text-[var(--text-main)] transition-colors"><Info className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => setIsFieldModalOpen(true)} title="Dynamic Attribute Logic Manager" className="p-1.5 text-[var(--text-dim)] hover:text-[var(--text-main)] transition-colors"><Settings2 className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => setViewMode('TREE')} title="Blueprint Architect (Tree View)" className={`p-1.5 rounded-lg transition-all ${viewMode === 'TREE' ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary-glow)]' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}><ChevronDown className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => setViewMode('MATRIX')} title="Resource Spreadsheet (Matrix View)" className={`p-1.5 rounded-lg transition-all ${viewMode === 'MATRIX' ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary-glow)]' : 'text-[var(--text-dim)] hover:text-[var(--text-main)]'}`}><Table className="w-3.5 h-3.5" /></button>
                         </div>
                     )}
                 </div>
@@ -190,21 +190,21 @@ export const BlueprintEditor = ({ onJsonChange, initialData, permissions, worksp
 
                         {/* Stats Panel - Only show when a node is selected */}
                         {selectedNodeId && (
-                            <div className="p-4 bg-[#0a0c10] border-t border-gray-800 space-y-3 animate-in fade-in slide-in-from-bottom-2 mt-auto">
-                                <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-600">
+                            <div className="p-4 bg-[var(--bg-deep)] border-t border-[var(--border-main)] space-y-3 animate-in fade-in slide-in-from-bottom-2 mt-auto">
+                                <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-[var(--text-dim)]">
                                     <span>Selection Stats</span>
                                     <BarChart3 className="w-3 h-3" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <div className="bg-[#161b22] p-2 rounded-lg border border-gray-800 hover:border-blue-500/30 transition-colors">
-                                        <p className="text-[9px] text-gray-500 uppercase font-black">Host RAM</p>
-                                        <p className="text-xs font-bold text-emerald-400 tracking-tighter">
+                                    <div className="bg-[var(--bg-card)] p-2 rounded-lg border border-[var(--border-main)] hover:border-[var(--primary)]/30 transition-colors">
+                                        <p className="text-[9px] text-[var(--text-dim)] uppercase font-black">Host RAM</p>
+                                        <p className="text-xs font-bold text-[var(--status-success)] tracking-tighter">
                                             {stats.physicalRAM >= 1024 ? (stats.physicalRAM / 1024).toFixed(1) + ' TB' : stats.physicalRAM + ' GB'}
                                         </p>
                                     </div>
-                                    <div className="bg-[#161b22] p-2 rounded-lg border border-gray-800 hover:border-orange-500/30 transition-colors">
-                                        <p className="text-[9px] text-gray-500 uppercase font-black">Alloc VRAM</p>
-                                        <p className="text-xs font-bold text-orange-400 tracking-tighter">{stats.virtualRAM} GB</p>
+                                    <div className="bg-[var(--bg-card)] p-2 rounded-lg border border-[var(--border-main)] hover:border-[var(--status-warn)]/30 transition-colors">
+                                        <p className="text-[9px] text-[var(--text-dim)] uppercase font-black">Alloc VRAM</p>
+                                        <p className="text-xs font-bold text-[var(--status-warn)] tracking-tighter">{stats.virtualRAM} GB</p>
                                     </div>
                                 </div>
                             </div>
@@ -212,31 +212,31 @@ export const BlueprintEditor = ({ onJsonChange, initialData, permissions, worksp
                     </>
                 ) : (
                     <div className="flex-1 flex flex-col items-center pt-24 gap-8">
-                        <BarChart3 className="w-4 h-4 text-gray-700" />
-                        <div className="h-32 w-px bg-gradient-to-b from-gray-800 to-transparent" />
+                        <BarChart3 className="w-4 h-4 text-[var(--border-main)]" />
+                        <div className="h-32 w-px bg-gradient-to-b from-[var(--border-main)] to-transparent" />
                     </div>
                 )}
             </div>
 
             {/* Main Area */}
-            <div className="flex-1 flex flex-col bg-[#0d1117] overflow-hidden min-w-0">
+            <div className="flex-1 flex flex-col bg-[var(--bg-main)] overflow-hidden min-w-0">
                 {viewMode === 'TREE' ? (
-                    <div className="flex-1 flex flex-col min-h-0 bg-[radial-gradient(circle_at_top_right,_#1e293b11,_transparent)]">
+                    <div className="flex-1 flex flex-col min-h-0 bg-[radial-gradient(circle_at_top_right,_var(--primary-glow),_transparent)]">
                         {/* Header / Controls - FIXED AT TOP */}
-                        <div className="flex items-center justify-between p-4 border-b border-gray-800 bg-[#161b22]/80 backdrop-blur-md z-10 shrink-0">
+                        <div className="flex items-center justify-between p-4 border-b border-[var(--border-main)] bg-[var(--bg-card)]/80 backdrop-blur-md z-10 shrink-0">
                             <div className="flex items-center gap-3 sm:gap-4 overflow-hidden">
                                 <div className="flex items-center gap-2 shrink-0">
-                                    <div className="p-1.5 sm:p-2 bg-blue-600/10 rounded-lg border border-blue-500/10">
-                                        <Settings2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-400" />
+                                    <div className="p-1.5 sm:p-2 bg-[var(--primary-glow)] rounded-lg border border-[var(--border-accent)]">
+                                        <Settings2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--primary)]" />
                                     </div>
                                     <div className="min-w-0">
-                                        <h3 className="text-xs sm:text-sm font-black text-white uppercase tracking-widest truncate">Blueprint Studio</h3>
+                                        <h3 className="text-xs sm:text-sm font-black text-[var(--text-bright)] uppercase tracking-widest truncate">Blueprint Studio</h3>
                                         <div className="flex items-center gap-1 sm:gap-2">
-                                            <p className="hidden sm:block text-[10px] text-gray-500 font-bold uppercase tracking-tight italic">Visual Infrastructure Editor</p>
+                                            <p className="hidden sm:block text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-tight italic">Visual Infrastructure Editor</p>
                                             {workspaceMode === 'GLOBAL' ? (
-                                                <span className="px-1.5 sm:px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-black uppercase bg-purple-500/10 text-purple-400 border border-purple-500/20">Global</span>
+                                                <span className="px-1.5 sm:px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-black uppercase bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20">Global</span>
                                             ) : (
-                                                <span className="px-1.5 sm:px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-black uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Personal</span>
+                                                <span className="px-1.5 sm:px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-black uppercase bg-[var(--status-success)]/10 text-[var(--status-success)] border border-[var(--status-success)]/20">Personal</span>
                                             )}
                                         </div>
                                     </div>
@@ -260,7 +260,7 @@ export const BlueprintEditor = ({ onJsonChange, initialData, permissions, worksp
                                     permissions={permissions}
                                 />
                             ) : (
-                                <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-gray-600 space-y-4 opacity-30 mt-[-10%]">
+                                <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-[var(--text-dim)] space-y-4 opacity-30 mt-[-10%]">
                                     <AlertCircle className="w-12 h-12" />
                                     <p className="text-sm font-black tracking-widest uppercase">Select Geographic or Logic Node</p>
                                 </div>

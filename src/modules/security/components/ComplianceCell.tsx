@@ -53,16 +53,16 @@ export const ComplianceCell: React.FC<ComplianceCellProps> = ({
             </button>
 
             {/* Detailed Tooltip */}
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-[#161b22] border border-gray-800 rounded-xl shadow-2xl min-w-[200px] invisible group-hover/cell:visible opacity-0 group-hover/cell:opacity-100 transition-all z-50 pointer-events-none">
-                <p className="text-[9px] text-gray-500 mb-2 border-b border-gray-800 pb-1 font-black uppercase">Attribute Details</p>
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-[var(--bg-card)] border border-[var(--border-main)] rounded-xl shadow-2xl min-w-[200px] invisible group-hover/cell:visible opacity-0 group-hover/cell:opacity-100 transition-all z-50 pointer-events-none">
+                <p className="text-[9px] text-[var(--text-dim)] mb-2 border-b border-[var(--border-main)] pb-1 font-black uppercase">Attribute Details</p>
                 <div className="space-y-1.5 text-left">
                     <div className="flex justify-between text-[9px]">
-                        <span className="text-gray-400 font-bold">Value:</span>
-                        <span className="text-white font-black">{String(compliance?.value ?? 'N/A')}</span>
+                        <span className="text-[var(--text-dim)] font-bold">Value:</span>
+                        <span className="text-[var(--text-bright)] font-black">{String(compliance?.value ?? 'N/A')}</span>
                     </div>
                     <div className="flex justify-between text-[9px]">
-                        <span className="text-gray-400 font-bold">Strategy:</span>
-                        <span className="text-blue-400 font-black text-[8px]">{compliance?.matchStrategy ?? 'none'}</span>
+                        <span className="text-[var(--text-dim)] font-bold">Strategy:</span>
+                        <span className="text-[var(--primary)] font-black text-[8px]">{compliance?.matchStrategy ?? 'none'}</span>
                     </div>
                 </div>
             </div>
