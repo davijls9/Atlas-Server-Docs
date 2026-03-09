@@ -103,6 +103,8 @@ The platform ships with a built-in testing infrastructure that runs on every `np
 
 ## 🚀 Getting Started
 
+Para quem quer testar o projeto antes de realizar o importe, segue o link do Vercel: https://atlas-server-docs-btlnm04ov-davijls9s-projects.vercel.app/
+
 ### Prerequisites
 
 - **Node.js** v18+ 
