@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { SecurityNode, AuditColumn, ComplianceData, SecurityOverrides } from '../types/security.types';
+import type { AuditColumn, ComplianceData, SecurityOverrides } from '../types/security.types';
 
 /**
  * Hook for calculating compliance scores and data for security nodes

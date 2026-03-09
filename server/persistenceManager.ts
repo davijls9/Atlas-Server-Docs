@@ -60,19 +60,19 @@ class FileConnector implements StorageConnector {
 /**
  * Stub for future SQL implementation
  */
-class SQLConnector implements StorageConnector {
-    async read(key: string): Promise<string | null> {
-        console.warn('[STORAGE] SQL Connector not yet implemented. Falling back to FileSystem.');
-        return null;
-    }
-    async write(key: string, value: string): Promise<boolean> {
-        console.warn('[STORAGE] SQL Connector not yet implemented.');
-        return false;
-    }
-    async listKeys(): Promise<string[]> {
-        return [];
-    }
-}
+//class SQLConnector implements StorageConnector {
+//    async read(key: string): Promise<string | null> {
+//        console.warn('[STORAGE] SQL Connector not yet implemented. Falling back to FileSystem.');
+//        return null;
+//    }
+//    async write(key: string, value: string): Promise<boolean> {
+//        console.warn('[STORAGE] SQL Connector not yet implemented.');
+//        return false;
+//    }
+//    async listKeys(): Promise<string[]> {
+//        return [];
+//    }
+//}
 
 export class PersistenceManager {
     private static connector: StorageConnector = new FileConnector();

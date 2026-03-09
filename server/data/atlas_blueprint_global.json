@@ -1,1 +1,623 @@
-{"pops":[{"id":"pop-1772126764096","name":"New POP","city":"City","nodes":[{"id":"node-1772126766648","name":"New SWITCH","ip":"0.0.0.0","status":"OFF","criticality":"MEDIUM","type":"switch","attributes":[],"connected_servers":[{"id":"node-1772126827942","name":"New PHYSICAL SERVER","ip":"0.0.0.0","status":"OFF","criticality":"MEDIUM","type":"physical_server","attributes":[],"virtual_machines":[{"id":"node-1772126849246","name":"New VIRTUAL MACHINE","ip":"0.0.0.0","status":"OFF","criticality":"MEDIUM","type":"virtual_machine","attributes":[],"systems":[]}]}]}]}],"links":[],"global_stats":{"physicalRAM":0,"virtualRAM":0,"vcpuCount":0,"efficiency":0},"schema":[{"id":"attr-company","label":"Company","type":"TEXT","defaultValue":"Blink"},{"id":"attr-type-sys","label":"System Type","type":"TEXT","defaultValue":"Bare Metal"},{"id":"attr-os","label":"Operating System","type":"TEXT","defaultValue":"Ubuntu 22.04 LTS"},{"id":"attr-veeam","label":"BKP Veeam BTP","type":"TEXT","defaultValue":"Não"},{"id":"attr-zabbix","label":"Monitor Zabbix Agent 2","type":"BOOLEAN","defaultValue":true,"enabled":true,"showInSecurity":true},{"id":"attr-tanium","label":"Instalação Tanium","type":"BOOLEAN","defaultValue":false,"enabled":true,"showInSecurity":true},{"id":"attr-av","label":"Instalado AV","type":"BOOLEAN","defaultValue":false,"enabled":true,"showInSecurity":true},{"id":"attr-model-srv","label":"Modelo Server","type":"TEXT","defaultValue":"DELL R660","appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-proc-qt","label":"QT F Processador","type":"NUMBER","defaultValue":1,"appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-proc-name","label":"F Processador","type":"TEXT","defaultValue":"Intel(R) Xeon(R) Gold","appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-ram-qt-1","label":"1 QT F Memoria","type":"NUMBER","defaultValue":2,"appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-ram-val-1","label":"1 F Memoria Ram","type":"TEXT","defaultValue":"32 GB","appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-ram-type-1","label":"1 Tipo DDR","type":"TEXT","defaultValue":"DDR5","appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-disk-qt-1","label":"1 QT F Disco","type":"NUMBER","defaultValue":2,"appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-disk-val-1","label":"1 F Disco","type":"TEXT","defaultValue":"480 GB","appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-disk-type-1","label":"1 Tipo Disco","type":"TEXT","defaultValue":"SSD","appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-raid-1","label":"1 Tipo Raid","type":"TEXT","defaultValue":"Raid 1","appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-idrac-ip","label":"IP IDRAC","type":"TEXT","defaultValue":"https://172.16.x.x/","appliesTo":["PHYSICAL_SERVER"]},{"id":"attr-user","label":"USER","type":"TEXT","defaultValue":"admin","appliesTo":["VIRTUAL_MACHINE","SYSTEM"]},{"id":"attr-pass","label":"SENHA","type":"TEXT","defaultValue":"","appliesTo":["VIRTUAL_MACHINE","SYSTEM"]},{"id":"attr-sys-prop","label":"Responsible Party/Owner","type":"TEXT","defaultValue":"Interno","appliesTo":["SYSTEM"]}]}
+{
+  "pops": [
+    {
+      "id": "pop-1772126764096",
+      "name": "POP N1",
+      "city": "City",
+      "nodes": [
+        {
+          "id": "node-1772126766648",
+          "name": "Teste de SW 1",
+          "ip": "0.0.0.0",
+          "status": "OFF",
+          "criticality": "MEDIUM",
+          "type": "switch",
+          "attributes": [],
+          "connected_servers": [
+            {
+              "id": "node-1772126827942",
+              "name": "Server N 1",
+              "ip": "0.0.0.0",
+              "status": "OFF",
+              "criticality": "MEDIUM",
+              "type": "physical_server",
+              "monitor_zabbix_agent_2": true,
+              "instalação_tanium": true,
+              "instalado_av": true,
+              "attributes": [
+                {
+                  "attributeId": "attr-zabbix",
+                  "value": true
+                },
+                {
+                  "attributeId": "attr-tanium",
+                  "value": true
+                },
+                {
+                  "attributeId": "attr-av",
+                  "value": true
+                }
+              ],
+              "virtual_machines": [
+                {
+                  "id": "node-1772126849246",
+                  "name": "System 1",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "monitor_zabbix_agent_2": true,
+                  "instalação_tanium": true,
+                  "instalado_av": true,
+                  "attributes": [
+                    {
+                      "attributeId": "attr-zabbix",
+                      "value": true
+                    },
+                    {
+                      "attributeId": "attr-tanium",
+                      "value": true
+                    },
+                    {
+                      "attributeId": "attr-av",
+                      "value": true
+                    }
+                  ],
+                  "systems": [
+                    {
+                      "id": "node-1773071480995",
+                      "name": "Apache",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "monitor_zabbix_agent_2": true,
+                      "instalação_tanium": true,
+                      "instalado_av": true,
+                      "attributes": [
+                        {
+                          "attributeId": "attr-zabbix",
+                          "value": true
+                        },
+                        {
+                          "attributeId": "attr-tanium",
+                          "value": true
+                        },
+                        {
+                          "attributeId": "attr-av",
+                          "value": true
+                        }
+                      ],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "node-1773071423689",
+                  "name": "System 2",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "monitor_zabbix_agent_2": true,
+                  "instalação_tanium": true,
+                  "instalado_av": true,
+                  "attributes": [
+                    {
+                      "attributeId": "attr-zabbix",
+                      "value": true
+                    },
+                    {
+                      "attributeId": "attr-tanium",
+                      "value": true
+                    },
+                    {
+                      "attributeId": "attr-av",
+                      "value": true
+                    }
+                  ],
+                  "systems": [
+                    {
+                      "id": "node-1773071481803",
+                      "name": "Banco de dados",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "monitor_zabbix_agent_2": true,
+                      "instalação_tanium": true,
+                      "instalado_av": true,
+                      "attributes": [
+                        {
+                          "attributeId": "attr-zabbix",
+                          "value": true
+                        },
+                        {
+                          "attributeId": "attr-tanium",
+                          "value": true
+                        },
+                        {
+                          "attributeId": "attr-av",
+                          "value": true
+                        }
+                      ],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "node-1773071368577",
+              "name": "Server N 2",
+              "ip": "0.0.0.0",
+              "status": "OFF",
+              "criticality": "MEDIUM",
+              "type": "physical_server",
+              "attributes": [],
+              "virtual_machines": [
+                {
+                  "id": "node-1773071423058",
+                  "name": "System 3",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "attributes": [],
+                  "systems": [
+                    {
+                      "id": "node-1773071482683",
+                      "name": "Back-End",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "node-1773071369225",
+              "name": "Server N 3",
+              "ip": "0.0.0.0",
+              "status": "OFF",
+              "criticality": "MEDIUM",
+              "type": "physical_server",
+              "attributes": [],
+              "virtual_machines": [
+                {
+                  "id": "node-1773071422402",
+                  "name": "System 4",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "attributes": [],
+                  "systems": [
+                    {
+                      "id": "node-1773071483579",
+                      "name": "Front-End",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    },
+                    {
+                      "id": "node-1773071601759",
+                      "name": "Docker",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    },
+                    {
+                      "id": "node-1773071602319",
+                      "name": "Kubernets",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "node-1773071434323",
+                  "name": "System 5",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "attributes": [],
+                  "systems": [
+                    {
+                      "id": "node-1773071484099",
+                      "name": "Monitoramento",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "node-1773071435634",
+                  "name": "System 6",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "attributes": [],
+                  "systems": [
+                    {
+                      "id": "node-1773071485362",
+                      "name": "SNMP",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "node-1773071311208",
+          "name": "Teste de SW 3",
+          "ip": "0.0.0.0",
+          "status": "OFF",
+          "criticality": "MEDIUM",
+          "type": "switch",
+          "attributes": [],
+          "connected_servers": [
+            {
+              "id": "node-1773071402515",
+              "name": "Server N 6",
+              "ip": "0.0.0.0",
+              "status": "OFF",
+              "criticality": "MEDIUM",
+              "type": "physical_server",
+              "attributes": [],
+              "virtual_machines": [
+                {
+                  "id": "node-1773071421601",
+                  "name": "System 7",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "attributes": [],
+                  "systems": [
+                    {
+                      "id": "node-1773071486307",
+                      "name": "SNMP TRAP",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "node-1773071403721",
+              "name": "Server N 7",
+              "ip": "0.0.0.0",
+              "status": "OFF",
+              "criticality": "MEDIUM",
+              "type": "physical_server",
+              "attributes": [],
+              "virtual_machines": [
+                {
+                  "id": "node-1773071420865",
+                  "name": "System 8",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "attributes": [],
+                  "systems": [
+                    {
+                      "id": "node-1773071487579",
+                      "name": "Fastnetmon",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pop-1773071313256",
+      "name": "Teste de novo pop",
+      "city": "City",
+      "nodes": [
+        {
+          "id": "node-1773071322407",
+          "name": "Teste de SW 2",
+          "ip": "0.0.0.0",
+          "status": "OFF",
+          "criticality": "MEDIUM",
+          "type": "switch",
+          "attributes": [],
+          "connected_servers": [
+            {
+              "id": "node-1773071380393",
+              "name": "Server N 4",
+              "ip": "0.0.0.0",
+              "status": "OFF",
+              "criticality": "MEDIUM",
+              "type": "physical_server",
+              "attributes": [],
+              "virtual_machines": [
+                {
+                  "id": "node-1773071426778",
+                  "name": "System 9",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "attributes": [],
+                  "systems": [
+                    {
+                      "id": "node-1773071569506",
+                      "name": "Docker",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "node-1773071382522",
+              "name": "Server N 5",
+              "ip": "0.0.0.0",
+              "status": "OFF",
+              "criticality": "MEDIUM",
+              "type": "physical_server",
+              "attributes": [],
+              "virtual_machines": [
+                {
+                  "id": "node-1773071426243",
+                  "name": "System 10",
+                  "ip": "0.0.0.0",
+                  "status": "OFF",
+                  "criticality": "MEDIUM",
+                  "type": "virtual_machine",
+                  "attributes": [],
+                  "systems": [
+                    {
+                      "id": "node-1773071570378",
+                      "name": "KAFKA",
+                      "ip": "0.0.0.0",
+                      "status": "OFF",
+                      "criticality": "MEDIUM",
+                      "type": "system",
+                      "attributes": [],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [],
+  "global_stats": {
+    "physicalRAM": 0,
+    "virtualRAM": 0,
+    "vcpuCount": 0,
+    "efficiency": 0
+  },
+  "schema": [
+    {
+      "id": "attr-company",
+      "label": "Company",
+      "type": "TEXT",
+      "defaultValue": "Blink"
+    },
+    {
+      "id": "attr-type-sys",
+      "label": "System Type",
+      "type": "TEXT",
+      "defaultValue": "Bare Metal"
+    },
+    {
+      "id": "attr-os",
+      "label": "Operating System",
+      "type": "TEXT",
+      "defaultValue": "Ubuntu 22.04 LTS"
+    },
+    {
+      "id": "attr-veeam",
+      "label": "BKP Veeam BTP",
+      "type": "TEXT",
+      "defaultValue": "Não"
+    },
+    {
+      "id": "attr-zabbix",
+      "label": "Monitor Zabbix Agent 2",
+      "type": "BOOLEAN",
+      "defaultValue": true,
+      "enabled": true,
+      "showInSecurity": true
+    },
+    {
+      "id": "attr-tanium",
+      "label": "Instalação Tanium",
+      "type": "BOOLEAN",
+      "defaultValue": false,
+      "enabled": true,
+      "showInSecurity": true
+    },
+    {
+      "id": "attr-av",
+      "label": "Instalado AV",
+      "type": "BOOLEAN",
+      "defaultValue": false,
+      "enabled": true,
+      "showInSecurity": true
+    },
+    {
+      "id": "attr-model-srv",
+      "label": "Modelo Server",
+      "type": "TEXT",
+      "defaultValue": "DELL R660",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-proc-qt",
+      "label": "QT F Processador",
+      "type": "NUMBER",
+      "defaultValue": 1,
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-proc-name",
+      "label": "F Processador",
+      "type": "TEXT",
+      "defaultValue": "Intel(R) Xeon(R) Gold",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-ram-qt-1",
+      "label": "1 QT F Memoria",
+      "type": "NUMBER",
+      "defaultValue": 2,
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-ram-val-1",
+      "label": "1 F Memoria Ram",
+      "type": "TEXT",
+      "defaultValue": "32 GB",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-ram-type-1",
+      "label": "1 Tipo DDR",
+      "type": "TEXT",
+      "defaultValue": "DDR5",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-disk-qt-1",
+      "label": "1 QT F Disco",
+      "type": "NUMBER",
+      "defaultValue": 2,
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-disk-val-1",
+      "label": "1 F Disco",
+      "type": "TEXT",
+      "defaultValue": "480 GB",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-disk-type-1",
+      "label": "1 Tipo Disco",
+      "type": "TEXT",
+      "defaultValue": "SSD",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-raid-1",
+      "label": "1 Tipo Raid",
+      "type": "TEXT",
+      "defaultValue": "Raid 1",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-idrac-ip",
+      "label": "IP IDRAC",
+      "type": "TEXT",
+      "defaultValue": "https://172.16.x.x/",
+      "appliesTo": [
+        "PHYSICAL_SERVER"
+      ]
+    },
+    {
+      "id": "attr-user",
+      "label": "USER",
+      "type": "TEXT",
+      "defaultValue": "admin",
+      "appliesTo": [
+        "VIRTUAL_MACHINE",
+        "SYSTEM"
+      ]
+    },
+    {
+      "id": "attr-pass",
+      "label": "SENHA",
+      "type": "TEXT",
+      "defaultValue": "",
+      "appliesTo": [
+        "VIRTUAL_MACHINE",
+        "SYSTEM"
+      ]
+    },
+    {
+      "id": "attr-sys-prop",
+      "label": "Responsible Party/Owner",
+      "type": "TEXT",
+      "defaultValue": "Interno",
+      "appliesTo": [
+        "SYSTEM"
+      ]
+    }
+  ]
+}

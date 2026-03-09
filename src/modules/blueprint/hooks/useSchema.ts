@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { BlueprintAttribute, BlueprintNodeSchema, BlueprintSchema } from '../types/blueprint.types';
+import type { BlueprintNodeSchema, BlueprintSchema } from '../types/blueprint.types';
 
 export const useSchema = (initialSchema?: BlueprintSchema) => {
     const [schema, setSchema] = useState<BlueprintSchema>(initialSchema || {
